@@ -385,6 +385,63 @@ ul {
     background-color: rgba(100, 255, 218, 0.1);
 }
 
+/* --- Hamburger Menu --- */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 1001;
+}
+
+.hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--accent-color);
+    transition: var(--transition);
+}
+
+/* Mobile Nav */
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: 70%;
+        max-width: 300px;
+        background-color: #112240;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transform: translateX(100%);
+        transition: var(--transition);
+        box-shadow: -10px 0 30px -10px rgba(2, 12, 27, 0.7);
+        z-index: 1000;
+    }
+
+    .nav-links.active {
+        transform: translateX(0);
+        display: flex;
+    }
+
+    /* Animate Hamburger to X */
+    .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 6px);
+    }
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+    .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -6px);
+    }
+}
+
 /* --- Hero Section --- */
 .hero {
     min-height: 85vh; /* Reduced from 100vh */
@@ -438,6 +495,12 @@ ul {
     color: var(--text-secondary);
     line-height: 1.1;
     margin-top: 10px;
+    min-height: 1.1em; /* Prevent layout shift during typing */
+}
+
+.sub-heading::after {
+    content: "|";
+    animation: blink 1s infinite;
 }
 
 .hero-text {
@@ -570,15 +633,6 @@ footer {
     font-size: 0.8rem;
 }
 
-@media (max-width: 768px) {
-    .nav-links {
-        display: none;
-    }
-    .section-title::after {
-        width: 100%;
-    }
-}
-
 /* --- Retro Game Window --- */
 .game-trigger {
     position: fixed;
@@ -615,6 +669,7 @@ footer {
     transform: translate(-50%, -50%);
     width: 350px;
     height: 400px;
+    max-width: 90vw; /* Fix for mobile screens */
     background-color: #0f1520;
     border: 1px solid var(--accent-color);
     border-radius: 6px;
@@ -787,5 +842,4 @@ canvas {
 
 .contact-details a {
     cursor: pointer;
-}
 }

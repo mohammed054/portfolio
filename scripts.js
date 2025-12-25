@@ -15,6 +15,43 @@ window.addEventListener('scroll', function() {
     lastScrollTop = scrollTop;
 });
 
+// --- Mobile Menu Logic ---
+const hamburger = document.querySelector('.hamburger');
+const navLinks = document.querySelector('.nav-links');
+
+if (hamburger) {
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+    });
+}
+
+// Close mobile menu when a link is clicked
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('active');
+    });
+});
+
+// --- Typing Effect ---
+const textToType = "I build things for the web.";
+const typingElement = document.querySelector('.sub-heading');
+let typeIndex = 0;
+
+function typeWriter() {
+    if (typeIndex < textToType.length) {
+        typingElement.innerHTML += textToType.charAt(typeIndex);
+        typeIndex++;
+        setTimeout(typeWriter, 100);
+    }
+}
+
+if (typingElement) {
+    typingElement.innerHTML = ""; // Clear initial text
+    setTimeout(typeWriter, 1000); // Start typing after 1s
+}
+
 // --- Sound Effects System (Web Audio API) ---
 let audioCtx;
 
@@ -354,7 +391,7 @@ let isLaunching = false;
 
 // Rocket Follow Cursor (Rotation)
 document.addEventListener('mousemove', (e) => {
-    if (isLaunching || spaceship.style.display === 'none') return;
+    if (isLaunching || spaceship.style.display === 'none' || !spaceship.offsetParent) return;
     
     const rect = spaceship.getBoundingClientRect();
     const shipX = rect.left + rect.width / 2;

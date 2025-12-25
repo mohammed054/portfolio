@@ -1,38 +1,28 @@
-# Interactive Developer Portfolio
+# Mohammed's Web Portfolio
 
-A unique, interactive personal portfolio website designed to showcase web development skills with a touch of personality and fun.
+Hi! I’m **Mohammed**, a passionate web developer who loves experimenting with **HTML, CSS, and JavaScript**. I enjoy building websites and learning new things in the process—it started as a hobby, and now I’m always looking for ways to improve my skills. I aim to create web experiences that are **fun, interactive, and user-friendly**.
 
-## 🚀 Features
+---
 
--   **Interactive Terminal Game:** A fully functional Snake game running in a draggable, retro-styled terminal window.
--   **Dynamic Animations:** Includes a rocket launch sequence with particle explosions and a parachuting character.
--   **Sound Effects:** Custom audio engine using the Web Audio API for game interactions and UI feedback.
--   **Responsive Design:** Optimized for various screen sizes with a clean, professional "Dark Slate" aesthetic.
--   **Easter Eggs:** Hidden interactions and secrets (try clicking the rocket!).
+## Features
 
-## 🛠️ Technologies Used
+- Interactive Snake game with score tracking
+- Rocket animation with audio effects
+- Responsive layout for desktop and mobile
+- Dark Slate aesthetic with clean styling
+- Fun easter eggs and hidden interactions
 
--   **HTML5:** Semantic structure.
--   **CSS3:** Flexbox, Grid, Animations, and Custom Properties (Variables).
--   **JavaScript (ES6+):** Game logic, DOM manipulation, Web Audio API, and Intersection Observers.
+---
 
-## 📦 Setup & Usage
+## Technologies Used
 
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/mohammed054/portfolio.git
-    ```
-2.  Navigate to the project directory:
-    ```bash
-    cd portfolio
-    ```
-3.  Open `index.html` in your preferred web browser to view the site.
+- **HTML5** for structure
+- **CSS3** for layout, animations, and styling
+- **JavaScript (ES6+)** for interactivity and game logic
+- DOM manipulation and event handling
+- Web Audio API for sound effects
 
-## 🔗 Connect
+---
 
--   **GitHub:** github.com/mohammed054
--   **Email:** mohammed.hassoun054@gmail.com
+## Folder Structure
 
-## 📄 License
-
-This project is open source and available under the MIT License.
