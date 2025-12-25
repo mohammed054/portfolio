@@ -461,7 +461,7 @@ ul {
 }
 
 .main-heading {
-    font-size: clamp(40px, 8vw, 80px);
+    font-size: clamp(32px, 8vw, 80px); /* Reduced min size for mobile */
     font-weight: 700;
     color: var(--text-primary);
     line-height: 1.1;
@@ -490,7 +490,7 @@ ul {
 }
 
 .sub-heading {
-    font-size: clamp(30px, 6vw, 60px);
+    font-size: clamp(22px, 5vw, 60px); /* Reduced min size for mobile */
     font-weight: 700;
     color: var(--text-secondary);
     line-height: 1.1;
@@ -529,35 +529,36 @@ ul {
 }
 
 /* --- Skills --- */
-.skills-list {
+.skills-grid-wrapper {
     display: grid;
-    grid-template-columns: repeat(2, minmax(140px, 200px));
-    gap: 0 10px;
-    padding: 0;
-    margin: 20px 0 0 0;
-    overflow: hidden;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.skill-category h4 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.skill-category ul {
     list-style: none;
 }
 
-.skills-list li {
-    position: relative;
-    margin-bottom: 10px;
-    padding-left: 20px;
+.skill-category li {
+    margin-bottom: 0.5rem;
     font-family: 'Space Grotesk', monospace;
-    font-size: 18px;
-    transition: var(--transition);
+    font-size: 1rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
 }
 
-.skills-list li:hover {
-    color: var(--accent-color);
-    transform: translateX(10px);
-}
-
-.skills-list li::before {
+.skill-category li::before {
     content: "▹";
-    position: absolute;
-    left: 0;
     color: var(--accent-color);
+    margin-right: 10px;
 }
 
 /* --- Coming Soon Card --- */
@@ -813,6 +814,24 @@ canvas {
 
 .skills-list li:nth-child(odd) { transition-delay: 200ms; }
 .skills-list li:nth-child(even) { transition-delay: 400ms; }
+
+/* --- Mobile Adjustments --- */
+@media (max-width: 768px) {
+    .hero {
+        padding-bottom: 180px; /* Add space at bottom so text doesn't hit rocket */
+        justify-content: center;
+    }
+
+    /* Scale down rocket elements on mobile */
+    .launch-platform, .spaceship-container, .reset-btn {
+        transform: scale(0.65);
+        transform-origin: bottom left;
+    }
+    
+    .launch-platform { left: 10px; }
+    .spaceship-container { left: 45px; }
+    .reset-btn { left: 70px; }
+}
 
 /* --- Hitmark X Effect --- */
 .hitmark {
