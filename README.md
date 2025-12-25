@@ -1,5 +1,7 @@
 # Mohammed's Web Portfolio
 
+**Live Demo:** [https://mohammed054.github.io/portfolio/](https://mohammed054.github.io/portfolio/)
+
 Hi! I’m **Mohammed**, a passionate web developer who loves experimenting with **HTML, CSS, and JavaScript**. I enjoy building websites and learning new things in the process—it started as a hobby, and now I’m always looking for ways to improve my skills. I aim to create web experiences that are **fun, interactive, and user-friendly**.
 
 ---
@@ -25,4 +27,3 @@ Hi! I’m **Mohammed**, a passionate web developer who loves experimenting with 
 ---
 
 ## Folder Structure
-
