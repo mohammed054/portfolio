@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammed | Interactive Portfolio</title>
+    <meta name="description" content="Portfolio of Mohammed, a web developer specializing in building accessible, human-centered products.">
+    <meta name="keywords" content="web developer, portfolio, javascript, html, css, interactive">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-effects"></div>
+    <div class="noise-overlay"></div>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">Mohammed.</a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact" class="btn-nav">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="hero">
+            <div class="container">
+                <div class="launch-platform"></div>
+                <div id="spaceship" class="spaceship-container">
+                    <div id="shipMsg" class="spaceship-msg">Click Me</div>
+                    <div class="spaceship-icon">
+                        <img src="rocket.png" alt="Rocket" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                    <div class="rocket-exhaust"></div>
+                </div>
+                <button id="resetRocket" class="reset-btn"></button>
+                <span class="greeting">Hi, my name is</span>
+                <h1 class="main-heading">Mohammed.</h1>
+                <h2 class="sub-heading">I build things for the web.</h2>
+                <p class="hero-text">
+                    I am a web developer focused on building accessible, human-centered products.
+                    Currently, I'm focused on expanding my stack and learning new technologies.
+                </p>
+                <a href="#contact" class="btn-primary">Get In Touch</a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="container">
+                <h3 class="section-title">About Me</h3>
+                <div class="content-wrapper">
+                    <div class="about-text">
+                        <p>
+                            Hello! My name is Mohammed and I enjoy creating things that live on the internet. 
+                            My interest in web development started when I decided to try editing custom themes — 
+                            turns out hacking together HTML & CSS is pretty fun!
+                        </p>
+                        <p>
+                            Fast-forward to today, and I'm focused on building accessible, inclusive products and digital experiences.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section">
+            <div class="container">
+                <h3 class="section-title">Technical Skills</h3>
+                <ul class="skills-list">
+                    <li>HTML5 & CSS3</li>
+                    <li>JavaScript</li>
+                    <li>Git & GitHub</li>
+                    <li>Responsive Design</li>
+                    <li>UI/UX Principles</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Projects Section (Coming Soon) -->
+        <section id="projects" class="section">
+            <div class="container">
+                <h3 class="section-title">Featured Projects</h3>
+                <div class="coming-soon-card">
+                    <div class="icon-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    </div>
+                    <h4>Work in Progress</h4>
+                    <p>I am currently building some exciting projects to showcase my skills. Check back soon!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section contact-section">
+            <div class="container center-text">
+                <h3 class="section-title-center">Get In Touch</h3>
+                <p class="contact-text">
+                    I'm currently looking for new opportunities. Whether you have a question or just want to say hi, my inbox is always open.
+                </p>
+                <a href="mailto:mohammed.hassoun054@gmail.com" class="btn-primary btn-large">Say Hello</a>
+                <div class="contact-details">
+                    <div style="margin-bottom: 10px;">
+                        <strong style="color: var(--accent-color);">Email:</strong> 
+                        <a href="mailto:mohammed.hassoun054@gmail.com">mohammed.hassoun054@gmail.com</a>
+                    </div>
+                    <div>
+                        <strong style="color: var(--accent-color);">Phone:</strong> 
+                        <a href="tel:+971509980352">+971 50 998 0352</a>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <strong style="color: var(--accent-color);">GitHub:</strong> 
+                        <a href="https://github.com/mohammed054" target="_blank">github.com/mohammed054</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Designed & Built by Mohammed</p>
+        </div>
+    </footer>
+
+    <!-- Floating Game Trigger -->
+    <button id="gameTrigger" class="game-trigger">
+        <span class="trigger-icon">_></span>
+        <span class="trigger-text">LAUNCH TERMINAL</span>
+    </button>
+
+    <!-- Retro Game Window -->
+    <div id="retroWindow" class="retro-window">
+        <div class="window-bar" id="windowHeader">
+            <div class="window-title">terminal — snake.js</div>
+            <div class="window-controls">
+                <span class="win-btn" id="minBtn">_</span>
+                <span class="win-btn" id="maxBtn">□</span>
+                <span class="win-btn" id="closeBtn">×</span>
+            </div>
+        </div>
+        <div class="window-content">
+            <canvas id="gameCanvas"></canvas>
+            <div id="gameScore" class="game-score">SCORE: 0</div>
+            <div id="gameOverlay" class="game-overlay">PRESS SPACE TO START<br><span style="font-size: 14px">P to Pause</span></div>
+            <div class="terminal-guy-container">
+                <div class="terminal-guy">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="40" height="40"><circle cx="12" cy="5" r="3" /><path d="M12 8 L12 16 M12 8 L8 12 M12 8 L16 12 M12 16 L9 21 M12 16 L15 21" /></svg>
+                </div>
+                <div class="terminal-msg">Use <span style="color: var(--accent-color)">WASD</span> or Arrows to move!</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts.js" defer></script>
+</body>
+</html>

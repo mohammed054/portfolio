@@ -1,0 +1,791 @@
+:root {
+    --bg-color: #0a192f;
+    --text-primary: #ccd6f6;
+    --text-secondary: #8892b0;
+    --accent-color: #64ffda;
+    --card-bg: #112240;
+    --nav-height: 80px;
+    --transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* --- Custom Scrollbar (Portfolio Polish) --- */
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--card-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 6px;
+}
+
+/* --- Cool Background Effects --- */
+.background-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle at 15% 50%, rgba(100, 255, 218, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(11, 76, 129, 0.15), transparent 25%);
+    animation: bgPulse 10s ease-in-out infinite alternate;
+}
+
+@keyframes bgPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* --- Noise Overlay (Anti-Canva Texture) --- */
+.noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 900;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* --- Launch Platform (Flat Surface) --- */
+.launch-platform {
+    position: absolute; /* Changed from fixed to absolute */
+    bottom: 0;
+    left: 20px;
+    width: 160px;
+    height: 60px;
+    z-index: 1999;
+    background: #2d3748;
+    border-top: 4px solid #4a5568;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Hazard Stripes Detail */
+.launch-platform::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 12px;
+    background: repeating-linear-gradient(45deg, #f6e05e, #f6e05e 10px, #1a202c 10px, #1a202c 20px);
+    opacity: 0.8;
+}
+
+/* --- Interactive Spaceship --- */
+.spaceship-container {
+    position: absolute; /* Changed from fixed to absolute */
+    bottom: 64px; /* Sit exactly on the flat platform (height 60 + border 4) */
+    left: 60px; /* Centered on platform */
+    z-index: 2000;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.1s;
+}
+
+.spaceship-msg {
+    background: var(--card-bg);
+    border: 1px solid var(--accent-color);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: var(--accent-color);
+    font-family: 'Space Grotesk', monospace;
+    white-space: nowrap;
+}
+
+.spaceship-icon {
+    width: 80px; /* Slightly larger for PNG visibility */
+    height: 80px;
+    filter: drop-shadow(0 0 5px var(--accent-color));
+    transition: transform 0.2s;
+    object-fit: contain;
+}
+
+.spaceship-container:hover .spaceship-icon {
+    transform: translateY(-3px);
+}
+
+/* Reset Button */
+.reset-btn {
+    position: absolute; /* Changed from fixed to absolute */
+    bottom: 20px;
+    left: 85px; /* Visually centered on the 160px platform (20px offset + 80px center - 15px half-width) */
+    transform: translateX(0);
+    width: 30px;
+    height: 30px;
+    background-color: #ff6b6b;
+    color: transparent; /* Hide default text inside button */
+    border: none;
+    border-radius: 50%; /* Make it round */
+    cursor: pointer;
+    z-index: 2001;
+    display: none; /* Hidden initially */
+    box-shadow: 0 3px 0 #c53030, 0 5px 10px rgba(0,0,0,0.3); /* 3D effect */
+    transition: transform 0.1s;
+}
+
+.reset-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #c53030, 0 0 0 rgba(0,0,0,0);
+}
+
+/* "RESET" Label under the button */
+.reset-btn::after {
+    content: 'RESET';
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ff6b6b;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    pointer-events: none;
+}
+
+/* Rocket Exhaust Flame */
+.rocket-exhaust {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 15px;
+    height: 0;
+    background: linear-gradient(to bottom, #fff, #ffeb3b, #ff5722);
+    border-radius: 50%;
+    transition: height 0.2s;
+    opacity: 0;
+    z-index: -1;
+    filter: blur(2px);
+}
+
+.launching .rocket-exhaust {
+    height: 80px;
+    opacity: 1;
+}
+
+.shaking {
+    animation: shake 0.1s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.launching {
+    transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Synced with JS timeout */
+    transform: translateY(-130vh) !important; /* Move further up to ensure off-screen */
+}
+
+/* Explosion Effect */
+.explosion-particle {
+    position: fixed;
+    width: 15px; /* Bigger particles */
+    height: 15px;
+    background-color: #ff6b6b;
+    border-radius: 50%;
+    z-index: 9999; /* Ensure it's on top of everything */
+    pointer-events: none;
+    box-shadow: 0 0 20px #ff6b6b, 0 0 40px #ff6b6b; /* Massive glow */
+}
+
+/* --- Parachuter --- */
+.parachuter {
+    position: fixed;
+    z-index: 2002; /* Ensure he sits on top of the terminal button */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: auto; /* Allow clicking on him */
+    cursor: pointer;
+    transform: translateX(-50%); /* Center on coordinate */
+}
+
+.parachute-canopy {
+    width: 50px;
+    height: 40px;
+    color: var(--accent-color);
+    filter: drop-shadow(0 0 5px var(--accent-color));
+}
+
+.parachuter-guy {
+    margin-top: -5px;
+    color: var(--text-primary);
+    animation: swing 2s infinite ease-in-out alternate;
+    transform-origin: top center;
+    filter: drop-shadow(0 0 2px #000);
+}
+
+/* Speech Bubble */
+.speech-bubble {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    color: #0a192f;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    font-family: 'Space Grotesk', sans-serif;
+    margin-bottom: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.speech-bubble.visible { opacity: 1; }
+
+@keyframes swing {
+    from { transform: rotate(-15deg); }
+    to { transform: rotate(15deg); }
+}
+
+main {
+    /* Prepare for 3D tilt effect from game */
+    transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform-origin: center center;
+}
+
+h1, h2, h3, h4, .logo {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--text-primary);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+ul {
+    list-style: none;
+}
+
+/* --- Utility Classes --- */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.section {
+    padding: 60px 0; /* Reduced from 100px to make site shorter */
+}
+
+.btn-primary {
+    color: var(--accent-color);
+    background-color: transparent;
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    padding: 0.75rem 1.5rem;
+    font-size: 16px;
+    font-family: 'Space Grotesk', monospace;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 2rem;
+}
+
+.btn-primary:hover {
+    background-color: rgba(100, 255, 218, 0.1);
+}
+
+/* --- Navbar --- */
+.navbar {
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    background-color: rgba(10, 25, 47, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    box-shadow: 0 10px 30px -10px rgba(2, 12, 27, 0.7);
+    transition: var(--transition);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo {
+    color: var(--accent-color);
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.nav-links a {
+    font-size: 16px;
+    color: var(--text-primary);
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.nav-links a:hover {
+    color: var(--accent-color);
+}
+
+.btn-nav {
+    border: 1px solid var(--accent-color);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    color: var(--accent-color) !important;
+}
+
+.btn-nav:hover {
+    background-color: rgba(100, 255, 218, 0.1);
+}
+
+/* --- Hero Section --- */
+.hero {
+    min-height: 85vh; /* Reduced from 100vh */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: var(--nav-height);
+    position: relative; /* Needed for absolute positioning of rocket */
+}
+
+.greeting {
+    color: var(--accent-color);
+    font-family: 'Space Grotesk', monospace;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.main-heading {
+    font-size: clamp(40px, 8vw, 80px);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+    position: relative;
+    display: inline-block;
+}
+
+/* Glitch Effect for Name */
+.main-heading:hover {
+    animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+    color: var(--accent-color);
+}
+
+@keyframes glitch {
+    0% { transform: translate(0) }
+    20% { transform: translate(-2px, 2px) }
+    40% { transform: translate(-2px, -2px) }
+    60% { transform: translate(2px, 2px) }
+    80% { transform: translate(2px, -2px) }
+    100% { transform: translate(0) }
+}
+
+.main-heading::after {
+    content: "_";
+    animation: blink 1s infinite;
+}
+
+.sub-heading {
+    font-size: clamp(30px, 6vw, 60px);
+    font-weight: 700;
+    color: var(--text-secondary);
+    line-height: 1.1;
+    margin-top: 10px;
+}
+
+.hero-text {
+    max-width: 540px;
+    margin-top: 20px;
+    font-size: 1.3rem;
+}
+
+/* --- Section Headers --- */
+.section-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 2.5rem;
+    font-weight: 700;
+}
+
+.section-title::after {
+    content: "";
+    display: block;
+    width: 200px;
+    height: 1px;
+    background-color: #233554;
+    margin-left: 20px;
+}
+
+/* --- Skills --- */
+.skills-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(140px, 200px));
+    gap: 0 10px;
+    padding: 0;
+    margin: 20px 0 0 0;
+    overflow: hidden;
+    list-style: none;
+}
+
+.skills-list li {
+    position: relative;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 18px;
+    transition: var(--transition);
+}
+
+.skills-list li:hover {
+    color: var(--accent-color);
+    transform: translateX(10px);
+}
+
+.skills-list li::before {
+    content: "▹";
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+}
+
+/* --- Coming Soon Card --- */
+.coming-soon-card {
+    background-color: var(--card-bg);
+    padding: 3rem;
+    text-align: center;
+    border-radius: 4px;
+    border: 1px solid #233554;
+    transition: var(--transition);
+}
+
+.coming-soon-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+    box-shadow: 0 10px 30px -15px rgba(100, 255, 218, 0.3);
+}
+
+.icon-box {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+.coming-soon-card h4 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.coming-soon-card p {
+    font-size: 1.1rem;
+}
+
+/* --- Contact & Footer --- */
+.contact-section {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 100px;
+}
+
+.section-title-center {
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.contact-text {
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    font-size: 1.2rem;
+}
+
+.btn-large {
+    padding: 1.25rem 3rem;
+}
+
+.contact-details {
+    margin-top: 2rem;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 1.2rem;
+}
+
+.contact-details a:hover {
+    color: var(--accent-color);
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-family: 'Space Grotesk', monospace;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    .section-title::after {
+        width: 100%;
+    }
+}
+
+/* --- Retro Game Window --- */
+.game-trigger {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    height: 50px;
+    padding: 0 25px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 25px;
+    color: var(--accent-color);
+    font-family: 'Space Grotesk', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2000;
+    box-shadow: 0 10px 30px -10px rgba(2, 12, 27, 0.7);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.game-trigger:hover {
+    transform: translateY(-5px);
+    background-color: rgba(100, 255, 218, 0.1);
+    box-shadow: 0 0 20px rgba(100, 255, 218, 0.4);
+}
+
+.retro-window {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 400px;
+    background-color: #0f1520;
+    border: 1px solid var(--accent-color);
+    border-radius: 6px;
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    z-index: 2001;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    overflow: hidden;
+    transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s, transform 0.3s;
+}
+
+.retro-window.active { display: flex; }
+.retro-window.maximized { width: 90vw; height: 90vh; border-radius: 0; }
+.retro-window.minimized { height: 40px; width: 200px; top: auto; bottom: 10px; left: 10px; transform: none; }
+
+.window-bar {
+    background-color: #1d2a3f;
+    padding: 8px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: grab;
+    border-bottom: 1px solid #233554;
+    user-select: none;
+}
+
+.window-title { font-family: 'Space Grotesk', monospace; font-size: 16px; color: var(--accent-color); letter-spacing: 1px; }
+.window-controls { display: flex; gap: 10px; }
+.win-btn { cursor: pointer; color: var(--text-secondary); font-weight: bold; }
+.win-btn:hover { color: #fff; }
+
+.window-content {
+    flex: 1;
+    position: relative;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CRT Scanline Effect */
+.window-content::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+canvas { 
+    background-color: #000; 
+    max-width: 100%; 
+    max-height: 100%; 
+    aspect-ratio: 1 / 1; /* Forces square aspect ratio to prevent stretching */
+    border: 2px solid var(--accent-color); /* Visible border */
+}
+
+.game-overlay {
+    position: absolute;
+    color: var(--accent-color);
+    font-family: 'Space Grotesk', monospace;
+    font-size: 24px;
+    font-weight: bold;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    animation: blink 1s infinite;
+    pointer-events: none;
+}
+
+.game-score {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-family: 'Space Grotesk', monospace;
+    color: var(--accent-color);
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 20;
+    text-shadow: 0 0 5px rgba(0,0,0,0.8);
+}
+
+/* Terminal Guy */
+.terminal-guy-container {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.terminal-msg {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.terminal-guy-container.hidden {
+    opacity: 0;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+/* --- Scroll Reveal Animation --- */
+.hidden-left {
+    opacity: 0;
+    filter: blur(2px);
+    transform: translateX(-50px); /* Reduced distance */
+    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform, opacity, filter;
+}
+
+.hidden-bottom {
+    opacity: 0;
+    filter: blur(2px);
+    transform: translateY(50px); /* Start from bottom */
+    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: transform, opacity, filter;
+}
+
+.show-element {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
+}
+
+/* Staggered Delays for Hero Section & Lists */
+.hero .container > *:nth-child(1) { transition-delay: 100ms; }
+.hero .container > *:nth-child(2) { transition-delay: 300ms; }
+.hero .container > *:nth-child(3) { transition-delay: 500ms; }
+.hero .container > *:nth-child(4) { transition-delay: 700ms; }
+.hero .container > *:nth-child(5) { transition-delay: 900ms; }
+
+.skills-list li:nth-child(odd) { transition-delay: 200ms; }
+.skills-list li:nth-child(even) { transition-delay: 400ms; }
+
+/* --- Hitmark X Effect --- */
+.hitmark {
+    position: fixed;
+    pointer-events: none;
+    width: 20px;
+    height: 20px;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    animation: hitFade 0.3s ease-out forwards;
+}
+
+.hitmark::before, .hitmark::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 100%; height: 2px;
+    background-color: #ff6b6b;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+.hitmark::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+@keyframes hitFade {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+}
+
+.contact-details a {
+    cursor: pointer;
+}
+}
