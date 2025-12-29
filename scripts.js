@@ -1,7 +1,7 @@
 // Navbar hide/show on scroll
 let lastScrollTop = 0;
 const navbar = document.querySelector('.navbar');
-
+alert("hello world");
 window.addEventListener('scroll', function() {
     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     
