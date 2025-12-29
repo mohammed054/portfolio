@@ -221,13 +221,31 @@ ul {
 }
 
 /* Skills Section */
-.skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+.skills-grid-wrapper {
+    display: flex;
     gap: 2rem;
+    overflow-x: auto;
+    padding-top: 1rem; /* Space for hover animation */
+    padding-bottom: 1.5rem; /* Space for scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) var(--bg-secondary);
+}
+
+/* Custom scrollbar for webkit browsers */
+.skills-grid-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+.skills-grid-wrapper::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+.skills-grid-wrapper::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 4px;
 }
 
 .skill-category {
+    flex: 0 0 250px; /* Fixed width for each card */
     background-color: var(--bg-secondary);
     padding: 2rem;
     border-radius: var(--radius);
@@ -648,4 +666,48 @@ canvas {
 
 .terminal-guy-container.hidden {
     opacity: 0;
+}
+
+/* --- Dynamic JS Styles Moved Here --- */
+
+/* Typing Cursor */
+.cursor { color: white; }
+.blinking { animation: blink 1s infinite; }
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+
+/* Parachuter Waving Animation */
+.left-arm { transform-origin: 12px 8px; }
+.right-arm { transform-origin: 12px 8px; }
+.waving .left-arm { animation: wave-left 0.5s infinite alternate; }
+.waving .right-arm { animation: wave-right 0.5s infinite alternate; }
+@keyframes wave-left { from { transform: rotate(0deg); } to { transform: rotate(50deg); } }
+@keyframes wave-right { from { transform: rotate(0deg); } to { transform: rotate(-50deg); } }
+
+/* Chat Box Style */
+.speech-bubble {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 10px;
+    background: white;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+.speech-bubble.visible { opacity: 1; }
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
 }

@@ -35,16 +35,39 @@ document.querySelectorAll('.nav-links a').forEach(link => {
 });
 
 // --- Typing Effect ---
-const textToType = "I build things for the web.";
+const textsToType = ["I build things for the web.", "I'm a web designer.", "I create digital experiences."];
 const typingElement = document.querySelector('.sub-heading');
-let typeIndex = 0;
+let textIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
 
 function typeWriter() {
-    if (typeIndex < textToType.length) {
-        typingElement.innerHTML += textToType.charAt(typeIndex);
-        typeIndex++;
-        setTimeout(typeWriter, 100);
+    const currentText = textsToType[textIndex];
+    const cursor = '<span class="cursor">_</span>';
+
+    if (isDeleting) {
+        typingElement.innerHTML = currentText.substring(0, charIndex - 1) + cursor;
+        charIndex--;
+    } else {
+        typingElement.innerHTML = currentText.substring(0, charIndex + 1) + cursor;
+        charIndex++;
     }
+
+    // Random typing speed for human effect
+    let typeSpeed = isDeleting ? 50 : Math.random() * 100 + 50;
+
+    if (!isDeleting && charIndex === currentText.length) {
+        typeSpeed = 2000;
+        isDeleting = true;
+        typingElement.querySelector('.cursor').classList.add('blinking');
+    } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        textIndex = (textIndex + 1) % textsToType.length;
+        typeSpeed = 500;
+        typingElement.querySelector('.cursor').classList.add('blinking');
+    }
+
+    setTimeout(typeWriter, typeSpeed);
 }
 
 if (typingElement) {
@@ -481,7 +504,9 @@ spaceship.addEventListener('click', () => {
                     <div class="parachuter-guy">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="64" height="64">
                             <circle cx="12" cy="5" r="3" />
-                            <path d="M12 8 L12 16 M12 8 L8 12 M12 8 L16 12 M12 16 L9 21 M12 16 L15 21" />
+                            <path d="M12 8 L12 16 M12 16 L9 21 M12 16 L15 21" />
+                            <path class="left-arm" d="M12 8 L8 12" />
+                            <path class="right-arm" d="M12 8 L16 12" />
                         </svg>
                     </div>
                     <div class="speech-bubble visible">WHEEEEEEEEE!</div>
@@ -489,21 +514,21 @@ spaceship.addEventListener('click', () => {
                 document.body.appendChild(parachuter);
 
                 // Start at explosion center
-                parachuter.style.left = `${centerX}px`;
-                parachuter.style.top = '50px'; // Start at explosion height
-
-                // Force reflow to ensure transition works
-                parachuter.getBoundingClientRect();
+                parachuter.style.position = 'absolute';
+                parachuter.style.left = `${centerX + window.scrollX}px`;
+                parachuter.style.top = `${50 + window.scrollY}px`;
 
                 // Calculate landing spot (Game Trigger Button)
                 const triggerRect = gameTrigger.getBoundingClientRect();
-                const landX = triggerRect.left + triggerRect.width / 2;
-                const landY = triggerRect.top - 90; // Adjusted: Sit ON TOP (Canopy + Guy height offset)
+                const landX = triggerRect.left + triggerRect.width / 2 + window.scrollX;
+                const landY = triggerRect.top + window.scrollY - 120; // Sit on top border
 
                 // Animate Descent
-                parachuter.style.transition = 'top 5s ease-out, left 5s ease-in-out';
-                parachuter.style.left = `${landX}px`;
-                parachuter.style.top = `${landY}px`;
+                setTimeout(() => {
+                    parachuter.style.transition = 'top 5s ease-out, left 5s ease-in-out';
+                    parachuter.style.left = `${landX}px`;
+                    parachuter.style.top = `${landY}px`;
+                }, 50);
 
                 // Drop the parachute after landing
                 setTimeout(() => {
@@ -514,6 +539,10 @@ spaceship.addEventListener('click', () => {
                         canopy.style.transform = 'translateY(20px) scale(0.5)';
                     }
                     
+                    // Wave arms
+                    parachuter.querySelector('.parachuter-guy').classList.add('waving');
+                    setTimeout(() => parachuter.querySelector('.parachuter-guy').classList.remove('waving'), 3000);
+
                     // Say something funny on landing
                     const bubble = parachuter.querySelector('.speech-bubble');
                     bubble.innerText = "Smooth operator.";
