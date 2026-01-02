@@ -800,9 +800,9 @@ canvas {
 }
 
 .show-element {
-    opacity: 1;
-    filter: blur(0);
-    transform: translateX(0);
+    opacity: 1 !important;
+    filter: blur(0) !important;
+    transform: translateX(0) translateY(0) rotate(0deg) !important;
 }
 
 /* Staggered Delays for Hero Section & Lists */

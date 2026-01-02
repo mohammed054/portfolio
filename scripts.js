@@ -394,7 +394,7 @@ const observer = new IntersectionObserver((entries) => {
 }, observerOptions);
 
 const leftElements = document.querySelectorAll('.section-title, .main-heading, .sub-heading, .section-title-center');
-const bottomElements = document.querySelectorAll('.hero-text, .btn-primary, .about-text, .skills-list li, .coming-soon-card, .contact-text, .btn-large, .contact-details');
+const bottomElements = document.querySelectorAll('.hero-text, .btn-primary, .about-text, .skill-category li, .project-card, .blog-card, .contact-text, .btn-large, .contact-details, .timeline-content');
 
 leftElements.forEach((el) => {
     el.classList.add('hidden-left');

@@ -9,7 +9,7 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🚀%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&family=Kalam:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="modern.css">
 </head>
 <body>
@@ -22,7 +22,9 @@
             <ul class="nav-links">
                 <li><a href="#about">About</a></li>
                 <li><a href="#skills">Skills</a></li>
+                <li><a href="#experience">Experience</a></li>
                 <li><a href="#projects">Projects</a></li>
+                <li><a href="#blog">Blog</a></li>
                 <li><a href="#contact" class="btn-nav">Contact</a></li>
             </ul>
             <div class="hamburger">
@@ -53,7 +55,7 @@
                     I am a web developer focused on building accessible, human-centered products.
                     Currently, I'm focused on expanding my stack and learning new technologies.
                 </p>
-                <a href="#contact" class="btn-primary">Get In Touch</a>
+                <a href="#contact" class="btn btn-large">Get In Touch</a>
             </div>
         </section>
 
@@ -64,11 +66,13 @@
                 <div class="content-wrapper">
                     <div class="about-text">
                         <p>
-                            Hi there! I'm <strong>Mohammed</strong>, a Web Developer who loves turning complex problems into simple, beautiful, and intuitive designs. 
-                            My journey began with a curiosity for how things work on the web, and it has evolved into a passion for building <strong>accessible and interactive digital experiences</strong>.
+                            Hey! I'm <strong>Mohammed</strong>, and yeah, I'm a web developer. But let's be real—I'm that guy who spends way too much time tinkering with code, breaking stuff just to see if I can fix it (usually with coffee in hand). My coding journey started back in high school when I accidentally deleted my first website and had to rebuild it from scratch. Lesson learned: backups are important, but so is curiosity!
                         </p>
                         <p>
-                            I believe that code is more than just syntax—it's about creating connections. <strong>Fun fact:</strong> When I'm not squashing bugs or learning a new framework, you can find me hunting for retro games or experimenting with pixel art animations!
+                            What drives me? Making the web a little more fun and accessible for everyone. I've got a soft spot for pixel art (as you can see from my rocket obsession) and retro games—my all-time favorite is Pac-Man, even though I still get eaten by ghosts half the time. When I'm not debugging or learning the latest JavaScript framework, you'll find me doodling UI ideas on napkins or debating whether tabs or spaces are superior (I use both, don't judge).
+                        </p>
+                        <p>
+                            Oh, and I'm based in the UAE, which means my code has a bit of that desert heat in it—passionate, sometimes unpredictable, but always aiming for something awesome. Let's chat about your project—I promise I won't bore you with tech jargon unless you ask!
                         </p>
                     </div>
                 </div>
@@ -110,6 +114,36 @@
             </div>
         </section>
 
+        <!-- Experience Section -->
+        <section id="experience" class="section">
+            <div class="container">
+                <h3 class="section-title">Experience & Journey</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Self-Taught Web Developer</h4>
+                            <span class="timeline-date">2023 - Present</span>
+                            <p>Started with HTML/CSS basics, progressed to full-stack development. Built multiple projects including this portfolio, task dashboards, and browser-based applications.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Middle School Coding Adventures</h4>
+                            <span class="timeline-date">2014 - 2018</span>
+                            <p>First coding experiences in middle school computer labs. Learned basic HTML, CSS, and JavaScript through online tutorials and school projects. Discovered the joy of creating interactive websites and the satisfaction of seeing code come to life on screen.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>Continuous Learning</h4>
+                            <span class="timeline-date">Ongoing</span>
+                            <p>Always exploring new technologies, frameworks, and best practices. Currently focusing on React, Node.js, and modern web development techniques.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
        <section id="projects" class="section">
     <div class="container">
         <h3 class="section-title">Featured Projects</h3>
@@ -118,29 +152,110 @@
                 <!-- Project Card -->
                 <div class="project-card">
                     <h4>Task Dashboard</h4>
-                    <p>A responsive task management dashboard designed to help users organize their daily activities efficiently.</p>
+
+                    <div class="project-details">
+                        <h5>What it is</h5>
+                        <p>A responsive web application that serves as a personal task management dashboard, allowing users to create, organize, and track their daily tasks and activities.</p>
+
+                        <h5>Why it exists</h5>
+                        <p>Built to solve the common problem of scattered task management. Many people struggle with organizing their daily responsibilities across multiple devices and platforms, leading to forgotten tasks and decreased productivity.</p>
+
+                        <h5>Tech used</h5>
+                        <ul>
+                            <li>HTML5 & CSS3 (Flexbox/Grid for responsive layout)</li>
+                            <li>JavaScript (ES6+ features, DOM manipulation)</li>
+                            <li>Local Storage API for data persistence</li>
+                        </ul>
+
+                        <h5>What I learned</h5>
+                        <p>Deepened understanding of state management in vanilla JavaScript, the importance of responsive design for cross-device usability, and user experience considerations for productivity applications. Also gained experience with browser storage APIs for client-side data persistence.</p>
+                    </div>
 
                     <!-- Embed the project -->
-                    <iframe src="https://mohammed054.github.io/task-dashboard/" 
-                            width="100%" 
-                            height="300" 
-                            style="border:1px solid #ccc; border-radius:8px;" 
+                    <iframe src="https://mohammed054.github.io/task-dashboard/"
+                            width="100%"
+                            height="300"
+                            style="border:1px solid #ccc; border-radius:8px;"
                             title="Task Dashboard">
                     </iframe>
-                    
+
                     <div style="margin-top: 15px;">
-                        <a href="https://mohammed054.github.io/task-dashboard/" target="_blank" class="btn-primary" style="margin-right: 10px;">View Project</a>
-                        <a href="https://github.com/mohammed054/task-dashboard" target="_blank" class="btn-primary">View Code</a>
+                        <a href="https://mohammed054.github.io/task-dashboard/" target="_blank" class="btn" style="margin-right: 10px;">View Project</a>
+                        <a href="https://github.com/mohammed054/task-dashboard" target="_blank" class="btn btn-secondary">View Code</a>
                     </div>
                 </div>
 
-                <!-- Coming Soon Card -->
-                <div class="project-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 300px; border: 2px dashed rgba(255,255,255,0.1);">
-                    <h4>Coming Soon</h4>
-                    <p>More exciting projects are in the works.</p>
+                <!-- Project Card -->
+                <div class="project-card">
+                    <h4>Browser-Based OS System</h4>
+
+                    <div class="project-details">
+                        <h5>What it is</h5>
+                        <p>A fully functional simulated operating system that runs entirely in the web browser, complete with a desktop interface, file system navigation, window management, and several built-in applications like a text editor and calculator.</p>
+
+                        <h5>Why it exists</h5>
+                        <p>Created to explore the limits of web technologies and demonstrate advanced JavaScript capabilities. It addresses the challenge of building complex, interactive desktop-like experiences within the constraints of browser environments, pushing the boundaries of what's possible with client-side code.</p>
+
+                        <h5>Tech used</h5>
+                        <ul>
+                            <li>HTML5 & CSS3 (Advanced CSS for window styling and animations)</li>
+                            <li>JavaScript (ES6+ classes, event handling, DOM manipulation)</li>
+                            <li>Canvas API for graphical elements</li>
+                            <li>Local Storage for file system persistence</li>
+                        </ul>
+
+                        <h5>What I learned</h5>
+                        <p>Gained deep insights into complex DOM manipulation, event-driven architecture, and building modular JavaScript applications. Learned about window management systems, drag-and-drop interfaces, and the challenges of simulating OS-level functionality in a browser environment. Also improved skills in canvas rendering and state management for large-scale web applications.</p>
+                    </div>
+
+                    <!-- Embed the project -->
+                    <iframe src="https://mohammed054.github.io/Browser-Based-OS-System/"
+                            width="100%"
+                            height="300"
+                            style="border:1px solid #ccc; border-radius:8px;"
+                            title="Browser-Based OS System">
+                    </iframe>
+
+                    <div style="margin-top: 15px;">
+                        <a href="https://mohammed054.github.io/Browser-Based-OS-System/" target="_blank" class="btn" style="margin-right: 10px;">View Project</a>
+                        <a href="https://github.com/mohammed054/Browser-Based-OS-System" target="_blank" class="btn btn-secondary">View Code</a>
+                    </div>
                 </div>
         </div>
 
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="section">
+            <div class="container">
+                <h3 class="section-title-center">Latest Thoughts</h3>
+                <div class="blog-grid">
+                    <article class="blog-card">
+                        <div class="blog-content">
+                            <h4>My First Year as a Developer</h4>
+                            <p class="blog-meta">January 2024 • 5 min read</p>
+                            <p>Reflecting on the journey from complete beginner to building interactive web applications. The wins, the struggles, and everything I learned along the way...</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </article>
+                    <article class="blog-card">
+                        <div class="blog-content">
+                            <h4>Why I Love Retro Games</h4>
+                            <p class="blog-meta">December 2023 • 3 min read</p>
+                            <p>From Pac-Man to Snake, retro games have shaped my perspective on design, user experience, and the joy of simple, well-crafted interactions...</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </article>
+                    <article class="blog-card">
+                        <div class="blog-content">
+                            <h4>Building This Portfolio</h4>
+                            <p class="blog-meta">November 2023 • 4 min read</p>
+                            <p>The story behind creating this interactive portfolio - the challenges, the fun parts, and the rocket that almost didn't launch...</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </article>
+                </div>
             </div>
         </section>
 
@@ -151,7 +266,7 @@
                 <p class="contact-text">
                     I'm currently looking for new opportunities. Whether you have a question or just want to say hi, my inbox is always open.
                 </p>
-                <a href="mailto:mohammed.hassoun054@gmail.com" class="btn-primary btn-large">Say Hello</a>
+                <a href="mailto:mohammed.hassoun054@gmail.com" class="btn btn-secondary btn-large">Say Hello</a>
                 <div class="contact-details">
                     <div style="margin-bottom: 10px;">
                         <strong style="color: var(--accent-color);">Email:</strong> 
@@ -162,8 +277,11 @@
                         <a href="tel:+971509980352">+971 50 998 0352</a>
                     </div>
                     <div style="margin-top: 10px;">
-                        <strong style="color: var(--accent-color);">GitHub:</strong> 
+                        <strong style="color: var(--accent-color);">GitHub:</strong>
                         <a href="https://github.com/mohammed054" target="_blank">github.com/mohammed054</a>
+                    </div>
+                    <div style="margin-top: 15px; text-align: center;">
+                        <a href="mailto:mohammed.hassoun054@gmail.com" style="margin: 0 10px; color: var(--accent-color);">Email</a>
                     </div>
                 </div>
             </div>
