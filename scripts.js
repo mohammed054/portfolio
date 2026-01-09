@@ -274,8 +274,8 @@ function drawGame() {
             }
         }
         
-        // IMPRESSIVE FEATURE: Reality Link
-        createExplosion(head.x * gridSize, head.y * gridSize, '#ff6b6b');
+        // Subtle explosion effect
+        createExplosion(head.x * gridSize, head.y * gridSize, '#64748b');
         triggerShockwave();
     } else {
         snake.pop();
@@ -307,20 +307,20 @@ function drawGame() {
     setTimeout(drawGame, 100);
 }
 
-// The "Never Done Before" Effect: 3D DOM Manipulation
+// Subtle Shockwave Effect
 function triggerShockwave() {
     const mainContent = document.querySelector('main');
-    
-    // Tilt the website based on snake direction
-    const tiltX = dy * 5; // Tilt up/down
-    const tiltY = dx * -5; // Tilt left/right
-    
-    mainContent.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(0.98)`;
-    
+
+    // Subtle tilt based on snake direction
+    const tiltX = dy * 1; // Very subtle tilt
+    const tiltY = dx * -1;
+
+    mainContent.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+
     // Reset after impact
     setTimeout(() => {
-        mainContent.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
-    }, 150);
+        mainContent.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+    }, 100);
 }
 
 function resetGame() {
@@ -454,44 +454,43 @@ spaceship.addEventListener('click', () => {
                 
                 spaceship.style.display = 'none'; // Hide ship
                 
-                // Create Particle Explosion
-                // 50x MORE PARTICLES as requested
-                for (let i = 0; i < 150; i++) {
+                // Create Particle Explosion (Subtle)
+                for (let i = 0; i < 40; i++) {
                     const particle = document.createElement('div');
                     particle.classList.add('explosion-particle');
                     document.body.appendChild(particle);
-                    
+
                     // Set initial position
                     particle.style.left = `${centerX}px`;
-                    particle.style.top = '50px'; // Lower start point to be visible
-                    
-                    // Randomize colors for realistic fire explosion
-                    const colors = ['#ff6b6b', '#ffeb3b', '#ff5722', '#ffffff'];
+                    particle.style.top = '50px';
+
+                    // Randomize colors
+                    const colors = ['#64748b', '#94a3b8', '#f1f5f9', '#cbd5e1'];
                     particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    
+
                     // Random size
-                    const size = Math.random() * 20 + 5; // Much bigger particles
+                    const size = Math.random() * 10 + 3;
                     particle.style.width = `${size}px`;
                     particle.style.height = `${size}px`;
 
                     // Random velocity
-                    const angle = Math.random() * Math.PI; // Downward semi-circle
-                    const velocity = Math.random() * 20 + 10; // Even faster explosion
-                    const tx = Math.cos(angle) * velocity * 40; // Wider spread
-                    const ty = Math.sin(angle) * velocity * 40;
-                    
+                    const angle = Math.random() * Math.PI;
+                    const velocity = Math.random() * 10 + 5;
+                    const tx = Math.cos(angle) * velocity * 20;
+                    const ty = Math.sin(angle) * velocity * 20;
+
                     // Animate
                     particle.animate([
                         { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
                         { transform: `translate(calc(-50% + ${tx}px), ${ty}px) scale(0)`, opacity: 0 }
                     ], {
-                        duration: 5000 + Math.random() * 3000, // SUPER SLOW (5-8 seconds)
+                        duration: 2000 + Math.random() * 1000,
                         easing: 'cubic-bezier(0, .9, .57, 1)',
                         fill: 'forwards'
                     });
-                    
+
                     // Cleanup
-                    setTimeout(() => particle.remove(), 8000);
+                    setTimeout(() => particle.remove(), 3000);
                 }
 
                 // --- Spawn Cool Guy Parachuter ---
