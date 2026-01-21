@@ -631,66 +631,19 @@ if (emailLink) {
 }
 
 // ============================================
-// NEW PORTFOLIO JAVASCRIPT
+// PORTFOLIO JAVASCRIPT - CLEAN & ESSENTIAL
 // ============================================
 
-// --- Tab Filtering System ---
-const tabButtons = document.querySelectorAll('.tab-btn');
-const projectCards = document.querySelectorAll('.all-projects-grid .project-card');
-
-tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Update active state
-        tabButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const tab = btn.dataset.tab;
-
-        // Filter projects with animation
-        projectCards.forEach((card, index) => {
-            const category = card.dataset.category;
-            const shouldShow = tab === 'all' || category === tab;
-
-            if (shouldShow) {
-                card.classList.remove('hidden');
-                card.style.animation = 'none';
-                card.offsetHeight; // Trigger reflow
-                card.style.animation = `tab-reveal 0.4s ease ${index * 0.05}s forwards`;
-            } else {
-                card.classList.add('hidden');
-                card.style.animation = 'none';
-            }
-        });
-    });
-});
-
-// --- Featured Cards 3D Tilt Effect ---
+// --- Featured Cards Hover Effect ---
 const featuredCards = document.querySelectorAll('.featured-card');
 
 featuredCards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const rotateX = (y - centerY) / 20;
-        const rotateY = (centerX - x) / 20;
-
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
-    });
-
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
-    });
-
-    // Confetti on hover for featured cards
     card.addEventListener('mouseenter', () => {
-        createConfetti(card);
+        card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
     });
 });
+
+// Confetti function kept for easter egg only
 
 // --- Confetti Effect ---
 function createConfetti(element) {
