@@ -1600,6 +1600,42 @@ html {
     100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
 }
 
+/* Background Effects: Binary Rain */
+@keyframes binary-fall {
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.05;
+    }
+    90% {
+        opacity: 0.05;
+    }
+    100% {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+}
+
+/* Background Effects: Floating Code */
+@keyframes float-code {
+    0% {
+        left: -300px;
+        opacity: 0;
+    }
+    5% {
+        opacity: 0.06;
+    }
+    95% {
+        opacity: 0.06;
+    }
+    100% {
+        left: 100vw;
+        opacity: 0;
+    }
+}
+
 
 /* ============================================
    RESPONSIVE ADJUSTMENTS
