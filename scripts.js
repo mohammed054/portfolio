@@ -876,25 +876,6 @@ backToTopBtn.addEventListener('click', () => {
     });
 });
 
-// --- Cursor Follower ---
-const cursorFollower = document.getElementById('cursorFollower');
-
-if (window.innerWidth > 768 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.addEventListener('mousemove', (e) => {
-        cursorFollower.style.left = `${e.clientX}px`;
-        cursorFollower.style.top = `${e.clientY}px`;
-    });
-
-    // Add hover effect on interactive elements
-    const interactiveElements = document.querySelectorAll('a, button, .featured-card, .project-card');
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => cursorFollower.classList.add('hover'));
-        el.addEventListener('mouseleave', () => cursorFollower.classList.remove('hover'));
-    });
-} else {
-    cursorFollower.style.display = 'none';
-}
-
 // --- Enhanced Link Loading States ---
 document.querySelectorAll('.project-link').forEach(link => {
     link.addEventListener('click', function(e) {
@@ -904,11 +885,6 @@ document.querySelectorAll('.project-link').forEach(link => {
             this.classList.add('loading');
         }
     });
-});
-
-// --- Magnetic Effect on Buttons ---
-document.querySelectorAll('.btn, .project-link, .tab-btn').forEach(btn => {
-    btn.classList.add('magnetic');
 });
 
 // --- Page Load Progress Indicator ---
@@ -1082,17 +1058,6 @@ const optimizedScrollHandler = throttle(() => {
 
 window.addEventListener('scroll', optimizedScrollHandler, { passive: true });
 
-// --- Spotlight Effect on Cards ---
-document.querySelectorAll('.spotlight, .featured-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        card.style.setProperty('--x', `${x}%`);
-        card.style.setProperty('--y', `${y}%`);
-    });
-});
-
 // --- Staggered Animation for Grid Items ---
 function staggerAnimation(containerSelector, itemSelector, delay = 100) {
     const container = document.querySelector(containerSelector);
@@ -1257,53 +1222,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
-
-// --- Enhanced Button Ripple Effect ---
-document.querySelectorAll('.btn, .project-link, .tab-btn').forEach(btn => {
-    btn.addEventListener('click', function(e) {
-        const rect = this.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const ripple = document.createElement('span');
-        ripple.style.cssText = `
-            position: absolute;
-            background: rgba(100, 255, 218, 0.3);
-            border-radius: 50%;
-            transform: scale(0);
-            animation: ripple-effect 0.6s ease-out;
-            pointer-events: none;
-            width: 100px;
-            height: 100px;
-            left: ${x - 50}px;
-            top: ${y - 50}px;
-        `;
-
-        this.style.position = 'relative';
-        this.style.overflow = 'hidden';
-        this.appendChild(ripple);
-
-        setTimeout(() => ripple.remove(), 600);
-    });
-});
-
-// Add ripple animation styles
-const rippleStyle = document.createElement('style');
-rippleStyle.textContent = `
-    @keyframes ripple-effect {
-        to {
-            transform: scale(4);
-            opacity: 0;
-        }
-    }
-    @keyframes fade-out {
-        to {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.9);
-        }
-    }
-`;
-document.head.appendChild(rippleStyle);
 
 // --- Scroll Depth Tracking ---
 let maxScrollDepth = 0;
