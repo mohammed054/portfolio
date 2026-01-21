@@ -1092,3 +1092,307 @@ console.log(
     '%cFeel free to explore the code on GitHub!',
     'color: #64ffda; font-size: 12px;'
 );
+
+// ============================================
+// PHASE 4: FINAL REFINEMENTS & OPTIMIZATIONS
+// ============================================
+
+// --- Performance Optimization: Debounce ---
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// --- Performance Optimization: Throttle ---
+function throttle(func, limit) {
+    let inThrottle;
+    return function executedFunction(...args) {
+        if (!inThrottle) {
+            func(...args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+// --- Optimize Scroll Events ---
+const optimizedScrollHandler = throttle(() => {
+    // Existing scroll logic is handled by individual event listeners
+}, 10);
+
+window.addEventListener('scroll', optimizedScrollHandler, { passive: true });
+
+// --- Spotlight Effect on Cards ---
+document.querySelectorAll('.spotlight, .featured-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--x', `${x}%`);
+        card.style.setProperty('--y', `${y}%`);
+    });
+});
+
+// --- Staggered Animation for Grid Items ---
+function staggerAnimation(containerSelector, itemSelector, delay = 100) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+
+    const items = container.querySelectorAll(itemSelector);
+    items.forEach((item, index) => {
+        item.style.animationDelay = `${index * delay}ms`;
+        item.classList.add('stagger-item');
+    });
+}
+
+// Apply staggered animations
+staggerAnimation('.featured-grid', '.featured-card', 100);
+staggerAnimation('.all-projects-grid', '.project-card', 80);
+staggerAnimation('.skills-grid-wrapper', '.skill-category', 100);
+
+// --- Enhanced Card Flip Effect ---
+document.querySelectorAll('.flip').forEach(flipCard => {
+    flipCard.setAttribute('tabindex', '0');
+    flipCard.setAttribute('role', 'button');
+    flipCard.setAttribute('aria-label', 'Flip card');
+
+    flipCard.addEventListener('click', () => {
+        flipCard.querySelector('.flip-inner').classList.toggle('flipped');
+    });
+
+    flipCard.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            flipCard.querySelector('.flip-inner').classList.toggle('flipped');
+        }
+    });
+});
+
+// --- Easter Egg: Konami Code ---
+const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'B'];
+let konamiIndex = 0;
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === konamiCode[konamiIndex]) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+            activateEasterEgg();
+            konamiIndex = 0;
+        }
+    } else {
+        konamiIndex = 0;
+    }
+});
+
+function activateEasterEgg() {
+    console.log('%c🎮 Easter Egg Activated!', 'color: #64ffda; font-size: 24px; font-weight: bold;');
+
+    // Add special class to body
+    document.body.classList.add('easter-egg-active');
+
+    // Create celebration effect
+    for (let i = 0; i < 50; i++) {
+        setTimeout(() => createConfetti(document.body), i * 50);
+    }
+
+    // Show toast message
+    const toast = document.createElement('div');
+    toast.className = 'easter-egg-toast';
+    toast.innerHTML = '🎮 You found the secret! Try the Snake game!';
+    toast.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--bg-card);
+        border: 2px solid var(--accent-color);
+        padding: 1.5rem 2rem;
+        border-radius: var(--radius);
+        z-index: 10000;
+        font-size: 1.2rem;
+        color: var(--text-primary);
+        text-align: center;
+        animation: scale-in 0.3s ease forwards;
+        box-shadow: 0 0 30px rgba(100, 255, 218, 0.3);
+    `;
+    document.body.appendChild(toast);
+
+    // Auto-close toast
+    setTimeout(() => {
+        toast.style.animation = 'fade-out 0.3s ease forwards';
+        setTimeout(() => toast.remove(), 300);
+        document.body.classList.remove('easter-egg-active');
+    }, 3000);
+
+    // Trigger game window if closed
+    const gameTrigger = document.getElementById('gameTrigger');
+    if (gameTrigger) {
+        setTimeout(() => gameTrigger.click(), 500);
+    }
+}
+
+// --- Time-based Greeting ---
+function getTimeBasedGreeting() {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+}
+
+console.log(`%c${getTimeBasedGreeting()}! ☀️`, 'color: #64ffda; font-size: 16px;');
+
+// --- Dynamic Year in Footer ---
+document.querySelectorAll('.footer-meta').forEach(el => {
+    el.innerHTML = el.innerHTML.replace('2024-2026', `2024-${new Date().getFullYear()}`);
+});
+
+// --- Lazy Load Non-Critical Resources ---
+function lazyLoadFont(fontName) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css2?family=${fontName}:wght@400;600&display=swap`;
+    link.media = 'print';
+    link.onload = () => { link.media = 'all'; };
+    document.head.appendChild(link);
+}
+
+// --- Memory Cleanup ---
+window.addEventListener('beforeunload', () => {
+    // Remove event listeners to prevent memory leaks
+    document.querySelectorAll('.featured-card').forEach(card => {
+        card.replaceWith(card.cloneNode(true));
+    });
+});
+
+// --- Feature Detection ---
+const features = {
+    intersectionObserver: 'IntersectionObserver' in window,
+    mutationObserver: 'MutationObserver' in window,
+    webAnimations: 'animate' in document.createElement('div'),
+    touchEvents: 'ontouchstart' in window,
+    reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    highContrast: window.matchMedia('(prefers-contrast: high)').matches,
+    darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches
+};
+
+console.log('🔍 Feature Detection:', features);
+
+// --- Smooth Scroll Duration Control ---
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            const headerOffset = 80;
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+// --- Enhanced Button Ripple Effect ---
+document.querySelectorAll('.btn, .project-link, .tab-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const ripple = document.createElement('span');
+        ripple.style.cssText = `
+            position: absolute;
+            background: rgba(100, 255, 218, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-effect 0.6s ease-out;
+            pointer-events: none;
+            width: 100px;
+            height: 100px;
+            left: ${x - 50}px;
+            top: ${y - 50}px;
+        `;
+
+        this.style.position = 'relative';
+        this.style.overflow = 'hidden';
+        this.appendChild(ripple);
+
+        setTimeout(() => ripple.remove(), 600);
+    });
+});
+
+// Add ripple animation styles
+const rippleStyle = document.createElement('style');
+rippleStyle.textContent = `
+    @keyframes ripple-effect {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+    @keyframes fade-out {
+        to {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+    }
+`;
+document.head.appendChild(rippleStyle);
+
+// --- Scroll Depth Tracking ---
+let maxScrollDepth = 0;
+window.addEventListener('scroll', () => {
+    const scrollPercent = (window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    if (scrollPercent > maxScrollDepth) {
+        maxScrollDepth = scrollPercent;
+    }
+}, { passive: true });
+
+// Log scroll depth on load and unload
+window.addEventListener('load', () => {
+    console.log(`📊 Scroll depth tracking started`);
+});
+
+window.addEventListener('beforeunload', () => {
+    console.log(`📊 Max scroll depth: ${maxScrollDepth.toFixed(1)}%`);
+});
+
+// --- Enhanced Error Handling ---
+window.addEventListener('error', (e) => {
+    console.error('Portfolio Error:', e.message);
+    console.error('File:', e.filename);
+    console.error('Line:', e.lineno);
+});
+
+// --- Disable Right Click on Specific Elements (Optional) ---
+document.querySelectorAll('.game-trigger, #spaceship').forEach(el => {
+    el.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+});
+
+// --- Track Time on Page ---
+let startTime = Date.now();
+window.addEventListener('beforeunload', () => {
+    const timeOnPage = Math.floor((Date.now() - startTime) / 1000);
+    console.log(`⏱️ Time on page: ${Math.floor(timeOnPage / 60)}m ${timeOnPage % 60}s`);
+});
+
+// --- Final Console Message ---
+console.log(
+    '%c✨ Portfolio loaded successfully!',
+    'color: #64ffda; font-size: 16px; font-weight: bold;'
+);
