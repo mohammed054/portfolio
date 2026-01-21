@@ -900,3 +900,195 @@ tabButtons.forEach((btn, index) => {
         }
     });
 });
+
+// ============================================
+// PHASE 3: POLISH & ENHANCEMENTS
+// ============================================
+
+// --- Back to Top Button ---
+const backToTopBtn = document.getElementById('backToTop');
+
+window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 300) {
+        backToTopBtn.classList.add('visible');
+    } else {
+        backToTopBtn.classList.remove('visible');
+    }
+});
+
+backToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+// --- Cursor Follower ---
+const cursorFollower = document.getElementById('cursorFollower');
+
+if (window.innerWidth > 768 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.addEventListener('mousemove', (e) => {
+        cursorFollower.style.left = `${e.clientX}px`;
+        cursorFollower.style.top = `${e.clientY}px`;
+    });
+
+    // Add hover effect on interactive elements
+    const interactiveElements = document.querySelectorAll('a, button, .featured-card, .project-card');
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => cursorFollower.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursorFollower.classList.remove('hover'));
+    });
+} else {
+    cursorFollower.style.display = 'none';
+}
+
+// --- Enhanced Link Loading States ---
+document.querySelectorAll('.project-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        // Don't show loading for same-page links or chrome extensions
+        if (href && !href.startsWith('#') && !href.includes('chrome') && !href.includes('mailto')) {
+            this.classList.add('loading');
+        }
+    });
+});
+
+// --- Magnetic Effect on Buttons ---
+document.querySelectorAll('.btn, .project-link, .tab-btn').forEach(btn => {
+    btn.classList.add('magnetic');
+});
+
+// --- Page Load Progress Indicator ---
+window.addEventListener('load', () => {
+    document.body.classList.add('loaded');
+});
+
+// Add loaded class styles
+const style = document.createElement('style');
+style.textContent = `
+    body.loaded {
+        opacity: 1;
+    }
+    body:not(.loaded) {
+        opacity: 0;
+    }
+`;
+document.head.appendChild(style);
+
+// --- Smooth Scroll for Anchor Links ---
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            e.preventDefault();
+            targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// --- Intersection Observer for Animations ---
+const animateOnScroll = (entries, scrollObserver) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            scrollObserver.unobserve(entry.target);
+        }
+    });
+};
+
+const scrollObserverOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const scrollObserver = new IntersectionObserver(animateOnScroll, scrollObserverOptions);
+
+// Observe elements with animation classes
+document.querySelectorAll('.skill-category, .timeline-item, .blog-card').forEach(el => {
+    scrollObserver.observe(el);
+});
+
+// --- Enhanced Project Card Hover Effects ---
+document.querySelectorAll('.featured-card').forEach((card, index) => {
+    card.setAttribute('data-index', index + 1);
+});
+
+// --- Status Badges for Project Links ---
+document.querySelectorAll('.project-link').forEach(link => {
+    const href = link.getAttribute('href') || '';
+    let badgeClass = 'github';
+
+    if (href.includes('github.io') || href.includes('vercel') || href.includes('netlify')) {
+        badgeClass = 'live';
+    } else if (href.includes('chrome') || href.includes('extension')) {
+        badgeClass = 'extension';
+    }
+});
+
+// --- Keyboard Shortcuts ---
+document.addEventListener('keydown', (e) => {
+    // Ctrl/Cmd + K for search (future enhancement)
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        console.log('Search triggered');
+    }
+
+    // Ctrl/Cmd + Home to go to top
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Home') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Escape to close game window
+    if (e.key === 'Escape') {
+        const retroWindow = document.getElementById('retroWindow');
+        if (retroWindow && retroWindow.classList.contains('active')) {
+            retroWindow.classList.remove('active');
+        }
+    }
+});
+
+// --- Performance Optimization: Lazy Load Images ---
+if ('loading' in HTMLImageElement.prototype) {
+    // Browser supports native lazy loading
+    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        img.removeAttribute('loading');
+    });
+} else {
+    // Fallback for older browsers
+    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+    const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src || img.src;
+                img.removeAttribute('data-src');
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+
+    lazyImages.forEach(img => {
+        imageObserver.observe(img);
+    });
+}
+
+// --- Console Welcome Message ---
+console.log(
+    '%c🚀 Welcome to Mohammed\'s Portfolio!',
+    'color: #64ffda; font-size: 20px; font-weight: bold;'
+);
+console.log(
+    '%cBuilt with ❤️ and ☕ in the UAE',
+    'color: #8892b0; font-size: 14px;'
+);
+console.log(
+    '%cFeel free to explore the code on GitHub!',
+    'color: #64ffda; font-size: 12px;'
+);
