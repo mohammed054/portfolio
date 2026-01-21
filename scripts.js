@@ -738,64 +738,6 @@ window.addEventListener('scroll', () => {
     lastScroll = currentScroll;
 });
 
-// --- Binary Rain Background Effect ---
-function createBinaryRain() {
-    const rain = document.createElement('div');
-    rain.className = 'binary-rain';
-    document.body.appendChild(rain);
-
-    const binaryChars = '01';
-    const columnCount = Math.floor(window.innerWidth / 30);
-
-    for (let i = 0; i < columnCount; i++) {
-        const column = document.createElement('div');
-        column.className = 'binary-column';
-        column.style.left = `${i * 30}px`;
-        column.style.animationDuration = `${Math.random() * 5 + 5}s`;
-        column.style.animationDelay = `${Math.random() * 5}s`;
-
-        // Generate random binary string
-        let binaryStr = '';
-        for (let j = 0; j < 20; j++) {
-            binaryStr += binaryChars[Math.floor(Math.random() * 2)] + ' ';
-        }
-        column.textContent = binaryStr;
-
-        rain.appendChild(column);
-    }
-}
-
-// Create binary rain on load
-if (window.innerWidth > 768) {
-    createBinaryRain();
-}
-
-// --- Floating Code Snippets ---
-function createFloatingCode() {
-    const snippets = [
-        'const awesome = true;',
-        'return "Hello World";',
-        'function build() { }',
-        'npm install react',
-        'git commit -m "awesome"',
-        '{ key: "value" }',
-        'Array.map(x => x * 2)',
-        'useState(0)',
-    ];
-
-    for (let i = 0; i < 5; i++) {
-        const code = document.createElement('div');
-        code.className = 'floating-code';
-        code.textContent = snippets[Math.floor(Math.random() * snippets.length)];
-        code.style.top = `${Math.random() * 80 + 10}%`;
-        code.style.left = `${Math.random() * 80 + 10}%`;
-        code.style.animation = `float-code ${Math.random() * 10 + 15}s linear infinite`;
-        code.style.animationDelay = `${Math.random() * 10}s`;
-        document.body.appendChild(code);
-    }
-}
-
-createFloatingCode();
 
 // --- Copy Email with Feedback ---
 const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
