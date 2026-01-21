@@ -38,12 +38,12 @@ window.addEventListener('scroll', () => {
 
 // --- Mobile Menu Logic ---
 const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
+const navMenu = document.querySelector('.nav-links');
 
 if (hamburger) {
     hamburger.addEventListener('click', () => {
         hamburger.classList.toggle('active');
-        navLinks.classList.toggle('active');
+        navMenu.classList.toggle('active');
     });
 }
 
@@ -51,7 +51,7 @@ if (hamburger) {
 document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => {
         hamburger.classList.remove('active');
-        navLinks.classList.remove('active');
+        navMenu.classList.remove('active');
     });
 });
 
@@ -629,3 +629,274 @@ if (emailLink) {
         });
     });
 }
+
+// ============================================
+// NEW PORTFOLIO JAVASCRIPT
+// ============================================
+
+// --- Tab Filtering System ---
+const tabButtons = document.querySelectorAll('.tab-btn');
+const projectCards = document.querySelectorAll('.all-projects-grid .project-card');
+
+tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Update active state
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const tab = btn.dataset.tab;
+
+        // Filter projects with animation
+        projectCards.forEach((card, index) => {
+            const category = card.dataset.category;
+            const shouldShow = tab === 'all' || category === tab;
+
+            if (shouldShow) {
+                card.classList.remove('hidden');
+                card.style.animation = 'none';
+                card.offsetHeight; // Trigger reflow
+                card.style.animation = `tab-reveal 0.4s ease ${index * 0.05}s forwards`;
+            } else {
+                card.classList.add('hidden');
+                card.style.animation = 'none';
+            }
+        });
+    });
+});
+
+// --- Featured Cards 3D Tilt Effect ---
+const featuredCards = document.querySelectorAll('.featured-card');
+
+featuredCards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+    });
+
+    // Confetti on hover for featured cards
+    card.addEventListener('mouseenter', () => {
+        createConfetti(card);
+    });
+});
+
+// --- Confetti Effect ---
+function createConfetti(element) {
+    const container = document.createElement('div');
+    container.className = 'confetti-container';
+    document.body.appendChild(container);
+
+    const colors = ['#64ffda', '#a78bfa', '#f472b6', '#fbbf24', '#22d3ee'];
+    const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti-piece';
+        confetti.style.left = `${centerX}px`;
+        confetti.style.top = `${centerY}px`;
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+        // Random size
+        const size = Math.random() * 8 + 4;
+        confetti.style.width = `${size}px`;
+        confetti.style.height = `${size}px`;
+
+        // Random shape
+        if (Math.random() > 0.5) {
+            confetti.style.borderRadius = '50%';
+        } else {
+            confetti.style.transform = `rotate(${Math.random() * 45}deg)`;
+        }
+
+        container.appendChild(confetti);
+    }
+
+    setTimeout(() => container.remove(), 3500);
+}
+
+// --- Scroll Reveal for Featured Cards ---
+const featuredGrid = document.querySelector('.featured-grid');
+if (featuredGrid) {
+    const cards = featuredGrid.querySelectorAll('.featured-card');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('reveal');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    cards.forEach(card => {
+        card.classList.add('reveal');
+        revealObserver.observe(card);
+    });
+}
+
+// --- Scroll Progress Bar ---
+const progressBar = document.createElement('div');
+progressBar.className = 'scroll-progress';
+document.body.appendChild(progressBar);
+
+window.addEventListener('scroll', () => {
+    const scrollTop = window.pageYOffset;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (scrollTop / docHeight) * 100;
+    progressBar.style.width = `${scrollPercent}%`;
+});
+
+// --- Navbar Auto-Hide ---
+let lastScroll = 0;
+const navbarEl = document.querySelector('.navbar');
+
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+
+    if (currentScroll > 100) {
+        if (currentScroll > lastScroll) {
+            navbarEl.classList.add('hide');
+            navbarEl.classList.remove('show');
+        } else {
+            navbarEl.classList.remove('hide');
+            navbarEl.classList.add('show');
+        }
+    } else {
+        navbarEl.classList.remove('hide');
+        navbarEl.classList.add('show');
+    }
+
+    lastScroll = currentScroll;
+});
+
+// --- Binary Rain Background Effect ---
+function createBinaryRain() {
+    const rain = document.createElement('div');
+    rain.className = 'binary-rain';
+    document.body.appendChild(rain);
+
+    const binaryChars = '01';
+    const columnCount = Math.floor(window.innerWidth / 30);
+
+    for (let i = 0; i < columnCount; i++) {
+        const column = document.createElement('div');
+        column.className = 'binary-column';
+        column.style.left = `${i * 30}px`;
+        column.style.animationDuration = `${Math.random() * 5 + 5}s`;
+        column.style.animationDelay = `${Math.random() * 5}s`;
+
+        // Generate random binary string
+        let binaryStr = '';
+        for (let j = 0; j < 20; j++) {
+            binaryStr += binaryChars[Math.floor(Math.random() * 2)] + ' ';
+        }
+        column.textContent = binaryStr;
+
+        rain.appendChild(column);
+    }
+}
+
+// Create binary rain on load
+if (window.innerWidth > 768) {
+    createBinaryRain();
+}
+
+// --- Floating Code Snippets ---
+function createFloatingCode() {
+    const snippets = [
+        'const awesome = true;',
+        'return "Hello World";',
+        'function build() { }',
+        'npm install react',
+        'git commit -m "awesome"',
+        '{ key: "value" }',
+        'Array.map(x => x * 2)',
+        'useState(0)',
+    ];
+
+    for (let i = 0; i < 5; i++) {
+        const code = document.createElement('div');
+        code.className = 'floating-code';
+        code.textContent = snippets[Math.floor(Math.random() * snippets.length)];
+        code.style.top = `${Math.random() * 80 + 10}%`;
+        code.style.animationDelay = `${Math.random() * 10}s`;
+        code.style.animationDuration = `${Math.random() * 10 + 15}s`;
+        document.body.appendChild(code);
+    }
+}
+
+createFloatingCode();
+
+// --- Copy Email with Feedback ---
+const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
+
+emailLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const email = link.getAttribute('href').replace('mailto:', '');
+
+        navigator.clipboard.writeText(email).then(() => {
+            // Create feedback element
+            const feedback = document.createElement('div');
+            feedback.className = 'copy-feedback';
+            feedback.textContent = '✓ Email copied!';
+            document.body.appendChild(feedback);
+
+            setTimeout(() => feedback.remove(), 1500);
+        });
+    });
+});
+
+// --- Smooth Reveal for Section Headers ---
+const sectionTitles = document.querySelectorAll('.section-title, .section-title-center');
+
+const titleObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateX(0)';
+        }
+    });
+}, { threshold: 0.2 });
+
+sectionTitles.forEach(title => {
+    titleObserver.observe(title);
+});
+
+// --- Enhanced Button Hover Effects ---
+document.querySelectorAll('.project-link, .tab-btn').forEach(btn => {
+    btn.addEventListener('mouseenter', function() {
+        this.style.transition = 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
+    });
+});
+
+// --- Keyboard Navigation for Tabs ---
+tabButtons.forEach((btn, index) => {
+    btn.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            tabButtons[(index + 1) % tabButtons.length].focus();
+            tabButtons[(index + 1) % tabButtons.length].click();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            tabButtons[(index - 1 + tabButtons.length) % tabButtons.length].focus();
+            tabButtons[(index - 1 + tabButtons.length) % tabButtons.length].click();
+        }
+    });
+});

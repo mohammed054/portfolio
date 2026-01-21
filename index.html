@@ -145,122 +145,256 @@
             </div>
         </section>
 
-       <section id="projects" class="section">
-    <div class="container">
-        <h3 class="section-title">Featured Projects</h3>
+        <section id="projects" class="section">
+            <div class="container">
+                <h3 class="section-title">Featured Projects</h3>
 
-        <div class="projects-grid">
-                <!-- Project Card -->
-                <div class="project-card">
-                    <h4>Task Dashboard</h4>
-
-                    <div class="project-details">
-                        <h5>What it is</h5>
-                        <p>A responsive web application that serves as a personal task management dashboard, allowing users to create, organize, and track their daily tasks and activities.</p>
-
-                        <h5>Why it exists</h5>
-                        <p>Built to solve the common problem of scattered task management. Many people struggle with organizing their daily responsibilities across multiple devices and platforms, leading to forgotten tasks and decreased productivity.</p>
-
-                        <h5>Tech used</h5>
-                        <ul>
-                            <li>HTML5 & CSS3 (Flexbox/Grid for responsive layout)</li>
-                            <li>JavaScript (ES6+ features, DOM manipulation)</li>
-                            <li>Local Storage API for data persistence</li>
-                        </ul>
-
-                        <h5>What I learned</h5>
-                        <p>Deepened understanding of state management in vanilla JavaScript, the importance of responsive design for cross-device usability, and user experience considerations for productivity applications. Also gained experience with browser storage APIs for client-side data persistence.</p>
+                <div class="featured-grid">
+                    <!-- Featured Card 1: School Web Portal -->
+                    <div class="featured-card" data-category="education">
+                        <div class="featured-badge">🎓</div>
+                        <h4>School Web Portal</h4>
+                        <p class="featured-description">Comprehensive school management system with grades, schedules, announcements, and resource management for students, teachers, and admins.</p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Vite</span>
+                            <span class="tech-tag">React Router</span>
+                            <span class="tech-tag">LocalStorage</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://mohammed054.github.io/school-web/#/" target="_blank" class="project-link">
+                                <span class="link-text">Live Demo</span>
+                                <span class="link-icon">↗</span>
+                            </a>
+                            <a href="https://github.com/mohammed054/school-web" target="_blank" class="project-link github-link">
+                                <span class="link-icon">⌥</span>
+                            </a>
+                        </div>
                     </div>
 
-                    <!-- Embed the project -->
-                    <iframe src="https://mohammed054.github.io/task-dashboard/"
-                            width="100%"
-                            height="300"
-                            style="border:1px solid #ccc; border-radius:8px;"
-                            title="Task Dashboard">
-                    </iframe>
+                    <!-- Featured Card 2: BD Project -->
+                    <div class="featured-card" data-category="events">
+                        <div class="featured-badge">🎉</div>
+                        <h4>Birthday Gift Registry</h4>
+                        <p class="featured-description">Fun birthday gift registry app where guests can browse, claim, and manage gift selections with real-time updates and celebrations.</p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Framer Motion</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">PostgreSQL</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://mohammed054.github.io/BD/" target="_blank" class="project-link">
+                                <span class="link-text">Live Demo</span>
+                                <span class="link-icon">↗</span>
+                            </a>
+                            <a href="https://github.com/mohammed054/BD" target="_blank" class="project-link github-link">
+                                <span class="link-icon">⌥</span>
+                            </a>
+                        </div>
+                    </div>
 
-                    <div style="margin-top: 15px;">
-                        <a href="https://mohammed054.github.io/task-dashboard/" target="_blank" class="btn" style="margin-right: 10px;">View Project</a>
-                        <a href="https://github.com/mohammed054/task-dashboard" target="_blank" class="btn btn-secondary">View Code</a>
+                    <!-- Featured Card 3: Quiz Extension -->
+                    <div class="featured-card" data-category="tools">
+                        <div class="featured-badge">📝</div>
+                        <h4>Quiz Extractor Extension</h4>
+                        <p class="featured-description">Chrome extension that extracts quiz questions with full Arabic text preservation, OCR scanning for images, and organized ZIP exports.</p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">Chrome API</span>
+                            <span class="tech-tag">Tesseract.js</span>
+                            <span class="tech-tag">JSZip</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/mohammed054/quiz-extension" target="_blank" class="project-link">
+                                <span class="link-text">View on Chrome</span>
+                                <span class="link-icon">↗</span>
+                            </a>
+                            <a href="https://github.com/mohammed054/quiz-extension" target="_blank" class="project-link github-link">
+                                <span class="link-icon">⌥</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Featured Card 4: Browser-Based OS -->
+                    <div class="featured-card" data-category="systems">
+                        <div class="featured-badge">🖥️</div>
+                        <h4>Browser-Based OS System</h4>
+                        <p class="featured-description">Simulated operating system running entirely in the browser with custom window management, desktop interface, file system, and built-in apps.</p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Vite</span>
+                            <span class="tech-tag">CSS3</span>
+                            <span class="tech-tag">Canvas API</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://mohammed054.github.io/Browser-Based-OS-System/" target="_blank" class="project-link">
+                                <span class="link-text">Live Demo</span>
+                                <span class="link-icon">↗</span>
+                            </a>
+                            <a href="https://github.com/mohammed054/Browser-Based-OS-System" target="_blank" class="project-link github-link">
+                                <span class="link-icon">⌥</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Featured Card 5: Rune Compiler -->
+                    <div class="featured-card" data-category="tools">
+                        <div class="featured-badge">💻</div>
+                        <h4>Rune Language Compiler</h4>
+                        <p class="featured-description">Functional Lisp-like programming language with hygienic macros, full web IDE featuring Monaco Editor, and live REPL execution.</p>
+                        <div class="tech-stack">
+                            <span class="tech-tag">TypeScript</span>
+                            <span class="tech-tag">Chevrotain</span>
+                            <span class="tech-tag">Monaco Editor</span>
+                            <span class="tech-tag">React</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://mohammed054.github.io/compiler/" target="_blank" class="project-link">
+                                <span class="link-text">Live Demo</span>
+                                <span class="link-icon">↗</span>
+                            </a>
+                            <a href="https://github.com/mohammed054/compiler" target="_blank" class="project-link github-link">
+                                <span class="link-icon">⌥</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Project Card -->
-                <div class="project-card">
-                    <h4>Browser-Based OS System</h4>
+                <!-- All Projects Tab Section -->
+                <div class="all-projects-section">
+                    <h3 class="section-title">All Projects</h3>
 
-                    <div class="project-details">
-                        <h5>What it is</h5>
-                        <p>A fully functional simulated operating system that runs entirely in the web browser, complete with a desktop interface, file system navigation, window management, and several built-in applications like a text editor and calculator.</p>
-
-                        <h5>Why it exists</h5>
-                        <p>Created to explore the limits of web technologies and demonstrate advanced JavaScript capabilities. It addresses the challenge of building complex, interactive desktop-like experiences within the constraints of browser environments, pushing the boundaries of what's possible with client-side code.</p>
-
-                        <h5>Tech used</h5>
-                        <ul>
-                            <li>HTML5 & CSS3 (Advanced CSS for window styling and animations)</li>
-                            <li>JavaScript (ES6+ classes, event handling, DOM manipulation)</li>
-                            <li>Canvas API for graphical elements</li>
-                            <li>Local Storage for file system persistence</li>
-                        </ul>
-
-                        <h5>What I learned</h5>
-                        <p>Gained deep insights into complex DOM manipulation, event-driven architecture, and building modular JavaScript applications. Learned about window management systems, drag-and-drop interfaces, and the challenges of simulating OS-level functionality in a browser environment. Also improved skills in canvas rendering and state management for large-scale web applications.</p>
+                    <div class="project-tabs">
+                        <button class="tab-btn active" data-tab="all">
+                            <span class="tab-icon">📁</span>
+                            <span class="tab-text">All</span>
+                        </button>
+                        <button class="tab-btn" data-tab="education">
+                            <span class="tab-icon">🎓</span>
+                            <span class="tab-text">Education</span>
+                        </button>
+                        <button class="tab-btn" data-tab="events">
+                            <span class="tab-icon">🎉</span>
+                            <span class="tab-text">Events</span>
+                        </button>
+                        <button class="tab-btn" data-tab="tools">
+                            <span class="tab-icon">🛠️</span>
+                            <span class="tab-text">Tools</span>
+                        </button>
+                        <button class="tab-btn" data-tab="systems">
+                            <span class="tab-icon">🖥️</span>
+                            <span class="tab-text">Systems</span>
+                        </button>
                     </div>
 
-                    <!-- Embed the project -->
-                    <iframe src="https://mohammed054.github.io/Browser-Based-OS-System/"
-                            width="100%"
-                            height="300"
-                            style="border:1px solid #ccc; border-radius:8px;"
-                            title="Browser-Based OS System">
-                    </iframe>
+                    <div class="projects-grid all-projects-grid">
+                        <!-- School Web Portal -->
+                        <div class="project-card" data-category="education">
+                            <div class="project-icon">🎓</div>
+                            <h4>School Web Portal</h4>
+                            <p>Comprehensive school management system with grades, schedules, announcements, and resource management.</p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">React</span>
+                                <span class="tech-tag">Vite</span>
+                                <span class="tech-tag">React Router</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://mohammed054.github.io/school-web/#/" target="_blank" class="project-link">
+                                    <span class="link-text">Live Demo</span>
+                                    <span class="link-icon">↗</span>
+                                </a>
+                                <a href="https://github.com/mohammed054/school-web" target="_blank" class="project-link github-link">
+                                    <span class="link-icon">⌥</span>
+                                </a>
+                            </div>
+                        </div>
 
-                    <div style="margin-top: 15px;">
-                        <a href="https://mohammed054.github.io/Browser-Based-OS-System/" target="_blank" class="btn" style="margin-right: 10px;">View Project</a>
-                        <a href="https://github.com/mohammed054/Browser-Based-OS-System" target="_blank" class="btn btn-secondary">View Code</a>
+                        <!-- BD Project -->
+                        <div class="project-card" data-category="events">
+                            <div class="project-icon">🎉</div>
+                            <h4>Birthday Gift Registry</h4>
+                            <p>Birthday gift registry app with real-time gift claiming, guest management, and confetti celebrations.</p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">React</span>
+                                <span class="tech-tag">Framer Motion</span>
+                                <span class="tech-tag">Node.js</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://mohammed054.github.io/BD/" target="_blank" class="project-link">
+                                    <span class="link-text">Live Demo</span>
+                                    <span class="link-icon">↗</span>
+                                </a>
+                                <a href="https://github.com/mohammed054/BD" target="_blank" class="project-link github-link">
+                                    <span class="link-icon">⌥</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Quiz Extension -->
+                        <div class="project-card" data-category="tools">
+                            <div class="project-icon">📝</div>
+                            <h4>Quiz Extractor Extension</h4>
+                            <p>Chrome extension extracting quiz content with Arabic support, OCR scanning, and organized ZIP exports.</p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Chrome API</span>
+                                <span class="tech-tag">Tesseract.js</span>
+                                <span class="tech-tag">JSZip</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/mohammed054/quiz-extension" target="_blank" class="project-link">
+                                    <span class="link-text">Chrome Store</span>
+                                    <span class="link-icon">↗</span>
+                                </a>
+                                <a href="https://github.com/mohammed054/quiz-extension" target="_blank" class="project-link github-link">
+                                    <span class="link-icon">⌥</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Rune Compiler -->
+                        <div class="project-card" data-category="tools">
+                            <div class="project-icon">💻</div>
+                            <h4>Rune Language Compiler</h4>
+                            <p>Functional Lisp-like programming language with hygienic macros and full web IDE with Monaco Editor.</p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">TypeScript</span>
+                                <span class="tech-tag">Chevrotain</span>
+                                <span class="tech-tag">Monaco Editor</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://mohammed054.github.io/compiler/" target="_blank" class="project-link">
+                                    <span class="link-text">Live Demo</span>
+                                    <span class="link-icon">↗</span>
+                                </a>
+                                <a href="https://github.com/mohammed054/compiler" target="_blank" class="project-link github-link">
+                                    <span class="link-icon">⌥</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Browser-Based OS -->
+                        <div class="project-card" data-category="systems">
+                            <div class="project-icon">🖥️</div>
+                            <h4>Browser-Based OS System</h4>
+                            <p>Simulated operating system with custom window management, desktop interface, and built-in apps.</p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">React</span>
+                                <span class="tech-tag">Vite</span>
+                                <span class="tech-tag">CSS3</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://mohammed054.github.io/Browser-Based-OS-System/" target="_blank" class="project-link">
+                                    <span class="link-text">Live Demo</span>
+                                    <span class="link-icon">↗</span>
+                                </a>
+                                <a href="https://github.com/mohammed054/Browser-Based-OS-System" target="_blank" class="project-link github-link">
+                                    <span class="link-icon">⌥</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Project Card -->
-                <div class="project-card">
-                    <h4>School Web Portal</h4>
-
-                    <div class="project-details">
-                        <h5>What it is</h5>
-                        <p>A comprehensive school management web application with a modern interface for students, teachers, and administrators. Features include class schedules, grade tracking, announcements, and resource management.</p>
-
-                        <h5>Why it exists</h5>
-                        <p>Built to address the need for a unified digital platform that streamlines school communication and administrative tasks. The goal was to create an intuitive, accessible system that helps educational institutions manage daily operations more efficiently while providing students and parents with easy access to important information.</p>
-
-                        <h5>Tech used</h5>
-                        <ul>
-                            <li>HTML5 & CSS3 (Modern responsive layout)</li>
-                            <li>JavaScript (ES6+ features, dynamic content rendering)</li>
-                            <li>Local Storage for data persistence</li>
-                            <li>Client-side routing for SPA-like navigation</li>
-                        </ul>
-
-                        <h5>What I learned</h5>
-                        <p>Developed skills in building data-driven applications, implementing user authentication patterns, and creating responsive layouts that work across all device sizes. Gained experience in designing user flows for different user roles and building maintainable, scalable JavaScript architecture.</p>
-                    </div>
-
-                    <!-- Embed the project -->
-                    <iframe src="https://mohammed054.github.io/school-web/#/"
-                            width="100%"
-                            height="300"
-                            style="border:1px solid #ccc; border-radius:8px;"
-                            title="School Web Portal">
-                    </iframe>
-
-                    <div style="margin-top: 15px;">
-                        <a href="https://mohammed054.github.io/school-web/#/" target="_blank" class="btn" style="margin-right: 10px;">View Project</a>
-                        <a href="https://github.com/mohammed054/school-web" target="_blank" class="btn btn-secondary">View Code</a>
-                    </div>
-                </div>
-        </div>
-
             </div>
         </section>
 
