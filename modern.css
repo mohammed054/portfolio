@@ -1600,6 +1600,64 @@ html {
     100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
 }
 
+/* Binary Rain Background - Fixed in background */
+.binary-rain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.03;
+    overflow: hidden;
+}
+
+.binary-column {
+    position: absolute;
+    top: -100%;
+    color: var(--accent-color);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    animation: binary-fall linear infinite;
+    white-space: nowrap;
+}
+
+@keyframes binary-fall {
+    to {
+        transform: translateY(200vh);
+    }
+}
+
+/* Floating Code Snippets - Fixed in background */
+.floating-code {
+    position: fixed;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.03;
+    color: var(--accent-color);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+@keyframes float-code {
+    0% {
+        transform: translateX(-100px) translateY(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.03;
+    }
+    90% {
+        opacity: 0.03;
+    }
+    100% {
+        transform: translateX(100vw) translateY(-50px);
+        opacity: 0;
+    }
+}
+
 /* ============================================
    RESPONSIVE ADJUSTMENTS
    ============================================ */

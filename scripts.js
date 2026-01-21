@@ -788,8 +788,9 @@ function createFloatingCode() {
         code.className = 'floating-code';
         code.textContent = snippets[Math.floor(Math.random() * snippets.length)];
         code.style.top = `${Math.random() * 80 + 10}%`;
+        code.style.left = `${Math.random() * 80 + 10}%`;
+        code.style.animation = `float-code ${Math.random() * 10 + 15}s linear infinite`;
         code.style.animationDelay = `${Math.random() * 10}s`;
-        code.style.animationDuration = `${Math.random() * 10 + 15}s`;
         document.body.appendChild(code);
     }
 }
