@@ -52,41 +52,37 @@ if (hamburger) {
     // Create container for background effects
     const bgContainer = document.createElement('div');
     bgContainer.className = 'bg-effects';
-    bgContainer.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-2;overflow:hidden';
+    bgContainer.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-2;overflow:hidden;background:var(--bg-color)';
     document.body.insertBefore(bgContainer, document.body.firstChild);
 
-    // Binary Rain Effect
-    const binaryContainer = document.createElement('div');
-    binaryContainer.className = 'binary-rain';
-    binaryContainer.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%';
-    bgContainer.appendChild(binaryContainer);
-
-    const binaryChars = '01';
-    const columnCount = Math.floor(window.innerWidth / 25);
+    // Binary Rain Effect - Vertical Matrix-style
+    const columnCount = Math.floor(window.innerWidth / 20);
 
     for (let i = 0; i < columnCount; i++) {
         const column = document.createElement('div');
         column.className = 'binary-column';
         column.style.cssText = `
             position: absolute;
-            top: -30px;
-            left: ${i * 25}px;
+            top: -100vh;
+            left: ${i * 20}px;
             color: #64ffda;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
-            opacity: 0.15;
+            font-size: 16px;
+            opacity: 0.25;
             white-space: nowrap;
-            animation: binary-fall ${Math.random() * 3 + 4}s linear infinite;
+            animation: binary-fall ${Math.random() * 2 + 3}s linear infinite;
             animation-delay: ${Math.random() * 5}s;
+            text-shadow: 0 0 5px rgba(100, 255, 218, 0.5);
         `;
 
-        // Generate random binary string
+        // Generate longer random binary string for vertical rain
         let binaryStr = '';
-        for (let j = 0; j < 15; j++) {
-            binaryStr += binaryChars[Math.floor(Math.random() * 2)] + ' ';
+        for (let j = 0; j < 40; j++) {
+            binaryStr += Math.random() > 0.5 ? '1' : '0';
+            if (j % 4 === 0) binaryStr += ' ';
         }
         column.textContent = binaryStr;
-        binaryContainer.appendChild(column);
+        bgContainer.appendChild(column);
     }
 
     // Floating Code Snippets
@@ -111,13 +107,14 @@ if (hamburger) {
             position: absolute;
             color: #64ffda;
             font-family: 'Courier New', monospace;
-            font-size: 13px;
-            opacity: 0.2;
+            font-size: 14px;
+            opacity: 0.35;
             white-space: nowrap;
-            top: ${Math.random() * 70 + 10}%;
-            left: -300px;
-            animation: float-code ${Math.random() * 5 + 8}s linear infinite;
-            animation-delay: ${Math.random() * 8}s;
+            top: ${Math.random() * 60 + 10}%;
+            left: -200px;
+            text-shadow: 0 0 8px rgba(100, 255, 218, 0.6);
+            animation: float-code ${Math.random() * 4 + 6}s linear infinite;
+            animation-delay: ${Math.random() * 6}s;
         `;
         bgContainer.appendChild(code);
     }

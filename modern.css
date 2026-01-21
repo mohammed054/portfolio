@@ -1600,17 +1600,20 @@ html {
     100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
 }
 
-/* Background Effects: Binary Rain */
+/* Background Effects: Binary Rain - Vertical Matrix-style */
 @keyframes binary-fall {
     0% {
-        transform: translateY(-20px);
+        transform: translateY(-100vh);
         opacity: 0;
     }
-    10% {
-        opacity: 0.05;
+    5% {
+        opacity: 0.25;
     }
     90% {
-        opacity: 0.05;
+        opacity: 0.25;
+    }
+    95% {
+        opacity: 0;
     }
     100% {
         transform: translateY(100vh);
@@ -1621,17 +1624,17 @@ html {
 /* Background Effects: Floating Code */
 @keyframes float-code {
     0% {
-        left: -300px;
+        left: -250px;
         opacity: 0;
     }
     5% {
-        opacity: 0.06;
+        opacity: 0.35;
     }
-    95% {
-        opacity: 0.06;
+    90% {
+        opacity: 0.35;
     }
     100% {
-        left: 100vw;
+        left: 110vw;
         opacity: 0;
     }
 }
