@@ -48,12 +48,12 @@ if (hamburger) {
 }
 
 // --- Background Effects: Binary Rain & Floating Code ---
-(function createBackgroundEffects() {
+(function() {
     // Create container for background effects
     const bgContainer = document.createElement('div');
     bgContainer.className = 'bg-effects';
-    bgContainer.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;overflow:hidden';
-    document.body.appendChild(bgContainer);
+    bgContainer.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-2;overflow:hidden';
+    document.body.insertBefore(bgContainer, document.body.firstChild);
 
     // Binary Rain Effect
     const binaryContainer = document.createElement('div');
@@ -69,12 +69,12 @@ if (hamburger) {
         column.className = 'binary-column';
         column.style.cssText = `
             position: absolute;
-            top: -20px;
+            top: -30px;
             left: ${i * 25}px;
-            color: var(--accent-color);
+            color: #64ffda;
             font-family: 'Courier New', monospace;
             font-size: 14px;
-            opacity: 0.05;
+            opacity: 0.15;
             white-space: nowrap;
             animation: binary-fall ${Math.random() * 3 + 4}s linear infinite;
             animation-delay: ${Math.random() * 5}s;
@@ -109,13 +109,13 @@ if (hamburger) {
         code.textContent = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
         code.style.cssText = `
             position: absolute;
-            color: var(--accent-color);
+            color: #64ffda;
             font-family: 'Courier New', monospace;
-            font-size: 12px;
-            opacity: 0.06;
+            font-size: 13px;
+            opacity: 0.2;
             white-space: nowrap;
             top: ${Math.random() * 70 + 10}%;
-            left: -200px;
+            left: -300px;
             animation: float-code ${Math.random() * 5 + 8}s linear infinite;
             animation-delay: ${Math.random() * 8}s;
         `;
