@@ -36,6 +36,22 @@ window.addEventListener('scroll', () => {
     });
 });
 
+// --- Theme Toggle Logic ---
+const themeToggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+
+// Check for saved theme preference or default to dark
+const currentTheme = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', currentTheme);
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        const theme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    });
+}
+
 // --- Mobile Menu Logic ---
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-links');
@@ -46,6 +62,73 @@ if (hamburger) {
         navMenu.classList.toggle('active');
     });
 }
+
+// --- Intersection Observer for Scroll Animations ---
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+        }
+    });
+}, observerOptions);
+
+// Hide loading overlay
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('hidden');
+        }
+    }, 500);
+});
+
+// Observe elements with animation classes
+document.addEventListener('DOMContentLoaded', () => {
+    const animateElements = document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right, .scale-in, .stagger-item');
+    animateElements.forEach(el => observer.observe(el));
+    
+    // Project Filter Logic
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.featured-card');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const filter = button.getAttribute('data-filter');
+            
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Filter projects with animation
+            projectCards.forEach(card => {
+                const category = card.getAttribute('data-category');
+                
+                if (filter === 'all' || category === filter) {
+                    card.classList.remove('hidden');
+                    card.classList.add('visible');
+                    setTimeout(() => {
+                        card.style.position = 'relative';
+                        card.style.pointerEvents = 'all';
+                        card.style.zIndex = '1';
+                    }, 50);
+                } else {
+                    card.classList.remove('visible');
+                    card.classList.add('hidden');
+                    setTimeout(() => {
+                        card.style.position = 'absolute';
+                        card.style.pointerEvents = 'none';
+                        card.style.zIndex = '-1';
+                    }, 50);
+                }
+            });
+        });
+    });
+});
 
 // --- Background Effects: Binary Rain & Floating Code ---
 (function() {

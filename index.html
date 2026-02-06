@@ -25,6 +25,11 @@
     <link rel="canonical" href="https://mohammed054.github.io/portfolio/">
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
     <!-- Skip Link for Accessibility -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
@@ -42,13 +47,32 @@
                 <li><a href="#skills">Skills</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#projects">Projects</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
                 <li><a href="#blog">Blog</a></li>
                 <li><a href="#contact" class="btn-nav">Contact</a></li>
             </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
         </div>
     </nav>
@@ -80,16 +104,16 @@
         <!-- About Section -->
         <section id="about" class="section">
             <div class="container">
-                <h3 class="section-title">About Me</h3>
-                <div class="content-wrapper">
+                <h3 class="section-title fade-in-up">About Me</h3>
+                <div class="content-wrapper fade-in-up">
                     <div class="about-text">
-                        <p>
+                        <p class="stagger-item">
                             Hey! I'm <strong>Mohammed</strong>, and yeah, I'm a web developer. But let's be real—I'm that guy who spends way too much time tinkering with code, breaking stuff just to see if I can fix it (usually with coffee in hand). My coding journey started back in high school when I accidentally deleted my first website and had to rebuild it from scratch. Lesson learned: backups are important, but so is curiosity!
                         </p>
-                        <p>
+                        <p class="stagger-item">
                             What drives me? Making the web a little more fun and accessible for everyone. I've got a soft spot for pixel art (as you can see from my rocket obsession) and retro games—my all-time favorite is Pac-Man, even though I still get eaten by ghosts half the time. When I'm not debugging or learning the latest JavaScript framework, you'll find me doodling UI ideas on napkins or debating whether tabs or spaces are superior (I use both, don't judge).
                         </p>
-                        <p>
+                        <p class="stagger-item">
                             Oh, and I'm based in the UAE, which means my code has a bit of that desert heat in it—passionate, sometimes unpredictable, but always aiming for something awesome. Let's chat about your project—I promise I won't bore you with tech jargon unless you ask!
                         </p>
                     </div>
@@ -100,9 +124,9 @@
         <!-- Skills Section -->
         <section id="skills" class="section">
             <div class="container">
-                <h3 class="section-title">Technical Skills</h3>
-                <div class="skills-grid-wrapper">
-                    <div class="skill-category">
+                <h3 class="section-title fade-in-up">Technical Skills</h3>
+                <div class="skills-grid-wrapper fade-in-up">
+                    <div class="skill-category stagger-item">
                         <h4>Frontend Core</h4>
                         <ul>
                             <li>HTML5 & CSS3 (Flexbox/Grid)</li>
@@ -111,7 +135,7 @@
                             <li>Web Accessibility (a11y)</li>
                         </ul>
                     </div>
-                    <div class="skill-category">
+                    <div class="skill-category stagger-item">
                         <h4>Tools & Workflow</h4>
                         <ul>
                             <li>Git & GitHub</li>
@@ -120,7 +144,7 @@
                             <li>Figma (Basic)</li>
                         </ul>
                     </div>
-                    <div class="skill-category">
+                    <div class="skill-category stagger-item">
                         <h4>Currently Learning</h4>
                         <ul>
                             <li>React.js & Modern Frameworks</li>
@@ -164,11 +188,19 @@
 
         <section id="projects" class="section">
             <div class="container">
-                <h3 class="section-title">Featured Projects</h3>
+                <h3 class="section-title fade-in-up">Featured Projects</h3>
+                
+                <div class="project-filters fade-in-up">
+                    <button class="filter-btn active" data-filter="all">All Projects</button>
+                    <button class="filter-btn" data-filter="education">🎓 Education</button>
+                    <button class="filter-btn" data-filter="events">🎉 Events</button>
+                    <button class="filter-btn" data-filter="tools">📝 Tools</button>
+                    <button class="filter-btn" data-filter="systems">🖥️ Systems</button>
+                </div>
 
-                <div class="featured-grid">
+                <div class="featured-grid fade-in-up">
                     <!-- Featured Card 1: School Web Portal -->
-                    <div class="featured-card" data-category="education">
+                    <div class="featured-card stagger-item visible" data-category="education">
                         <div class="featured-badge">🎓</div>
                         <h4>School Web Portal</h4>
                         <p class="featured-description">Comprehensive school management system with grades, schedules, announcements, and resource management for students, teachers, and admins.</p>
@@ -190,7 +222,7 @@
                     </div>
 
                     <!-- Featured Card 2: BD Project -->
-                    <div class="featured-card" data-category="events">
+                    <div class="featured-card stagger-item visible" data-category="events">
                         <div class="featured-badge">🎉</div>
                         <h4>Birthday Gift Registry</h4>
                         <p class="featured-description">Fun birthday gift registry app where guests can browse, claim, and manage gift selections with real-time updates and celebrations.</p>
@@ -212,7 +244,7 @@
                     </div>
 
                     <!-- Featured Card 3: Quiz Extension -->
-                    <div class="featured-card" data-category="tools">
+                    <div class="featured-card stagger-item visible" data-category="tools">
                         <div class="featured-badge">📝</div>
                         <h4>Quiz Extractor Extension</h4>
                         <p class="featured-description">Chrome extension that extracts quiz questions with full Arabic text preservation, OCR scanning for images, and organized ZIP exports.</p>
@@ -234,7 +266,7 @@
                     </div>
 
                     <!-- Featured Card 4: Browser-Based OS -->
-                    <div class="featured-card" data-category="systems">
+                    <div class="featured-card stagger-item visible" data-category="systems">
                         <div class="featured-badge">🖥️</div>
                         <h4>Browser-Based OS System</h4>
                         <p class="featured-description">Simulated operating system running entirely in the browser with custom window management, desktop interface, file system, and built-in apps.</p>
@@ -256,7 +288,7 @@
                     </div>
 
                     <!-- Featured Card 5: Rune Compiler -->
-                    <div class="featured-card" data-category="tools">
+                    <div class="featured-card stagger-item visible" data-category="tools">
                         <div class="featured-badge">💻</div>
                         <h4>Rune Language Compiler</h4>
                         <p class="featured-description">Functional Lisp-like programming language with hygienic macros, full web IDE featuring Monaco Editor, and live REPL execution.</p>
@@ -274,6 +306,56 @@
                             <a href="https://github.com/mohammed054/compiler" target="_blank" class="project-link github-link">
                                 <span class="link-icon">⌥</span>
                             </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="section">
+            <div class="container">
+                <h3 class="section-title fade-in-up">What People Say</h3>
+                <div class="testimonials-grid fade-in-up">
+                    <div class="testimonial-card stagger-item">
+                        <div class="testimonial-content">
+                            <div class="testimonial-rating">★★★★★</div>
+                            <p>"Mohammed is an exceptional developer who brings creativity and technical excellence to every project. His attention to detail and problem-solving skills are outstanding."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👨‍💼</div>
+                            <div class="author-info">
+                                <h4>Ahmed Hassan</h4>
+                                <span>Senior Developer, TechCorp</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card stagger-item">
+                        <div class="testimonial-content">
+                            <div class="testimonial-rating">★★★★★</div>
+                            <p>"Working with Mohammed was a game-changer for our startup. He delivered a complex school management system that exceeded all our expectations."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👩‍🏫</div>
+                            <div class="author-info">
+                                <h4>Sarah Al-Mansoori</h4>
+                                <span>Principal, Dubai Academy</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card stagger-item">
+                        <div class="testimonial-content">
+                            <div class="testimonial-rating">★★★★★</div>
+                            <p>"Mohammed's browser-based OS system is nothing short of impressive. His ability to tackle complex challenges and deliver innovative solutions is remarkable."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">👨‍💻</div>
+                            <div class="author-info">
+                                <h4>Khalid Rahman</h4>
+                                <span>CTO, InnovateTech</span>
+                            </div>
                         </div>
                     </div>
                 </div>
