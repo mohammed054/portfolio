@@ -1,6 +1,6 @@
-# Mohammed's Ultra Web Portfolio 🚀
+# Mohammed's  Web Portfolio 🚀
 
-**Live Demo:** [http://localhost:8000](http://localhost:8000) (when running locally)
+**Live Demo:** [https://mohammed054.github.io/portfolio/](https://mohammed054.github.io/portfolio/) 
 
 Hey there! I'm **Mohammed**, a self-taught web developer who loves turning complex problems into simple, beautiful, and interactive solutions. This isn't just a portfolio—it's a playground of code where pixels meet personality.
 
