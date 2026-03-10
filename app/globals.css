@@ -20,6 +20,12 @@
   --text-secondary:     #7A89A8;
   --text-muted:         #3D4A66;
 
+  --success:            #22C55E;
+  --warning:            #F59E0B;
+  --danger:             #EF4444;
+  --success-12:         rgba(34, 197, 94, 0.12);
+  --success-25:         rgba(34, 197, 94, 0.25);
+
   /* Derived alphas */
   --accent1-10:  rgba(79, 142, 247, 0.10);
   --accent1-20:  rgba(79, 142, 247, 0.20);

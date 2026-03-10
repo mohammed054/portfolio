@@ -12,16 +12,15 @@
     "@react-spring/three": "^9.7.3",
     "@react-three/drei": "^9.105.6",
     "@react-three/fiber": "^8.16.8",
-    "@react-three/offscreen": "^0.3.2",
+    "detect-gpu": "^5.0.43",
     "framer-motion": "^11.3.19",
     "gsap": "^3.12.5",
-    "next": "14.2.5",
+    "lottie-react": "^2.4.0",
+    "next": "^14.2.35",
     "react": "^18",
     "react-dom": "^18",
-    "three": "^0.166.1",
-    "detect-gpu": "^5.0.43",
-    "lottie-react": "^2.4.0",
-    "resend": "^3.4.0"
+    "resend": "^3.4.0",
+    "three": "^0.166.1"
   },
   "devDependencies": {
     "@types/node": "^20",

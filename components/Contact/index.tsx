@@ -101,7 +101,7 @@ export default function Contact() {
   const inputStyle = (field: string): React.CSSProperties => ({
     width:'100%',
     background:'var(--background)',
-    border:`1px solid ${errors[field] ? '#EF4444' : 'var(--border)'}`,
+    border:`1px solid ${errors[field] ? 'var(--danger)' : 'var(--border)'}`,
     borderRadius:'12px',
     padding:'12px var(--sp-4)',
     fontFamily:'var(--font-body)', fontWeight:400,
@@ -180,7 +180,7 @@ export default function Contact() {
                 <span style={{
                   position:'absolute', inset:0,
                   borderRadius:'50%',
-                  background: personal.available ? '#22C55E' : '#F59E0B',
+                  background: personal.available ? 'var(--success)' : 'var(--warning)',
                   animation:'pulseDot 2s ease-in-out infinite',
                   opacity:0.7,
                 }} aria-hidden="true"/>
@@ -188,7 +188,7 @@ export default function Contact() {
                 <span style={{
                   display:'block', width:'12px', height:'12px',
                   borderRadius:'50%',
-                  background: personal.available ? '#22C55E' : '#F59E0B',
+                  background: personal.available ? 'var(--success)' : 'var(--warning)',
                   position:'relative',
                 }}/>
               </span>
@@ -277,8 +277,8 @@ export default function Contact() {
                     width:'56px', height:'56px', borderRadius:'50%',
                     display:'flex', alignItems:'center', justifyContent:'center',
                     fontSize:'var(--t-24)',
-                    background:'rgba(34,197,94,0.12)',
-                    border:'1px solid rgba(34,197,94,0.25)',
+                    background:'var(--success-12)',
+                    border:'1px solid var(--success-25)',
                     marginBottom:'var(--sp-4)',
                   }}>
                     ✓
@@ -308,7 +308,7 @@ export default function Contact() {
                     {errors.name && (
                       <p style={{
                         fontFamily:'var(--font-mono)', fontSize:'var(--t-12)',
-                        color:'#EF4444', marginTop:'var(--sp-1)',
+                        color:'var(--danger)', marginTop:'var(--sp-1)',
                       }}>
                         {errors.name}
                       </p>
@@ -329,7 +329,7 @@ export default function Contact() {
                     {errors.email && (
                       <p style={{
                         fontFamily:'var(--font-mono)', fontSize:'var(--t-12)',
-                        color:'#EF4444', marginTop:'var(--sp-1)',
+                        color:'var(--danger)', marginTop:'var(--sp-1)',
                       }}>
                         {errors.email}
                       </p>
@@ -350,7 +350,7 @@ export default function Contact() {
                     {errors.message && (
                       <p style={{
                         fontFamily:'var(--font-mono)', fontSize:'var(--t-12)',
-                        color:'#EF4444', marginTop:'var(--sp-1)',
+                        color:'var(--danger)', marginTop:'var(--sp-1)',
                       }}>
                         {errors.message}
                       </p>
@@ -387,8 +387,8 @@ export default function Contact() {
                         >
                           <span style={{
                             width:'14px', height:'14px',
-                            border:'2px solid rgba(8,11,20,.25)',
-                            borderTopColor:'rgba(8,11,20,0.9)',
+                            border:'2px solid var(--border)',
+                            borderTopColor:'var(--background)',
                             borderRadius:'50%',
                             animation:'spin 0.7s linear infinite',
                             display:'block',
