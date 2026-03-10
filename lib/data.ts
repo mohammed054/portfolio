@@ -1,159 +1,178 @@
-export const personal = {
-  name: 'Mohammed Al-Sayegh',
-  initials: 'MS',
-  tagline: 'Full Stack Developer · AI-Driven Product Builder',
-  headline: 'Building thoughtful\ndigital systems.',
-  subline:
-    'I design and engineer performant web platforms that blend clean UX, robust backend architecture, and modern interactive visuals.',
-  email: 'mohammed.dev@example.com',
-  location: 'UAE',
-  available: true,
-  availabilityText: 'Available for freelance / full-time',
-  social: {
-    github: 'https://github.com/mohammed',
-    linkedin: 'https://linkedin.com/in/mohammed',
-    twitter: 'https://twitter.com/mohammed',
-  },
+export type SocialLink = {
+  label: string
+  href: string
 }
 
-export const timeline = [
+export type TimelineItem = {
+  id: string
+  year: string
+  title: string
+  details: string
+  tags: string[]
+}
+
+export type SkillNode = {
+  name: string
+  years: number
+  description: string
+  proficiency: number
+}
+
+export type SkillDomain = {
+  id: string
+  label: string
+  colorVar: string
+  nodes: SkillNode[]
+}
+
+export type Project = {
+  id: string
+  title: string
+  tags: string[]
+  summary: string
+  stack: string[]
+  problem: string
+  solution: string
+  results: string[]
+  image: string
+  liveUrl: string
+  githubUrl: string
+}
+
+export type Testimonial = {
+  id: string
+  quote: string
+  name: string
+  role: string
+  link: string
+}
+
+export const profile = {
+  name: 'Mohammed Hassoun',
+  initials: 'MH',
+  eyebrow: 'Full Stack Engineer · AI Specialist',
+  subline: 'I build things that matter.',
+  heroCta: 'Explore My Universe →',
+  contactHeadline: "Let's build something.",
+  contactSubline: 'Reach out to discuss your next project or collaboration.',
+  availability: 'Available for freelance / full-time',
+  available: true,
+  email: 'mohammed@example.com',
+  socials: [
+    { label: 'GitHub', href: 'https://github.com/' },
+    { label: 'LinkedIn', href: 'https://linkedin.com/' },
+    { label: 'Twitter/X', href: 'https://x.com/' },
+  ] satisfies SocialLink[],
+}
+
+export const timeline: TimelineItem[] = [
   {
-    id: 1,
+    id: '2023-education',
     year: '2023',
-    month: 'Sep',
-    role: 'Education',
-    company: 'High School · UAE',
-    companyUrl: '#',
-    summary: 'Focused on computer science and AI foundations while building first production-ready web projects.',
-    tags: ['CS', 'AI', 'Algorithms'],
-    color: 'var(--accent1)',
+    title: 'Education',
+    details: 'High school in UAE with a strong focus on computer science and AI fundamentals.',
+    tags: ['CS', 'AI'],
   },
   {
-    id: 2,
+    id: '2024-skills',
     year: '2024',
-    month: 'Jun',
-    role: 'Skills Expansion',
-    company: 'Independent Study',
-    companyUrl: '#',
-    summary: 'Deepened practical expertise in React, Express, MongoDB, Three.js, GSAP, and Framer Motion.',
+    title: 'Skills',
+    details: 'Deepened practical expertise in React, Express, MongoDB, Three.js, GSAP, and Framer Motion.',
     tags: ['React', 'Express', 'MongoDB', 'Three.js'],
-    color: 'var(--accent2)',
   },
   {
-    id: 3,
+    id: '2025-signature',
     year: '2025',
-    month: 'Mar',
-    role: 'Signature Project',
-    company: 'Edu Bridge Platform',
-    companyUrl: '#',
-    summary: 'Built a full-stack school operations platform with AI-assisted workflows and 3D analytics dashboards.',
-    tags: ['Next.js', 'Express', 'MongoDB', 'GSAP', 'AI'],
-    color: 'var(--accent1)',
+    title: 'Signature Project',
+    details: 'Built Edu Bridge, a full-stack school operations platform with analytics and AI-assisted workflows.',
+    tags: ['Edu Bridge', 'Full Stack', 'AI'],
   },
   {
-    id: 4,
+    id: '2025-growth',
     year: '2025+',
-    month: 'Now',
-    role: 'Growth',
-    company: 'Open Source & Product Work',
-    companyUrl: '#',
-    summary: 'Continuing to ship impactful products and contribute to developer-focused tools and AI systems.',
-    tags: ['Open Source', 'Product', 'AI'],
-    color: 'var(--accent2)',
+    title: 'Growth',
+    details: 'Continuing to build impactful products, tools, and open-source contributions.',
+    tags: ['Open Source', 'Product'],
   },
 ]
 
-export const skillDomains = [
+export const skillDomains: SkillDomain[] = [
   {
     id: 'engineering',
     label: 'Engineering / Dev',
-    color: 'var(--accent1)',
-    skills: [
-      { name: 'React / Next.js', years: 4, proficiency: 90, tools: ['Redux', 'Zustand', 'RTK'] },
-      { name: 'Express', years: 3, proficiency: 87, tools: ['REST APIs', 'Validation'] },
-      { name: 'MongoDB', years: 3, proficiency: 84, tools: ['Aggregation', 'Indexes'] },
+    colorVar: 'var(--accent1)',
+    nodes: [
+      { name: 'React', years: 4, description: 'Component architecture and state modeling.', proficiency: 88 },
+      { name: 'Express', years: 3, description: 'REST APIs and middleware design.', proficiency: 86 },
+      { name: 'MongoDB', years: 3, description: 'Schema design and performance tuning.', proficiency: 84 },
     ],
   },
   {
     id: 'three',
     label: '3D / Animations',
-    color: 'var(--accent2)',
-    skills: [
-      { name: 'Three.js', years: 2, proficiency: 82, tools: ['R3F', 'Drei'] },
-      { name: 'GSAP', years: 3, proficiency: 88, tools: ['ScrollTrigger', 'Timelines'] },
-      { name: 'Framer Motion', years: 3, proficiency: 85, tools: ['Variants', 'Layout'] },
+    colorVar: 'var(--accent2)',
+    nodes: [
+      { name: 'Three.js', years: 2, description: 'Interactive, performant 3D scenes.', proficiency: 80 },
+      { name: 'GSAP', years: 3, description: 'Scroll-driven cinematic interactions.', proficiency: 87 },
+      { name: 'Framer Motion', years: 3, description: 'Accessible UI motion systems.', proficiency: 86 },
     ],
   },
   {
     id: 'ai',
     label: 'AI / Logic',
-    color: 'var(--accent1)',
-    skills: [
-      { name: 'AI Workflows', years: 2, proficiency: 80, tools: ['Prompt Design', 'Evaluation'] },
-      { name: 'Problem Solving', years: 5, proficiency: 90, tools: ['Algorithms', 'Optimization'] },
+    colorVar: 'var(--accent1)',
+    nodes: [
+      { name: 'AI Algorithms', years: 2, description: 'Applied model workflows and evaluation.', proficiency: 78 },
+      { name: 'Problem Solving', years: 5, description: 'Structured technical reasoning.', proficiency: 90 },
     ],
   },
   {
     id: 'design',
     label: 'Design / UX',
-    color: 'var(--accent2)',
-    skills: [
-      { name: 'Layout Systems', years: 4, proficiency: 86, tools: ['Grid', 'Typography'] },
-      { name: 'Accessibility', years: 3, proficiency: 84, tools: ['AA Contrast', 'Keyboard UX'] },
+    colorVar: 'var(--accent2)',
+    nodes: [
+      { name: 'Layout', years: 4, description: 'Grid systems and visual hierarchy.', proficiency: 84 },
+      { name: 'Accessibility', years: 3, description: 'AA contrast and keyboard-first UX.', proficiency: 86 },
     ],
   },
 ]
 
-export const projects = [
+export const projects: Project[] = [
   {
-    id: 1,
-    tag: 'Web App',
+    id: 'edu-bridge',
     title: 'Edu Bridge',
-    summary: 'Smart school platform improving administration, teaching workflows, and performance tracking.',
-    description:
-      'A unified school management platform built as a full-stack product with modern UX, automation, and analytics.',
-    problem: 'Traditional school management workflows were fragmented, manual, and difficult to scale.',
-    solution:
-      'Designed a central platform with role-based workflows, reporting dashboards, and AI-assisted recommendations.',
-    results: ['Reduced manual entry by 60%', 'Improved admin efficiency by 45%', 'Faster reporting turnaround'],
+    tags: ['Web App', 'Full Stack'],
+    summary: 'Smart school platform enhancing admin and teaching workflows.',
     stack: ['React', 'Express', 'MongoDB', 'Three.js', 'GSAP'],
-    color: 'var(--accent1)',
-    accentBg: 'var(--accent1-10)',
+    problem: 'Traditional school management was slow, fragmented, and data-poor.',
+    solution: 'Built a unified platform with AI-assisted workflows and data-rich dashboards.',
+    results: ['Reduced manual data entry by 60%', 'Improved admin efficiency by 45%'],
+    image: '/dist/images/wallpaper.png',
     liveUrl: '#',
     githubUrl: '#',
-    featured: true,
   },
 ]
 
-export const testimonials = [
+export const testimonials: Testimonial[] = [
   {
-    id: 1,
-    quote:
-      'Mohammed built an outstanding school management platform — efficient, intuitive, and AI-powered. Highly recommended.',
+    id: 'sara',
     name: 'Sara Al-Mansoor',
     role: 'Principal',
-    company: 'Edu Bridge Partner School',
-    linkedIn: '#',
-    featured: true,
+    quote: 'Mohammed built an outstanding school management platform — efficient, intuitive, and AI-powered. Highly recommended.',
+    link: '#',
   },
   {
-    id: 2,
-    quote:
-      'The interface is simple but powerful. It drastically improved how we manage classes and track student performance.',
+    id: 'ayesha',
     name: 'Ayesha Khan',
     role: 'Teacher',
-    company: 'Edu Bridge Partner School',
-    linkedIn: '#',
-    featured: false,
+    quote: 'The interface is simple but powerful. It drastically improved how we manage classes and track student performance.',
+    link: '#',
   },
   {
-    id: 3,
-    quote:
-      'From frontend to backend, the platform is robust. Mohammed’s code is clean, performant, and easy to maintain.',
+    id: 'omar',
     name: 'Omar Al-Farsi',
     role: 'IT Manager',
-    company: 'Edu Bridge Partner School',
-    linkedIn: '#',
-    featured: false,
+    quote: 'From frontend to backend, the platform is robust. Mohammed’s code is clean, performant, and easy to maintain.',
+    link: '#',
   },
 ]

@@ -1,61 +1,51 @@
 'use client'
-import { useState } from 'react'
-import dynamic from 'next/dynamic'
 
-// Loader (critical path — no lazy loading)
-import Loader from '@/components/Loader'
+import { useEffect, useRef, useState } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Loader from '@/components/load'
+import Hero from '@/components/hero'
+import About from '@/components/about'
+import Skills from '@/components/skills'
+import Projects from '@/components/projects'
+import Testimonials from '@/components/testimonials'
+import Contact from '@/components/contact'
 
-// Navigation
-import Navigation from '@/components/Navigation'
+gsap.registerPlugin(ScrollTrigger)
 
-// Sections — lazy loaded for performance
-const Hero = dynamic(() => import('@/components/Hero'), {
-  ssr: false,
-  loading: () => <div className="h-screen bg-bg" aria-hidden="true" />,
-})
+export default function Page() {
+  const [ready, setReady] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
 
-const About = dynamic(() => import('@/components/About'), {
-  loading: () => <div className="h-96 bg-bg" aria-hidden="true" />,
-})
+  useEffect(() => {
+    if (!ready) return
+    const ctx = gsap.context(() => {
+      const ids = ['about', 'skills', 'projects', 'contact']
+      ids.forEach((id) => {
+        ScrollTrigger.create({
+          trigger: `#${id}`,
+          start: 'top top',
+          end: '+=120%',
+          pin: true,
+          scrub: 1,
+        })
+      })
+    }, rootRef)
+    return () => ctx.revert()
+  }, [ready])
 
-const Skills = dynamic(() => import('@/components/Skills'), {
-  loading: () => <div className="h-96 bg-bg" aria-hidden="true" />,
-})
-
-const Projects = dynamic(() => import('@/components/Projects'), {
-  loading: () => <div className="h-96 bg-bg" aria-hidden="true" />,
-})
-
-const Testimonials = dynamic(() => import('@/components/Testimonials'), {
-  loading: () => <div className="h-96 bg-bg" aria-hidden="true" />,
-})
-
-const Contact = dynamic(() => import('@/components/Contact'), {
-  loading: () => <div className="h-96 bg-bg" aria-hidden="true" />,
-})
-
-export default function Home() {
-  const [loaderDone, setLoaderDone] = useState(false)
+  const handleExplore = () => {
+    const target = document.getElementById('about')
+    if (!target) return
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   return (
-    <main>
-      {/* Loading screen */}
-      <Loader onComplete={() => setLoaderDone(true)} />
-
-      {/* Site content — rendered after loader */}
-      {loaderDone && (
+    <main ref={rootRef}>
+      <Loader onDone={() => setReady(true)} />
+      {ready && (
         <>
-          <Navigation />
-
-          {/* Skip nav for accessibility */}
-          <a
-            href="#about"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 glass px-4 py-2 rounded-lg text-accent font-dm text-sm"
-          >
-            Skip to content
-          </a>
-
-          <Hero />
+          <Hero onExplore={handleExplore} />
           <About />
           <Skills />
           <Projects />
