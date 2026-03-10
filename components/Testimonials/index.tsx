@@ -3,60 +3,107 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { testimonials } from '@/lib/data'
 
-type Testimonial = typeof testimonials[0]
+/**
+ * Testimonials — Design System compliance:
+ * Colors:  surface, border, accent1, accent-glow, text-primary, text-secondary, text-muted
+ * Type:    Syne 500 for featured quote (t-24); Syne 700 name; DM Sans 400 t-14 supporting;
+ *          JetBrains Mono t-12 for role/company
+ * Motion:  dur-slow (600ms) stagger; ease-enter; 5–10px Y float on scroll (spec)
+ * Spacing: sp-* only; section pad 96–128px
+ */
 
-/* ── Quote Mark SVG ─────────────────────────────────────── */
-function QuoteMark({ className = '' }: { className?: string }) {
+type T = typeof testimonials[0]
+
+/* Decorative large quote mark SVG */
+function QuoteSVG({ className = '', color = 'var(--accent1)' }: { className?: string; color?: string }) {
   return (
-    <svg
-      viewBox="0 0 40 32"
-      className={className}
-      aria-hidden="true"
-      fill="none"
-    >
+    <svg viewBox="0 0 48 36" className={className} fill="none" aria-hidden="true"
+      style={{ width:'48px', height:'36px' }}>
       <path
-        d="M0 32V20.5C0 13.833 1.833 8.583 5.5 4.75 9.167.917 14.167 0 20.5 0v5.5c-3.5 0-6.083.917-7.75 2.75S10.5 12.583 10.5 15.5h9.5V32H0zm21.5 0V20.5C21.5 13.833 23.333 8.583 27 4.75 30.667.917 35.667 0 42 0v5.5c-3.5 0-6.083.917-7.75 2.75S32 12.583 32 15.5h9.5V32H21.5z"
-        fill="currentColor"
+        d="M0 36V23.5c0-7.667 2.083-13.333 6.25-17S16.667 0 23.5 0v6c-3.5 0-6.25 1-8.25 3S12 13.167 12 16.5h11V36H0zm26 0V23.5C26 15.833 28.083 10.167 32.25 6.5S42.667 0 49.5 0v6c-3.5 0-6.25 1-8.25 3s-3.25 4.167-3.25 7.5H49V36H26z"
+        fill={color}
+        opacity="0.18"
       />
     </svg>
   )
 }
 
-/* ── Featured Testimonial ─────────────────────────────── */
-function FeaturedTestimonial({ item, inView }: { item: Testimonial; inView: boolean }) {
+/* ── Featured testimonial ───────────────────────────── */
+function Featured({ item, inView }: { item: T; inView: boolean }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="relative glass rounded-3xl p-10 md:p-14 text-center glow-border mb-10"
+      initial={{ opacity:0, y:40 }}
+      animate={inView ? { opacity:1, y:0 } : {}}
+      transition={{ duration:0.6, ease:[0.22,1,0.36,1] }}  /* dur-slow, ease-enter */
+      className="accent-ring glass"
+      style={{
+        borderRadius:'24px',
+        padding:'var(--sp-12) var(--sp-12)',
+        textAlign:'center',
+        marginBottom:'var(--sp-6)',
+        position:'relative',
+        overflow:'hidden',
+      }}
     >
-      {/* Glow */}
-      <div
-        className="absolute inset-0 rounded-3xl pointer-events-none"
-        style={{ boxShadow: '0 0 60px rgba(79,142,247,0.08), inset 0 0 40px rgba(79,142,247,0.04)' }}
-      />
+      {/* Ambient glow */}
+      <div aria-hidden="true" style={{
+        position:'absolute', inset:0,
+        background:'radial-gradient(ellipse 70% 60% at 50% 50%, var(--accent-glow) 0%, transparent 70%)',
+        pointerEvents:'none',
+      }}/>
 
-      {/* Large quote marks */}
-      <QuoteMark className="w-10 h-8 text-accent/20 mx-auto mb-6" />
+      {/* Large decorative quote */}
+      <QuoteSVG />
 
-      <blockquote className="font-syne text-xl md:text-2xl font-medium text-text-primary leading-relaxed mb-8 max-w-3xl mx-auto">
+      {/* Quote — Syne 500, t-24, text-primary, lh-heading */}
+      <blockquote style={{
+        fontFamily:'var(--font-display)', fontWeight:500,
+        fontSize:'clamp(var(--t-16),2.2vw,var(--t-24))',
+        lineHeight:'var(--lh-heading)',
+        color:'var(--text-primary)',
+        margin:'var(--sp-6) auto var(--sp-8)',
+        maxWidth:'780px',
+        position:'relative', zIndex:1,
+      }}>
         "{item.quote}"
       </blockquote>
 
+      {/* Divider */}
+      <div aria-hidden="true" style={{
+        width:'48px', height:'1px', margin:'0 auto var(--sp-4)',
+        background:'linear-gradient(90deg, transparent, var(--accent1), transparent)',
+      }}/>
+
       {/* Attribution */}
-      <div className="flex flex-col items-center gap-1">
-        <div className="w-10 h-px bg-gradient-to-r from-transparent via-accent to-transparent mb-4" />
-        <span className="font-dm font-medium text-text-primary">{item.name}</span>
-        <span className="font-mono text-xs text-text-muted">
+      <div>
+        <p style={{
+          fontFamily:'var(--font-body)', fontWeight:500,
+          fontSize:'var(--t-16)', lineHeight:'var(--lh-body)',
+          color:'var(--text-primary)',
+        }}>
+          {item.name}
+        </p>
+        <p style={{
+          fontFamily:'var(--font-mono)', fontWeight:400,
+          fontSize:'var(--t-12)', lineHeight:'var(--lh-mono)',
+          color:'var(--text-muted)',
+          marginTop:'var(--sp-1)',
+        }}>
           {item.role} · {item.company}
-        </span>
+        </p>
         {item.linkedIn !== '#' && (
           <a
             href={item.linkedIn}
-            className="mt-2 font-mono text-xs text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
+            style={{
+              fontFamily:'var(--font-mono)', fontWeight:400,
+              fontSize:'var(--t-12)', lineHeight:'var(--lh-mono)',
+              color:'var(--accent1)', textDecoration:'none',
+              display:'inline-block', marginTop:'var(--sp-2)',
+              transition:`opacity var(--dur-base) var(--ease-std)`,
+            }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
           >
             LinkedIn →
           </a>
@@ -66,114 +113,170 @@ function FeaturedTestimonial({ item, inView }: { item: Testimonial; inView: bool
   )
 }
 
-/* ── Supporting Testimonial ───────────────────────────── */
-function SupportingTestimonial({
-  item,
-  index,
-  inView,
-}: {
-  item: Testimonial
-  index: number
-  inView: boolean
-}) {
+/* ── Supporting card ────────────────────────────────── */
+function Card({ item, index, inView }: { item: T; index: number; inView: boolean }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 + 0.3 }}
-      className="glass rounded-2xl p-7 flex flex-col justify-between hover:border-border/60 transition-all duration-300 group"
-      style={{ '--hover-glow': 'rgba(79,142,247,0.1)' } as React.CSSProperties}
+      className="glass"
+      initial={{ opacity:0, y:32 }}
+      animate={inView ? { opacity:1, y:0 } : {}}
+      transition={{
+        duration:0.6,                              /* dur-slow */
+        ease:[0.22,1,0.36,1],                      /* ease-enter */
+        delay: 0.28 + index * 0.1,
+      }}
+      style={{
+        borderRadius:'20px',
+        padding:'var(--sp-6)',
+        display:'flex', flexDirection:'column', justifyContent:'space-between',
+        transition:`border-color var(--dur-base) var(--ease-std),
+                    transform    var(--dur-base) var(--ease-std)`,
+      }}
+      /* Spec: 5–10px Y lift on hover */
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = 'var(--border)'
+        e.currentTarget.style.transform   = 'translateY(-6px)'   /* 5–10px Y offset */
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = 'translateY(0)'
+      }}
     >
       <div>
-        <QuoteMark className="w-6 h-5 text-accent/20 mb-4" />
-        <blockquote className="font-dm text-text-secondary leading-relaxed text-sm">
+        {/* Small quote mark */}
+        <QuoteSVG color="var(--accent1)" />
+        <style>{`.supporting-quote { width:32px !important; height:24px !important; }`}</style>
+
+        {/* Quote — DM Sans 400, t-14, text-secondary, lh-body */}
+        <blockquote style={{
+          fontFamily:'var(--font-body)', fontWeight:400,
+          fontSize:'var(--t-14)', lineHeight:'var(--lh-body)',
+          color:'var(--text-secondary)',
+          marginTop:'var(--sp-4)',
+        }}>
           "{item.quote}"
         </blockquote>
       </div>
 
-      <div className="mt-6 pt-5 border-t border-border">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="font-dm font-medium text-text-primary text-sm">{item.name}</p>
-            <p className="font-mono text-xs text-text-muted mt-0.5">
-              {item.role} · {item.company}
-            </p>
-          </div>
-          {item.linkedIn !== '#' && (
-            <a
-              href={item.linkedIn}
-              className="text-text-muted hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
-              aria-label={`${item.name}'s LinkedIn profile`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
-                <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
-                <circle cx="4" cy="4" r="2" />
-              </svg>
-            </a>
-          )}
+      {/* Bottom — border-top divider */}
+      <div style={{
+        marginTop:'var(--sp-6)',
+        paddingTop:'var(--sp-4)',
+        borderTop:'1px solid var(--border)',
+        display:'flex', alignItems:'flex-start', justifyContent:'space-between',
+      }}>
+        <div>
+          {/* Name — DM Sans 500, t-14, text-primary */}
+          <p style={{
+            fontFamily:'var(--font-body)', fontWeight:500,
+            fontSize:'var(--t-14)', lineHeight:'var(--lh-body)',
+            color:'var(--text-primary)',
+          }}>
+            {item.name}
+          </p>
+          {/* Role · Company — mono t-12, text-muted */}
+          <p style={{
+            fontFamily:'var(--font-mono)', fontWeight:400,
+            fontSize:'var(--t-12)', lineHeight:'var(--lh-mono)',
+            color:'var(--text-muted)',
+            marginTop:'2px',
+          }}>
+            {item.role} · {item.company}
+          </p>
         </div>
+
+        {/* LinkedIn icon */}
+        {item.linkedIn !== '#' && (
+          <a
+            href={item.linkedIn}
+            target="_blank" rel="noopener noreferrer"
+            aria-label={`${item.name}'s LinkedIn`}
+            style={{
+              color:'var(--text-muted)',
+              transition:`color var(--dur-fast) var(--ease-std)`,
+              flexShrink:0,
+            }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent1)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+          >
+            <svg viewBox="0 0 24 24" style={{ width:'16px', height:'16px' }} fill="currentColor">
+              <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+              <circle cx="4" cy="4" r="2"/>
+            </svg>
+          </a>
+        )}
       </div>
     </motion.div>
   )
 }
 
-/* ── Testimonials Component ───────────────────────────── */
+/* ── Testimonials ──────────────────────────────────── */
 export default function Testimonials() {
-  const titleRef = useRef<HTMLDivElement>(null)
-  const inView = useInView(titleRef, { once: true, margin: '-10% 0px' })
+  const ref    = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once:true, margin:'-8% 0px' })
 
-  const featured = testimonials.find((t) => t.featured)!
-  const supporting = testimonials.filter((t) => !t.featured)
+  const featured   = testimonials.find(t => t.featured)!
+  const supporting = testimonials.filter(t => !t.featured)
 
   return (
-    <section id="testimonials" className="relative py-24 md:py-32 px-6 overflow-hidden">
-      {/* Background decoration */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(79,142,247,0.04) 0%, transparent 70%)',
-        }}
-      />
+    <section id="testimonials" className="section">
+      {/* Ambient glow center */}
+      <div aria-hidden="true" style={{
+        position:'absolute', top:'50%', left:'50%',
+        transform:'translate(-50%,-50%)',
+        width:'640px', height:'640px', borderRadius:'50%',
+        background:'radial-gradient(circle, var(--accent-glow) 0%, transparent 70%)',
+        pointerEvents:'none',
+      }}/>
 
-      <div className="max-w-6xl mx-auto">
+      <div className="section-inner">
         {/* Header */}
-        <div ref={titleRef} className="text-center mb-16">
+        <div
+          ref={ref}
+          style={{ textAlign:'center', marginBottom:'var(--sp-12)' }}
+        >
           <motion.p
-            className="section-eyebrow justify-center mb-4"
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6 }}
+            className="eyebrow"
+            style={{ justifyContent:'center', marginBottom:'var(--sp-4)' }}
+            initial={{ opacity:0 }}
+            animate={inView ? { opacity:1 } : {}}
+            transition={{ duration:0.6 }}
           >
             Social Proof
           </motion.p>
+
           <motion.h2
-            className="font-syne font-extrabold text-text-primary"
-            style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}
-            initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+            style={{ fontSize:'clamp(var(--t-32),5vw,var(--t-48))' }}
+            initial={{ opacity:0, y:24 }}
+            animate={inView ? { opacity:1, y:0 } : {}}
+            transition={{ duration:0.6, ease:[0.22,1,0.36,1], delay:0.08 }}
           >
             What Teams Say
           </motion.h2>
+
           <motion.p
-            className="mt-4 text-text-secondary max-w-lg mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            className="t-body"
+            style={{
+              maxWidth:'480px', margin:'var(--sp-4) auto 0',
+            }}
+            initial={{ opacity:0, y:24 }}
+            animate={inView ? { opacity:1, y:0 } : {}}
+            transition={{ duration:0.6, ease:[0.22,1,0.36,1], delay:0.16 }}
           >
-            Real words from engineers, founders, and product leaders I've worked alongside.
+            Real words from engineers, founders, and product leaders I've built alongside.
           </motion.p>
         </div>
 
         {/* Featured */}
-        <FeaturedTestimonial item={featured} inView={inView} />
+        <Featured item={featured} inView={inView} />
 
         {/* Supporting grid */}
-        <div className="grid md:grid-cols-3 gap-5">
-          {supporting.map((item, i) => (
-            <SupportingTestimonial key={item.id} item={item} index={i} inView={inView} />
+        <div style={{
+          display:'grid',
+          gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',
+          gap:'var(--sp-4)',
+        }}>
+          {supporting.map((t, i) => (
+            <Card key={t.id} item={t} index={i} inView={inView} />
           ))}
         </div>
       </div>

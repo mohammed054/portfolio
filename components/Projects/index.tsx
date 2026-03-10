@@ -3,148 +3,264 @@ import { useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { projects } from '@/lib/data'
 
+/**
+ * Projects — Design System compliance:
+ * Colors:  surface, border, accent1, accent2, text-primary, text-secondary, text-muted
+ * Type:    Syne 800 titles; DM Sans 400 body; Mono t-12 for tags/stack
+ * Motion:  dur-slow (600ms) entry stagger; dur-slow (600ms) overlay slide;
+ *          ease-enter throughout; scaleHover 1.03–1.05 on cards
+ * Spacing: sp-* only; section pad 96–128px
+ */
+
 type Project = typeof projects[0]
 
-/* ── Case Study Overlay ───────────────────────────────── */
-function CaseStudyOverlay({
-  project,
-  onClose,
-}: {
-  project: Project
-  onClose: () => void
-}) {
+/* ── Case Study Overlay ────────────────────────────── */
+function CaseStudy({ project, onClose }: { project: Project; onClose: () => void }) {
   return (
     <motion.div
-      className="fixed inset-0 z-50 overflow-y-auto"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+      style={{ position:'fixed', inset:0, zIndex:50, overflowY:'auto' }}
+      initial={{ opacity:0 }}
+      animate={{ opacity:1 }}
+      exit={{ opacity:0 }}
+      transition={{ duration:0.3 }}
       role="dialog"
       aria-modal="true"
-      aria-label={`Case study: ${project.title}`}
+      aria-label={`${project.title} case study`}
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-bg/90 backdrop-blur-xl"
         onClick={onClose}
+        style={{
+          position:'fixed', inset:0,
+          background:'rgba(8,11,20,0.92)',
+          backdropFilter:'blur(18px)',
+        }}
       />
 
-      {/* Panel */}
+      {/* Panel — slides up; dur-slow ease-enter */}
       <motion.div
-        className="relative z-10 min-h-screen max-w-4xl mx-auto px-6 py-20"
-        initial={{ y: 40 }}
-        animate={{ y: 0 }}
-        exit={{ y: 40 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          position:'relative', zIndex:10,
+          minHeight:'100vh',
+          maxWidth:'880px',
+          margin:'0 auto',
+          padding:'var(--sp-16) var(--sp-6)',
+        }}
+        initial={{ y:48 }}
+        animate={{ y:0 }}
+        exit={{ y:48 }}
+        transition={{ duration:0.6, ease:[0.22,1,0.36,1] }}  /* dur-slow, ease-enter */
       >
-        {/* Close */}
+        {/* Close — glass token */}
         <button
           onClick={onClose}
-          className="fixed top-6 right-6 w-10 h-10 rounded-full glass flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          aria-label="Close case study"
+          className="glass"
+          style={{
+            position:'fixed', top:'var(--sp-6)', right:'var(--sp-6)',
+            width:'40px', height:'40px',
+            display:'flex', alignItems:'center', justifyContent:'center',
+            borderRadius:'50%', cursor:'pointer',
+            fontFamily:'var(--font-mono)',
+            fontSize:'var(--t-14)', color:'var(--text-secondary)',
+            transition:`color var(--dur-base) var(--ease-std),
+                        border-color var(--dur-base) var(--ease-std)`,
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.color = 'var(--text-primary)'
+            e.currentTarget.style.borderColor = 'var(--accent1-40)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.color = 'var(--text-secondary)'
+            e.currentTarget.style.borderColor = 'var(--border)'
+          }}
+          aria-label="Close"
         >
           ✕
         </button>
 
-        {/* Tag + title */}
-        <div className="mb-10">
-          <span
-            className="font-mono text-xs tracking-widest uppercase px-3 py-1 rounded-full border"
-            style={{ color: project.color, borderColor: `${project.color}40`, background: `${project.color}10` }}
-          >
-            {project.tag}
-          </span>
-          <h2 className="font-syne font-extrabold text-text-primary mt-4 mb-3"
-            style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}>
-            {project.title}
-          </h2>
-          <p className="text-xl text-text-secondary leading-relaxed">{project.description}</p>
-        </div>
+        {/* Tag — mono t-12, chip-like with project color */}
+        <span style={{
+          fontFamily:'var(--font-mono)', fontWeight:400,
+          fontSize:'var(--t-12)', lineHeight:'var(--lh-mono)',
+          letterSpacing:'0.15em', textTransform:'uppercase',
+          padding:'4px var(--sp-3)',
+          borderRadius:'999px',
+          border:`1px solid ${project.color}40`,
+          color: project.color,
+          background:`${project.color}10`,
+        }}>
+          {project.tag}
+        </span>
 
-        {/* Mock screenshot area */}
+        {/* Title — Syne 800, fluid t-48 */}
+        <h2 style={{
+          fontFamily:'var(--font-display)', fontWeight:800,
+          fontSize:'clamp(var(--t-32),5vw,var(--t-48))',
+          lineHeight:'var(--lh-display)',
+          color:'var(--text-primary)',
+          margin:'var(--sp-4) 0 var(--sp-3)',
+        }}>
+          {project.title}
+        </h2>
+
+        {/* Description — DM Sans 400, t-20, text-secondary */}
+        <p style={{
+          fontFamily:'var(--font-body)', fontWeight:400,
+          fontSize:'var(--t-20)', lineHeight:'var(--lh-body)',
+          color:'var(--text-secondary)',
+          marginBottom:'var(--sp-12)',
+        }}>
+          {project.description}
+        </p>
+
+        {/* Mock hero — accent background */}
         <div
-          className="w-full h-64 md:h-80 rounded-2xl mb-12 flex items-center justify-center border border-border overflow-hidden"
-          style={{ background: `linear-gradient(135deg, ${project.accentBg}, rgba(14,18,32,0.8))` }}
+          style={{
+            width:'100%', aspectRatio:'16/7',
+            borderRadius:'20px', marginBottom:'var(--sp-12)',
+            border:'1px solid var(--border)',
+            background:`linear-gradient(135deg, ${project.accentBg}, rgba(14,18,32,0.85))`,
+            display:'flex', alignItems:'center', justifyContent:'center',
+            overflow:'hidden', position:'relative',
+          }}
         >
-          <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl mx-auto mb-3 flex items-center justify-center text-2xl"
-              style={{ background: `${project.color}20`, border: `1px solid ${project.color}30` }}>
-              ⬡
+          {/* Dot pattern */}
+          <div style={{
+            position:'absolute', inset:0,
+            backgroundImage:`radial-gradient(circle, ${project.color} 1px, transparent 1px)`,
+            backgroundSize:'28px 28px', opacity:0.07,
+          }} aria-hidden="true"/>
+          <div style={{ textAlign:'center', position:'relative' }}>
+            <div style={{
+              width:'64px', height:'64px', borderRadius:'16px',
+              display:'flex', alignItems:'center', justifyContent:'center',
+              fontFamily:'var(--font-display)', fontWeight:800,
+              fontSize:'var(--t-32)', color: project.color,
+              background:`${project.color}18`,
+              border:`1px solid ${project.color}30`,
+              margin:'0 auto var(--sp-3)',
+            }}>
+              {project.title[0]}
             </div>
-            <p className="font-mono text-xs text-text-muted">Project Screenshot</p>
+            <p style={{
+              fontFamily:'var(--font-mono)', fontSize:'var(--t-12)',
+              color:'var(--text-muted)', fontWeight:400,
+            }}>
+              Project Preview
+            </p>
           </div>
         </div>
 
-        {/* Problem / Solution */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <div className="glass rounded-2xl p-6">
-            <h3 className="font-syne font-bold text-sm text-text-secondary uppercase tracking-widest mb-3">
+        {/* Problem / Solution — surface glass panels */}
+        <div style={{
+          display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))',
+          gap:'var(--sp-6)', marginBottom:'var(--sp-12)',
+        }}>
+          <div className="glass" style={{ borderRadius:'16px', padding:'var(--sp-6)' }}>
+            <h3 style={{
+              fontFamily:'var(--font-mono)', fontWeight:400,
+              fontSize:'var(--t-12)', letterSpacing:'0.18em',
+              textTransform:'uppercase', color:'var(--text-muted)',
+              marginBottom:'var(--sp-3)', lineHeight:'var(--lh-mono)',
+            }}>
               The Problem
             </h3>
-            <p className="text-text-secondary leading-relaxed">{project.problem}</p>
+            <p className="t-body-sm">{project.problem}</p>
           </div>
-          <div className="glass rounded-2xl p-6" style={{ borderColor: `${project.color}30` }}>
-            <h3 className="font-syne font-bold text-sm uppercase tracking-widest mb-3"
-              style={{ color: project.color }}>
+
+          <div className="glass" style={{
+            borderRadius:'16px', padding:'var(--sp-6)',
+            borderColor:`${project.color}30`,
+          }}>
+            <h3 style={{
+              fontFamily:'var(--font-mono)', fontWeight:400,
+              fontSize:'var(--t-12)', letterSpacing:'0.18em',
+              textTransform:'uppercase', color: project.color,
+              marginBottom:'var(--sp-3)', lineHeight:'var(--lh-mono)',
+            }}>
               The Solution
             </h3>
-            <p className="text-text-secondary leading-relaxed">{project.solution}</p>
+            <p className="t-body-sm">{project.solution}</p>
           </div>
         </div>
 
         {/* Results */}
-        <div className="mb-12">
-          <h3 className="font-syne font-bold text-lg text-text-primary mb-6">Results</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {project.results.map((result, i) => (
+        <div style={{ marginBottom:'var(--sp-12)' }}>
+          <h3 style={{
+            fontFamily:'var(--font-display)', fontWeight:700,
+            fontSize:'var(--t-20)', lineHeight:'var(--lh-heading)',
+            color:'var(--text-primary)', marginBottom:'var(--sp-6)',
+          }}>
+            Results
+          </h3>
+          <div style={{
+            display:'grid',
+            gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))',
+            gap:'var(--sp-4)',
+          }}>
+            {project.results.map((r, i) => (
               <motion.div
                 key={i}
-                className="glass rounded-xl p-4 text-center"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
+                className="glass"
+                style={{ borderRadius:'12px', padding:'var(--sp-4)', textAlign:'center' }}
+                initial={{ opacity:0, y:12 }}
+                animate={{ opacity:1, y:0 }}
+                transition={{ delay: i * 0.07 }}
               >
-                <p className="font-dm text-sm text-text-secondary leading-snug">{result}</p>
+                <p className="t-body-sm" style={{ color:'var(--text-secondary)' }}>{r}</p>
               </motion.div>
             ))}
           </div>
         </div>
 
-        {/* Stack */}
-        <div className="mb-12">
-          <h3 className="font-syne font-bold text-lg text-text-primary mb-4">Tech Stack</h3>
-          <div className="flex flex-wrap gap-2">
-            {project.stack.map((tech) => (
-              <span
-                key={tech}
-                className="font-mono text-xs px-3 py-1.5 rounded-lg border border-border text-text-secondary bg-surface"
-              >
-                {tech}
-              </span>
+        {/* Stack — chip tokens */}
+        <div style={{ marginBottom:'var(--sp-12)' }}>
+          <h3 style={{
+            fontFamily:'var(--font-display)', fontWeight:700,
+            fontSize:'var(--t-20)', lineHeight:'var(--lh-heading)',
+            color:'var(--text-primary)', marginBottom:'var(--sp-4)',
+          }}>
+            Tech Stack
+          </h3>
+          <div style={{ display:'flex', flexWrap:'wrap', gap:'var(--sp-2)' }}>
+            {project.stack.map(t => (
+              <span key={t} className="chip" style={{ padding:'6px var(--sp-3)' }}>{t}</span>
             ))}
           </div>
         </div>
 
-        {/* Links */}
-        <div className="flex gap-4">
-          {project.liveUrl && project.liveUrl !== '#' && (
+        {/* Links — btn tokens */}
+        <div style={{ display:'flex', gap:'var(--sp-4)' }}>
+          {project.liveUrl !== '#' && (
             <a
               href={project.liveUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3 rounded-xl font-dm text-sm font-medium text-bg transition-all duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              style={{ background: project.color }}
+              className="btn"
+              style={{
+                background: project.color,
+                color:'var(--background)',
+                border:`1px solid ${project.color}`,
+                fontFamily:'var(--font-body)', fontWeight:500,
+                fontSize:'var(--t-14)', borderRadius:'12px',
+                padding:'12px var(--sp-6)',
+                textDecoration:'none',
+                transition:`opacity var(--dur-base) var(--ease-std),
+                            transform var(--dur-fast) var(--ease-std)`,
+              }}
+              onMouseEnter={e => { e.currentTarget.style.opacity = '0.88'; e.currentTarget.style.transform = `scale(1.04)` }}
+              onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = `scale(1)` }}
             >
               ↗ Live Demo
             </a>
           )}
-          {project.githubUrl && project.githubUrl !== '#' && (
+          {project.githubUrl !== '#' && (
             <a
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3 rounded-xl font-dm text-sm font-medium text-text-secondary border border-border hover:border-accent hover:text-accent transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="btn btn-ghost"
+              style={{ textDecoration:'none' }}
             >
               ⌥ GitHub
             </a>
@@ -155,106 +271,144 @@ function CaseStudyOverlay({
   )
 }
 
-/* ── Project Card ─────────────────────────────────────── */
+/* ── Project Card ────────────────────────────────────── */
 function ProjectCard({
-  project,
-  index,
-  inView,
-  onOpen,
+  project, index, inView, onOpen,
 }: {
-  project: Project
-  index: number
-  inView: boolean
-  onOpen: () => void
+  project: Project; index: number; inView: boolean; onOpen: () => void
 }) {
-  const isOdd = index % 2 !== 0
+  const odd = index % 2 !== 0
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: index * 0.12 }}
-      className={`grid md:grid-cols-2 gap-8 items-center ${isOdd ? 'md:flex-row-reverse' : ''}`}
+      initial={{ opacity:0, y:36 }}
+      animate={inView ? { opacity:1, y:0 } : {}}
+      transition={{ duration:0.6, ease:[0.22,1,0.36,1], delay: index * 0.12 }}
+      style={{
+        display:'grid',
+        gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))',
+        gap:'var(--sp-8)',
+        alignItems:'center',
+        direction: odd ? 'rtl' : 'ltr',  /* flip alternating rows */
+      }}
     >
-      {/* Visual pane */}
+      {/* ── Visual ─────────────────────────────── */}
       <motion.div
-        className={`relative aspect-video rounded-2xl overflow-hidden cursor-pointer group ${isOdd ? 'md:order-2' : ''}`}
         onClick={onOpen}
-        whileHover={{ scale: 1.01 }}
-        transition={{ duration: 0.4 }}
+        whileHover={{ scale: 1.02 }}           /* scaleHover */
+        transition={{ duration: 0.3 }}
+        style={{
+          aspectRatio:'16/10', borderRadius:'20px', overflow:'hidden',
+          cursor:'pointer', position:'relative',
+          border:'1px solid var(--border)',
+          direction:'ltr',
+        }}
       >
-        <div
-          className="absolute inset-0 transition-all duration-500"
-          style={{ background: `linear-gradient(135deg, ${project.accentBg}, rgba(14,18,32,0.9))` }}
-        />
-        {/* Decorative pattern */}
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: `radial-gradient(circle, ${project.color} 1px, transparent 1px)`,
-            backgroundSize: '24px 24px',
-          }}
-        />
-        {/* Center icon */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div
-            className="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-syne font-bold transition-transform duration-300 group-hover:scale-110"
-            style={{ background: `${project.color}20`, border: `1px solid ${project.color}40`, color: project.color }}
+        {/* Background */}
+        <div style={{
+          position:'absolute', inset:0,
+          background:`linear-gradient(135deg, ${project.accentBg}, rgba(14,18,32,0.9))`,
+        }}/>
+        {/* Dot texture */}
+        <div style={{
+          position:'absolute', inset:0,
+          backgroundImage:`radial-gradient(circle, ${project.color} 1px, transparent 1px)`,
+          backgroundSize:'24px 24px', opacity:0.07,
+        }} aria-hidden="true"/>
+        {/* Center monogram */}
+        <div style={{
+          position:'absolute', inset:0,
+          display:'flex', alignItems:'center', justifyContent:'center',
+        }}>
+          <motion.div
+            whileHover={{ scale:1.1 }}
+            transition={{ duration:0.3 }}
+            style={{
+              width:'72px', height:'72px', borderRadius:'18px',
+              display:'flex', alignItems:'center', justifyContent:'center',
+              fontFamily:'var(--font-display)', fontWeight:800,
+              fontSize:'var(--t-32)', color: project.color,
+              background:`${project.color}18`, border:`1px solid ${project.color}30`,
+            }}
           >
             {project.title[0]}
-          </div>
+          </motion.div>
         </div>
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-bg/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <span className="font-dm text-sm text-text-primary glass px-4 py-2 rounded-lg">View Case Study →</span>
+        {/* Hover CTA */}
+        <div style={{
+          position:'absolute', inset:0,
+          background:'rgba(8,11,20,0.45)',
+          backdropFilter:'blur(4px)',
+          display:'flex', alignItems:'center', justifyContent:'center',
+          opacity:0, transition:`opacity var(--dur-base) var(--ease-std)`,
+        }}
+          className="card-hover-overlay"
+        >
+          <span className="glass" style={{
+            fontFamily:'var(--font-body)', fontWeight:500,
+            fontSize:'var(--t-14)', lineHeight:'var(--lh-body)',
+            color:'var(--text-primary)', padding:'10px var(--sp-6)',
+            borderRadius:'12px',
+          }}>
+            View Case Study →
+          </span>
         </div>
-        {/* Glow border */}
-        <div
-          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-          style={{ boxShadow: `inset 0 0 0 1px ${project.color}40` }}
-        />
       </motion.div>
 
-      {/* Content pane */}
-      <div className={isOdd ? 'md:order-1' : ''}>
-        <span
-          className="font-mono text-xs tracking-widest uppercase px-2.5 py-1 rounded-full border"
-          style={{ color: project.color, borderColor: `${project.color}40`, background: `${project.color}10` }}
-        >
+      {/* ── Content ────────────────────────────── */}
+      <div style={{ direction:'ltr' }}>
+        {/* Tag */}
+        <span style={{
+          fontFamily:'var(--font-mono)', fontWeight:400,
+          fontSize:'var(--t-12)', lineHeight:'var(--lh-mono)',
+          letterSpacing:'0.15em', textTransform:'uppercase',
+          padding:'3px var(--sp-3)', borderRadius:'999px',
+          border:`1px solid ${project.color}40`,
+          color: project.color, background:`${project.color}10`,
+        }}>
           {project.tag}
         </span>
 
-        <h3 className="font-syne font-extrabold text-text-primary mt-3 mb-3"
-          style={{ fontSize: 'clamp(1.5rem, 3vw, 2.25rem)' }}>
+        {/* Title — Syne 800, fluid t-32 */}
+        <h3 style={{
+          fontFamily:'var(--font-display)', fontWeight:800,
+          fontSize:'clamp(var(--t-24),3vw,var(--t-32))',
+          lineHeight:'var(--lh-heading)', color:'var(--text-primary)',
+          margin:'var(--sp-3) 0',
+        }}>
           {project.title}
         </h3>
 
-        <p className="text-text-secondary leading-relaxed mb-6">{project.summary}</p>
+        {/* Summary — DM Sans 400, t-16, text-secondary */}
+        <p style={{
+          fontFamily:'var(--font-body)', fontWeight:400,
+          fontSize:'var(--t-16)', lineHeight:'var(--lh-body)',
+          color:'var(--text-secondary)',
+          marginBottom:'var(--sp-6)',
+        }}>
+          {project.summary}
+        </p>
 
         {/* Stack chips */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {project.stack.map((tech) => (
-            <span key={tech} className="font-mono text-xs px-2.5 py-1 rounded-lg bg-surface border border-border text-text-muted">
-              {tech}
-            </span>
-          ))}
+        <div style={{ display:'flex', flexWrap:'wrap', gap:'var(--sp-2)', marginBottom:'var(--sp-6)' }}>
+          {project.stack.map(t => <span key={t} className="chip">{t}</span>)}
         </div>
 
-        {/* Actions */}
-        <div className="flex gap-3">
+        {/* Actions — btn tokens */}
+        <div style={{ display:'flex', gap:'var(--sp-3)' }}>
           <button
             onClick={onOpen}
-            className="px-5 py-2.5 font-dm text-sm font-medium rounded-xl transition-all duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            style={{ background: project.color, color: '#080B14' }}
+            className="btn btn-primary"
+            style={{ padding:'11px var(--sp-6)' }}
           >
-            Case Study
+            <span>Case Study</span>
           </button>
           {project.githubUrl !== '#' && (
             <a
               href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-5 py-2.5 font-dm text-sm rounded-xl border border-border text-text-secondary hover:border-accent hover:text-accent transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              target="_blank" rel="noopener noreferrer"
+              className="btn btn-ghost"
+              style={{ textDecoration:'none', padding:'11px var(--sp-6)' }}
             >
               GitHub
             </a>
@@ -265,73 +419,70 @@ function ProjectCard({
   )
 }
 
-/* ── Projects Component ───────────────────────────────── */
+/* ── Projects ──────────────────────────────────────── */
 export default function Projects() {
-  const titleRef = useRef<HTMLDivElement>(null)
-  const inView = useInView(titleRef, { once: true, margin: '-10% 0px' })
-  const [activeProject, setActiveProject] = useState<Project | null>(null)
+  const ref    = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once:true, margin:'-8% 0px' })
+  const [open, setOpen] = useState<Project | null>(null)
 
   return (
-    <section id="projects" className="relative py-24 md:py-32 px-6 overflow-hidden">
-      {/* Top divider */}
-      <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-px pointer-events-none"
-        style={{ background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.3), transparent)' }}
-      />
+    <section id="projects" className="section">
+      <div aria-hidden="true" style={{
+        position:'absolute', top:0, left:'50%', transform:'translateX(-50%)',
+        width:'720px', height:'1px',
+        background:'linear-gradient(90deg, transparent, var(--accent2-20), transparent)',
+      }}/>
 
-      <div className="max-w-7xl mx-auto">
+      <div className="section-inner">
         {/* Header */}
-        <div ref={titleRef} className="mb-20">
+        <div ref={ref} style={{ marginBottom:'var(--sp-16)' }}>
           <motion.p
-            className="section-eyebrow mb-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            className="eyebrow"
+            initial={{ opacity:0, x:-20 }}
+            animate={inView ? { opacity:1, x:0 } : {}}
+            transition={{ duration:0.6 }}
+            style={{ marginBottom:'var(--sp-4)' }}
           >
             Work
           </motion.p>
           <motion.h2
-            className="font-syne font-extrabold text-text-primary"
-            style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}
-            initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+            style={{ fontSize:'clamp(var(--t-32),5vw,var(--t-48))' }}
+            initial={{ opacity:0, y:24 }}
+            animate={inView ? { opacity:1, y:0 } : {}}
+            transition={{ duration:0.6, ease:[0.22,1,0.36,1], delay:0.08 }}
           >
             Selected Projects
           </motion.h2>
           <motion.p
-            className="mt-4 text-text-secondary max-w-lg leading-relaxed"
-            initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            className="t-body"
+            style={{ maxWidth:'480px', marginTop:'var(--sp-4)' }}
+            initial={{ opacity:0, y:24 }}
+            animate={inView ? { opacity:1, y:0 } : {}}
+            transition={{ duration:0.6, ease:[0.22,1,0.36,1], delay:0.16 }}
           >
             Each project is a case study in decision-making. Click to see the thinking behind the execution.
           </motion.p>
         </div>
 
         {/* Project list */}
-        <div className="flex flex-col gap-20 md:gap-28">
-          {projects.map((project, i) => (
+        <div style={{ display:'flex', flexDirection:'column', gap:'var(--sp-24)' }}>
+          {projects.map((p, i) => (
             <ProjectCard
-              key={project.id}
-              project={project}
-              index={i}
-              inView={inView}
-              onOpen={() => setActiveProject(project)}
+              key={p.id} project={p} index={i}
+              inView={inView} onOpen={() => setOpen(p)}
             />
           ))}
         </div>
       </div>
 
-      {/* Case Study Overlay */}
+      {/* Case study overlay */}
       <AnimatePresence>
-        {activeProject && (
-          <CaseStudyOverlay
-            project={activeProject}
-            onClose={() => setActiveProject(null)}
-          />
-        )}
+        {open && <CaseStudy project={open} onClose={() => setOpen(null)} />}
       </AnimatePresence>
+
+      <style>{`
+        article:hover .card-hover-overlay { opacity: 1 !important; }
+      `}</style>
     </section>
   )
 }

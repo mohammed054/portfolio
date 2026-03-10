@@ -3,169 +3,213 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { personal } from '@/lib/data'
 
+/**
+ * Loader — Spec §4 Loader / Intro Screen
+ *
+ * Colors:    --background (#080B14), --accent1 (#4F8EF7)
+ * Type:      Syne 800, --t-96
+ * Motion:    --dur-cinematic (1200ms) stroke, --ease-enter
+ * Spacing:   --sp-* only
+ * A11y:      role="status", aria-label, reduced-motion fade
+ */
 interface LoaderProps {
   onComplete: () => void
 }
 
 export default function Loader({ onComplete }: LoaderProps) {
   const [progress, setProgress] = useState(0)
-  const [done, setDone] = useState(false)
+  const [exiting, setExiting] = useState(false)
 
-  // Check session: skip on revisit
   useEffect(() => {
+    // Session check — never show twice
     if (typeof window !== 'undefined' && sessionStorage.getItem('loaderShown')) {
       onComplete()
       return
     }
 
-    // Simulate asset loading progress
-    const steps = [15, 30, 45, 60, 72, 84, 93, 100]
+    // Simulate progressive asset loading
+    const steps = [10, 22, 38, 52, 64, 76, 87, 94, 100]
     let i = 0
-    const interval = setInterval(() => {
+    const id = setInterval(() => {
       if (i < steps.length) {
-        setProgress(steps[i])
-        i++
+        setProgress(steps[i++])
       } else {
-        clearInterval(interval)
+        clearInterval(id)
+        // Hold at 100% briefly, then exit
         setTimeout(() => {
-          setDone(true)
+          setExiting(true)
           sessionStorage.setItem('loaderShown', '1')
-          setTimeout(onComplete, 800)
-        }, 300)
+          setTimeout(onComplete, 700) // dur-slow + buffer
+        }, 250)
       }
-    }, 220)
+    }, 200)
 
-    return () => clearInterval(interval)
+    return () => clearInterval(id)
   }, [onComplete])
 
   return (
     <AnimatePresence>
-      {!done && (
+      {!exiting && (
         <motion.div
+          /* Spec: vertical split wipe exit */
           key="loader"
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-bg"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
+          style={{ background: 'var(--background)' }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          aria-label="Loading Portfolio"
+          transition={{
+            duration: 0.6,                          /* --dur-slow */
+            ease: [0.22, 1, 0.36, 1],              /* --ease-enter */
+          }}
           role="status"
+          aria-label="Loading portfolio"
+          aria-live="polite"
         >
-          {/* Ambient glow */}
+          {/* Ambient radial glow — accent-glow token */}
           <div
-            className="absolute inset-0 pointer-events-none"
+            className="pointer-events-none absolute inset-0"
             style={{
-              background: 'radial-gradient(ellipse 60% 40% at 50% 50%, rgba(79,142,247,0.08) 0%, transparent 70%)',
+              background:
+                'radial-gradient(ellipse 60% 40% at 50% 50%, var(--accent-glow) 0%, transparent 70%)',
             }}
+            aria-hidden="true"
           />
 
-          {/* Initials SVG — stroke animated */}
+          {/* ── Initials SVG — stroke animated ─────── */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative mb-10"
+            transition={{
+              duration: 0.6,                        /* --dur-slow */
+              ease: [0.22, 1, 0.36, 1],            /* --ease-enter */
+            }}
+            /* mb: 2×--sp-6 = 48px = --sp-12 */
+            style={{ marginBottom: 'var(--sp-12)', position: 'relative' }}
+            aria-hidden="true"
           >
-            <svg
-              viewBox="0 0 200 120"
-              width="200"
-              height="120"
-              className="overflow-visible"
-              aria-hidden="true"
-            >
-              {/* Background text for fill */}
+            <svg viewBox="0 0 240 120" width="240" height="120" overflow="visible">
+              {/* Ghost fill — very low opacity background */}
               <text
-                x="50%"
-                y="80"
+                x="50%" y="88"
                 textAnchor="middle"
-                fontFamily="Syne, sans-serif"
+                fontFamily="var(--font-display)"
                 fontWeight="800"
                 fontSize="96"
-                fill="rgba(240,244,255,0.04)"
-                stroke="none"
+                fill="rgba(240,244,255,0.03)"
               >
                 {personal.initials}
               </text>
 
-              {/* Animated stroke */}
+              {/* Animated stroke — accent1, dur-cinematic */}
               <motion.text
-                x="50%"
-                y="80"
+                x="50%" y="88"
                 textAnchor="middle"
-                fontFamily="Syne, sans-serif"
+                fontFamily="var(--font-display)"
                 fontWeight="800"
                 fontSize="96"
                 fill="none"
-                stroke="#4F8EF7"
+                stroke="var(--accent1)"
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                initial={{ strokeDasharray: 1000, strokeDashoffset: 1000, opacity: 1 }}
-                animate={{ strokeDashoffset: 0, opacity: 1 }}
-                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+                initial={{ strokeDasharray: 1200, strokeDashoffset: 1200 }}
+                animate={{ strokeDashoffset: 0 }}
+                transition={{
+                  duration: 1.2,                    /* --dur-cinematic */
+                  ease: [0.22, 1, 0.36, 1],         /* --ease-enter */
+                  delay: 0.15,
+                }}
               >
                 {personal.initials}
               </motion.text>
 
-              {/* Glow text */}
+              {/* Glow halo behind stroke */}
               <motion.text
-                x="50%"
-                y="80"
+                x="50%" y="88"
                 textAnchor="middle"
-                fontFamily="Syne, sans-serif"
+                fontFamily="var(--font-display)"
                 fontWeight="800"
                 fontSize="96"
                 fill="none"
-                stroke="rgba(79,142,247,0.2)"
-                strokeWidth="6"
-                strokeLinecap="round"
+                stroke="rgba(79,142,247,0.18)"
+                strokeWidth="8"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.8 }}
+                transition={{ delay: 0.8, duration: 0.6 }}
               >
                 {personal.initials}
               </motion.text>
             </svg>
 
-            {/* Glow orb behind initials */}
+            {/* Blur glow orb */}
             <div
-              className="absolute inset-0 -z-10 blur-3xl"
+              className="absolute inset-0 -z-10"
               style={{
-                background: 'radial-gradient(circle, rgba(79,142,247,0.15) 0%, transparent 70%)',
+                filter: 'blur(40px)',
+                background:
+                  'radial-gradient(circle, rgba(79,142,247,0.18) 0%, transparent 70%)',
               }}
             />
           </motion.div>
 
-          {/* Progress bar */}
+          {/* ── Progress bar ────────────────────────── */}
           <motion.div
-            initial={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="relative w-64 h-px bg-border overflow-hidden rounded-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.3 }}
+            aria-hidden="true"
+            style={{
+              /* w: 256px, h: 1px, bg: --border */
+              width: '256px',
+              height: '1px',
+              background: 'var(--border)',
+              borderRadius: '999px',
+              overflow: 'hidden',
+              position: 'relative',
+            }}
           >
+            {/* Fill */}
             <motion.div
-              className="absolute inset-0 origin-left rounded-full"
-              style={{ background: 'linear-gradient(90deg, #4F8EF7, #8B5CF6)' }}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: progress / 100 }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            />
-            {/* Shimmer */}
-            <motion.div
-              className="absolute inset-0 rounded-full"
               style={{
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(90deg, var(--accent1), var(--accent2))',
+                borderRadius: '999px',
+                transformOrigin: 'left',
+                scaleX: progress / 100,
+              }}
+              transition={{
+                duration: 0.4,                      /* --dur-base + buffer */
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            />
+            {/* Shimmer sweep */}
+            <motion.div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage:
+                  'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)',
                 backgroundSize: '200% 100%',
               }}
               animate={{ backgroundPosition: ['200% center', '-200% center'] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: 'linear' }}
             />
           </motion.div>
 
-          {/* Progress number */}
+          {/* Progress counter — mono, t-12, text-muted */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-4 font-mono text-xs text-text-muted tracking-widest"
+            transition={{ delay: 0.45 }}
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 'var(--t-12)',
+              color: 'var(--text-muted)',
+              letterSpacing: '0.2em',
+              marginTop: 'var(--sp-4)',
+              fontWeight: 400,
+              lineHeight: 'var(--lh-mono)',
+            }}
           >
             {Math.round(progress)}%
           </motion.p>

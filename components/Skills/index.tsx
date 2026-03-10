@@ -3,165 +3,188 @@ import { useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { skillDomains } from '@/lib/data'
 
-type Skill = {
-  name: string
-  years: number
-  proficiency: number
-  tools: string[]
+/**
+ * Skills — Design System compliance:
+ * Colors:  surface, border, accent1, accent2, text-primary, text-secondary, text-muted
+ * Type:    Syne 700 domain labels; DM Sans 500 skill names; Mono t-12 stats/years
+ * Motion:  dur-slow entry (600ms); ease-enter; dur-base accordion (300ms)
+ *          scaleHover 1.04 on filter pills
+ * Spacing: sp-* only; section pad 96–128px
+ */
+
+type Skill   = typeof skillDomains[0]['skills'][0]
+type Domain  = typeof skillDomains[0]
+
+/* ── Proficiency bar ────────────────────────────────── */
+function ProfBar({ pct, color }: { pct: number; color: string }) {
+  return (
+    <div style={{
+      width:'100%', height:'3px',
+      background:'var(--border)', borderRadius:'999px', overflow:'hidden',
+      marginTop:'var(--sp-2)', marginBottom:'var(--sp-2)',
+    }}>
+      <motion.div
+        style={{
+          height:'100%', borderRadius:'999px',
+          background:`linear-gradient(90deg, ${color}, ${color}80)`,
+          transformOrigin:'left',
+        }}
+        initial={{ scaleX:0 }}
+        animate={{ scaleX: pct / 100 }}
+        transition={{ duration:0.7, ease:[0.22,1,0.36,1] }}
+      />
+    </div>
+  )
 }
 
-type Domain = typeof skillDomains[0]
-
-/* ── Skill Card Tooltip ───────────────────────────────── */
-function SkillCard({ skill, color }: { skill: Skill; color: string }) {
+/* ── Skill row ──────────────────────────────────────── */
+function SkillRow({ skill, color, delay }: { skill: Skill; color: string; delay: number }) {
   return (
     <motion.div
-      className="glass rounded-xl p-4 w-56 shadow-2xl pointer-events-none"
-      initial={{ opacity: 0, y: 8, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 8, scale: 0.95 }}
-      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-      style={{ borderColor: `${color}40` }}
+      initial={{ opacity:0, x:-10 }}
+      animate={{ opacity:1, x:0 }}
+      transition={{ delay, duration:0.4, ease:[0.22,1,0.36,1] }}
+      style={{
+        background:'var(--background)',
+        border:'1px solid var(--border)',
+        borderRadius:'12px',
+        padding:'var(--sp-4) var(--sp-4)',
+        transition:`border-color var(--dur-base) var(--ease-std)`,
+      }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = `${color}40`)}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border)')}
     >
-      <div className="flex items-center gap-2 mb-2">
-        <div className="w-2 h-2 rounded-full" style={{ background: color }} />
-        <span className="font-syne font-bold text-sm text-text-primary">{skill.name}</span>
+      {/* Name + percentage */}
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+        <span style={{
+          fontFamily:'var(--font-body)', fontWeight:500,
+          fontSize:'var(--t-14)', lineHeight:'var(--lh-body)',
+          color:'var(--text-primary)',
+        }}>
+          {skill.name}
+        </span>
+        <span style={{
+          fontFamily:'var(--font-mono)', fontWeight:400,
+          fontSize:'var(--t-12)', lineHeight:'var(--lh-mono)',
+          color:'var(--text-muted)',
+        }}>
+          {skill.proficiency}%
+        </span>
       </div>
-      <p className="font-mono text-xs text-text-muted mb-2">{skill.years} years</p>
-      {/* Bar */}
-      <div className="w-full h-1.5 bg-border rounded-full overflow-hidden mb-3">
-        <motion.div
-          className="h-full rounded-full"
-          style={{ background: `linear-gradient(90deg, ${color}, ${color}80)` }}
-          initial={{ width: 0 }}
-          animate={{ width: `${skill.proficiency}%` }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        />
-      </div>
-      <div className="flex flex-wrap gap-1">
-        {skill.tools.map((t) => (
-          <span key={t} className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-bg text-text-muted border border-border">
-            {t}
-          </span>
-        ))}
-      </div>
+
+      {/* Progress bar */}
+      <ProfBar pct={skill.proficiency} color={color} />
+
+      {/* Years + tools — mono t-12, text-muted */}
+      <p style={{
+        fontFamily:'var(--font-mono)', fontWeight:400,
+        fontSize:'var(--t-12)', lineHeight:'var(--lh-mono)',
+        color:'var(--text-muted)',
+      }}>
+        {skill.years}yr · {skill.tools.slice(0,3).join(', ')}
+      </p>
     </motion.div>
   )
 }
 
-/* ── Domain Card ──────────────────────────────────────── */
+/* ── Domain accordion ──────────────────────────────── */
 function DomainCard({
-  domain,
-  index,
-  isActive,
-  onToggle,
-  inView,
+  domain, index, isActive, onToggle, inView,
 }: {
-  domain: Domain
-  index: number
-  isActive: boolean
-  onToggle: () => void
-  inView: boolean
+  domain: Domain; index: number; isActive: boolean; onToggle: () => void; inView: boolean
 }) {
-  const [hoveredSkill, setHoveredSkill] = useState<Skill | null>(null)
-  const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 })
-
-  const handleSkillHover = (skill: Skill, e: React.MouseEvent) => {
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
-    setHoverPos({ x: rect.left, y: rect.top })
-    setHoveredSkill(skill)
-  }
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      animate={inView ? { opacity: isActive ? 1 : 0.35, y: 0 } : {}}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
-      className="relative"
+      initial={{ opacity:0, y:28 }}
+      animate={inView ? { opacity: isActive ? 1 : 0.38, y:0 } : {}}
+      transition={{ duration:0.6, ease:[0.22,1,0.36,1], delay: index * 0.09 }}
     >
-      {/* Domain header */}
+      {/* Domain header button */}
       <button
         onClick={onToggle}
-        className={`w-full text-left glass rounded-2xl p-5 mb-3 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-          isActive ? 'glow-border' : 'hover:border-border/80'
-        }`}
-        style={isActive ? { borderColor: `${domain.color}50`, boxShadow: `0 0 24px ${domain.color}15` } : {}}
         aria-expanded={isActive}
+        style={{
+          width:'100%', textAlign:'left',
+          background: isActive ? 'var(--surface)' : 'var(--background)',
+          border:`1px solid ${isActive ? `${domain.color}40` : 'var(--border)'}`,
+          borderRadius:'16px',
+          padding:'var(--sp-4) var(--sp-6)',
+          cursor:'pointer',
+          marginBottom:'var(--sp-3)',
+          display:'flex', alignItems:'center', justifyContent:'space-between',
+          boxShadow: isActive ? `0 0 24px ${domain.color}12` : 'none',
+          transition:`all var(--dur-base) var(--ease-std)`,
+        }}
+        onMouseEnter={e => {
+          if (!isActive) (e.currentTarget.style.borderColor = 'var(--border)')
+        }}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-3 h-3 rounded-full ring-4"
-              style={{ background: domain.color, ringColor: `${domain.color}30` }}
-            />
-            <span className="font-syne font-bold text-base text-text-primary">{domain.label}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-text-muted">{domain.skills.length} skills</span>
-            <motion.span
-              animate={{ rotate: isActive ? 180 : 0 }}
-              transition={{ duration: 0.3 }}
-              className="text-text-muted text-xs"
-            >
-              ▼
-            </motion.span>
-          </div>
+        <div style={{ display:'flex', alignItems:'center', gap:'var(--sp-3)' }}>
+          {/* Domain color dot */}
+          <div style={{
+            width:'12px', height:'12px', borderRadius:'50%',
+            background: domain.color,
+            boxShadow: isActive ? `0 0 10px ${domain.color}60` : 'none',
+          }} aria-hidden="true" />
+          {/* Label — Syne 700, t-16 */}
+          <span style={{
+            fontFamily:'var(--font-display)', fontWeight:700,
+            fontSize:'var(--t-16)', lineHeight:'var(--lh-heading)',
+            color:'var(--text-primary)',
+          }}>
+            {domain.label}
+          </span>
+        </div>
+
+        <div style={{ display:'flex', alignItems:'center', gap:'var(--sp-3)' }}>
+          {/* Skill count — mono t-12, text-muted */}
+          <span style={{
+            fontFamily:'var(--font-mono)', fontWeight:400,
+            fontSize:'var(--t-12)', lineHeight:'var(--lh-mono)',
+            color:'var(--text-muted)',
+          }}>
+            {domain.skills.length} skills
+          </span>
+          {/* Chevron */}
+          <motion.span
+            animate={{ rotate: isActive ? 180 : 0 }}
+            transition={{ duration: 0.3 }}  /* dur-base-ish */
+            style={{
+              fontFamily:'var(--font-mono)', fontSize:'var(--t-12)',
+              color:'var(--text-muted)', display:'block',
+            }}
+            aria-hidden="true"
+          >
+            ▼
+          </motion.span>
         </div>
       </button>
 
-      {/* Skill grid */}
+      {/* Skill grid — dur-base accordion */}
       <AnimatePresence>
         {isActive && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden"
+            initial={{ height:0, opacity:0 }}
+            animate={{ height:'auto', opacity:1 }}
+            exit={{ height:0, opacity:0 }}
+            transition={{ duration:0.3, ease:[0.22,1,0.36,1] }}  /* dur-base */
+            style={{ overflow:'hidden' }}
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-4">
+            <div style={{
+              display:'grid',
+              gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))',
+              gap:'var(--sp-3)',
+              paddingBottom:'var(--sp-4)',
+            }}>
               {domain.skills.map((skill, i) => (
-                <motion.div
+                <SkillRow
                   key={skill.name}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative group"
-                  onMouseEnter={(e) => handleSkillHover(skill, e)}
-                  onMouseLeave={() => setHoveredSkill(null)}
-                >
-                  <div
-                    className="glass rounded-xl p-4 cursor-default transition-all duration-200 group-hover:border-opacity-50"
-                    style={{ '--hover-color': domain.color } as React.CSSProperties}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-dm text-sm font-medium text-text-primary">{skill.name}</span>
-                      <span className="font-mono text-xs text-text-muted">{skill.proficiency}%</span>
-                    </div>
-                    {/* Progress */}
-                    <div className="w-full h-1 bg-border rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full rounded-full"
-                        style={{ background: `linear-gradient(90deg, ${domain.color}, ${domain.color}70)` }}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${skill.proficiency}%` }}
-                        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: i * 0.05 + 0.2 }}
-                      />
-                    </div>
-                    <p className="mt-2 font-mono text-xs text-text-muted">{skill.years}y · {skill.tools.slice(0, 2).join(', ')}</p>
-                  </div>
-                </motion.div>
+                  skill={skill}
+                  color={domain.color}
+                  delay={i * 0.05}
+                />
               ))}
             </div>
-
-            {/* Tooltip */}
-            <AnimatePresence>
-              {hoveredSkill && (
-                <div className="fixed z-50" style={{ left: hoverPos.x - 20, top: hoverPos.y - 160 }}>
-                  <SkillCard skill={hoveredSkill} color={domain.color} />
-                </div>
-              )}
-            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
@@ -169,86 +192,101 @@ function DomainCard({
   )
 }
 
-/* ── Skills Component ─────────────────────────────────── */
+/* ── Skills ─────────────────────────────────────────── */
 export default function Skills() {
-  const titleRef = useRef<HTMLDivElement>(null)
-  const inView = useInView(titleRef, { once: true, margin: '-10% 0px' })
-  const [activeIndex, setActiveIndex] = useState<number | null>(0)
-
-  const toggle = (i: number) => setActiveIndex(activeIndex === i ? null : i)
+  const ref    = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once:true, margin:'-8% 0px' })
+  const [active, setActive] = useState<number | null>(0)
 
   return (
-    <section id="skills" className="relative py-24 md:py-32 px-6 overflow-hidden">
-      {/* Subtle grid */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: `linear-gradient(#4F8EF7 1px, transparent 1px), linear-gradient(90deg, #4F8EF7 1px, transparent 1px)`,
-          backgroundSize: '48px 48px',
-        }}
-      />
+    <section id="skills" className="section">
+      {/* Subtle dot grid — matches spec aesthetic */}
+      <div aria-hidden="true" style={{
+        position:'absolute', inset:0, pointerEvents:'none',
+        backgroundImage:`radial-gradient(circle, var(--border) 1px, transparent 1px)`,
+        backgroundSize:'32px 32px', opacity:0.5,
+      }}/>
 
-      <div className="max-w-7xl mx-auto">
-        <div ref={titleRef} className="mb-16 grid md:grid-cols-2 gap-12 items-end">
+      <div className="section-inner">
+        {/* Header */}
+        <div
+          ref={ref}
+          style={{
+            display:'grid', gridTemplateColumns:'1fr 1fr', gap:'var(--sp-8)',
+            alignItems:'end', marginBottom:'var(--sp-12)',
+          }}
+        >
           <div>
             <motion.p
-              className="section-eyebrow mb-4"
-              initial={{ opacity: 0, x: -20 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6 }}
+              className="eyebrow"
+              initial={{ opacity:0, x:-20 }}
+              animate={inView ? { opacity:1, x:0 } : {}}
+              transition={{ duration:0.6 }}
+              style={{ marginBottom:'var(--sp-4)' }}
             >
               Expertise
             </motion.p>
             <motion.h2
-              className="font-syne font-extrabold text-text-primary"
-              style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}
-              initial={{ opacity: 0, y: 24 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+              style={{ fontSize:'clamp(var(--t-32),5vw,var(--t-48))' }}
+              initial={{ opacity:0, y:24 }}
+              animate={inView ? { opacity:1, y:0 } : {}}
+              transition={{ duration:0.6, ease:[0.22,1,0.36,1], delay:0.08 }}
             >
-              What I <span className="text-gradient">Build With</span>
+              What I{' '}
+              <span className="text-grad">Build With</span>
             </motion.h2>
           </div>
+
           <motion.p
-            className="text-text-secondary leading-relaxed"
-            initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            className="t-body"
+            initial={{ opacity:0, y:24 }}
+            animate={inView ? { opacity:1, y:0 } : {}}
+            transition={{ duration:0.6, ease:[0.22,1,0.36,1], delay:0.16 }}
           >
-            Organized by domain — click any area to explore the stack. Skills aren't silos; they compound across every project.
+            Organized by domain. Click to explore the stack — skills compound across every project.
           </motion.p>
         </div>
 
-        {/* Domain filter pills */}
-        <div className="flex flex-wrap gap-2 mb-10">
-          {skillDomains.map((domain, i) => (
+        {/* Filter pills — scaleHover 1.04, dur-base transitions */}
+        <div style={{
+          display:'flex', flexWrap:'wrap',
+          gap:'var(--sp-2)', marginBottom:'var(--sp-8)',
+        }}>
+          {skillDomains.map((d, i) => (
             <motion.button
-              key={domain.id}
-              onClick={() => toggle(i)}
-              className={`px-4 py-2 rounded-full font-dm text-sm transition-all duration-200 border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                activeIndex === i
-                  ? 'text-bg font-medium'
-                  : 'text-text-secondary border-border hover:border-text-muted'
-              }`}
-              style={activeIndex === i ? { background: domain.color, borderColor: domain.color } : {}}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ delay: 0.3 + i * 0.06 }}
+              key={d.id}
+              onClick={() => setActive(active === i ? null : i)}
+              initial={{ opacity:0, scale:0.9 }}
+              animate={inView ? { opacity:1, scale:1 } : {}}
+              transition={{ delay: 0.28 + i * 0.06 }}
+              whileHover={{ scale: 1.04 }}              /* scaleHover */
+              whileTap={{ scale: 0.97 }}
+              style={{
+                fontFamily:'var(--font-body)', fontWeight:500,
+                fontSize:'var(--t-14)', lineHeight:'var(--lh-body)',
+                padding:'6px var(--sp-4)',
+                borderRadius:'999px',
+                border:`1px solid ${active === i ? d.color : 'var(--border)'}`,
+                color: active === i ? 'var(--background)' : 'var(--text-secondary)',
+                background: active === i ? d.color : 'transparent',
+                cursor:'pointer',
+                transition:`all var(--dur-base) var(--ease-std)`,
+              }}
             >
-              {domain.label}
+              {d.label}
             </motion.button>
           ))}
         </div>
 
-        {/* Domain cards */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {skillDomains.map((domain, i) => (
+        {/* Domains */}
+        <div style={{ display:'flex', flexDirection:'column', gap:'var(--sp-3)' }}>
+          {skillDomains.map((d, i) => (
             <DomainCard
-              key={domain.id}
-              domain={domain}
+              key={d.id}
+              domain={d}
               index={i}
-              isActive={activeIndex === i}
-              onToggle={() => toggle(i)}
+              isActive={active === i}
+              onToggle={() => setActive(active === i ? null : i)}
               inView={inView}
             />
           ))}
