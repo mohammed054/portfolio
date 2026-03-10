@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import Loader from '@/components/load'
 import Hero from '@/components/hero'
 import About from '@/components/about'
@@ -11,7 +12,7 @@ import Projects from '@/components/projects'
 import Testimonials from '@/components/testimonials'
 import Contact from '@/components/contact'
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
 export default function Page() {
   const [ready, setReady] = useState(false)
@@ -20,14 +21,13 @@ export default function Page() {
   useEffect(() => {
     if (!ready) return
     const ctx = gsap.context(() => {
-      const ids = ['about', 'skills', 'projects', 'contact']
-      ids.forEach((id) => {
+      ;['about', 'skills', 'projects', 'contact'].forEach((id) => {
         ScrollTrigger.create({
           trigger: `#${id}`,
           start: 'top top',
           end: '+=120%',
           pin: true,
-          scrub: 1,
+          scrub: 1.2,
         })
       })
     }, rootRef)
@@ -35,9 +35,7 @@ export default function Page() {
   }, [ready])
 
   const handleExplore = () => {
-    const target = document.getElementById('about')
-    if (!target) return
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    gsap.to(window, { duration: 1.2, scrollTo: '#about', ease: 'power2.inOut' })
   }
 
   return (

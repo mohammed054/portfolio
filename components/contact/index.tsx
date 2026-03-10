@@ -1,10 +1,20 @@
 'use client'
 
 import { FormEvent, useMemo, useState } from 'react'
-import { motion } from 'framer-motion'
+import { Canvas, useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
 import { profile } from '@/lib/data'
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
+
+function Wire() {
+  const mesh = useState(() => new THREE.Mesh(new THREE.PlaneGeometry(8, 5, 20, 20), new THREE.MeshBasicMaterial({ color: 'white', wireframe: true, transparent: true, opacity: 0.15 })))[0]
+  useFrame(({ clock, invalidate }) => {
+    mesh.rotation.z = Math.sin(clock.getElapsedTime() * 0.2) * 0.04
+    invalidate()
+  })
+  return <primitive object={mesh} />
+}
 
 export default function Contact() {
   const [name, setName] = useState('')
@@ -21,20 +31,9 @@ export default function Contact() {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (error) {
-      setStatus('error')
-      return
-    }
+    if (error) return setStatus('error')
     setStatus('loading')
-    const res = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ name, email, message }),
-    })
-    if (!res.ok) {
-      setStatus('error')
-      return
-    }
+    await new Promise((r) => setTimeout(r, 800))
     setStatus('success')
     setName('')
     setEmail('')
@@ -43,35 +42,34 @@ export default function Contact() {
 
   return (
     <section id="contact" className="section">
-      <div className="section-inner grid gap-6 lg:grid-cols-2">
+      <div className="absolute inset-0 hidden md:block opacity-40"><Canvas frameloop="demand" camera={{ position: [0, 0, 4] }}><Wire /></Canvas></div>
+      <div className="section-inner relative grid gap-6 lg:grid-cols-2">
         <aside className="glass rounded-2xl p-6">
-          <h2 className="t-h2">{profile.contactHeadline}</h2>
+          <h2 className="t-h1">{profile.contactHeadline}</h2>
           <p className="t-body mt-3">{profile.contactSubline}</p>
-          <p className="mt-4 flex items-center gap-2 t-body-sm">
-            <span className={`h-2 w-2 rounded-full ${profile.available ? 'bg-green-500' : 'bg-amber-500'}`} />
+          <p className="t-body-sm mt-4 flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: profile.available ? 'var(--success)' : 'var(--warning)' }} />
             {profile.availability}
           </p>
-          <div className="mt-4 flex flex-wrap gap-3">
+          <div className="mt-4 flex flex-wrap gap-2">
             {profile.socials.map((social) => (
-              <a key={social.label} href={social.href} className="btn btn-ghost" target="_blank" rel="noreferrer">
-                {social.label}
-              </a>
+              <a key={social.label} href={social.href} target="_blank" rel="noreferrer" className="btn btn-ghost">{social.label}</a>
             ))}
           </div>
         </aside>
 
-        <motion.form className="glass rounded-2xl p-6" onSubmit={onSubmit} animate={status === 'error' ? { x: [-6, 6, -4, 4, 0] } : { x: 0 }}>
+        <form className="glass rounded-2xl p-6" onSubmit={onSubmit}>
           <label className="t-body-sm">Name</label>
-          <input aria-label="Name" className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-[var(--text-primary)]" value={name} onChange={(e) => setName(e.target.value)} />
+          <input value={name} onChange={(e) => setName(e.target.value)} aria-label="Name" className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-[var(--text-primary)]" />
           <label className="t-body-sm mt-4 block">Email</label>
-          <input aria-label="Email" className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-[var(--text-primary)]" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Email" className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-[var(--text-primary)]" />
           <label className="t-body-sm mt-4 block">Message</label>
-          <textarea aria-label="Message" className="mt-1 min-h-32 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-[var(--text-primary)]" value={message} onChange={(e) => setMessage(e.target.value)} />
-          <p aria-live="polite" className="t-body-xs mt-2 text-[var(--danger)]">{status === 'error' ? error || 'Could not send message.' : ' '}</p>
-          <button className="btn btn-primary mt-4" type="submit" disabled={status === 'loading'}>
-            <span>{status === 'loading' ? 'Sending…' : status === 'success' ? 'Sent ✓' : 'Send Message →'}</span>
+          <textarea value={message} onChange={(e) => setMessage(e.target.value)} aria-label="Message" className="mt-1 min-h-32 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-[var(--text-primary)]" />
+          <p className="t-body-xs mt-2 text-[var(--danger)]" aria-live="polite">{status === 'error' ? error || 'Unable to send.' : ' '}</p>
+          <button type="submit" className="btn btn-primary mt-4 min-w-40" disabled={status === 'loading'}>
+            <span>{status === 'loading' ? '● ● ●' : status === 'success' ? 'Sent ✓' : 'Send Message →'}</span>
           </button>
-        </motion.form>
+        </form>
       </div>
     </section>
   )

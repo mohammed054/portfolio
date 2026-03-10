@@ -8,15 +8,15 @@ export default function Testimonials() {
     <section id="testimonials" className="section">
       <div className="section-inner">
         <p className="eyebrow">Testimonials</p>
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {testimonials.map((item, index) => (
+        <div className="mt-8 grid gap-4 md:grid-cols-[1fr_1.2fr_1fr]">
+          {testimonials.map((item, i) => (
             <motion.blockquote
               key={item.id}
-              className="glass rounded-2xl p-5"
+              className="glass rounded-2xl p-6"
               initial={{ opacity: 0, y: 80 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.08, duration: 0.3 }}
-              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.35, delay: i * 0.08 }}
+              viewport={{ once: true, amount: 0.3 }}
               tabIndex={0}
             >
               <p className="t-body">“{item.quote}”</p>

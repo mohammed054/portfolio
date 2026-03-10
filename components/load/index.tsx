@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useProgress } from '@react-three/drei'
 import { motion, useReducedMotion } from 'framer-motion'
 import { profile } from '@/lib/data'
@@ -8,61 +8,62 @@ import { profile } from '@/lib/data'
 type Props = { onDone: () => void }
 
 export default function Loader({ onDone }: Props) {
-  const [ready, setReady] = useState(false)
-  const [skip, setSkip] = useState(true)
-  const prefersReducedMotion = useReducedMotion()
+  const [enabled, setEnabled] = useState(false)
+  const [exit, setExit] = useState(false)
+  const reduced = useReducedMotion()
   const { progress } = useProgress()
 
   useEffect(() => {
-    const wasShown = sessionStorage.getItem('loaderShown') === '1'
-    if (wasShown) {
+    if (sessionStorage.getItem('loaderShown') === '1') {
       onDone()
       return
     }
-    setSkip(false)
+    setEnabled(true)
   }, [onDone])
 
   useEffect(() => {
-    if (skip) return
-    if (progress >= 100) {
-      const timeout = window.setTimeout(() => {
-        setReady(true)
-      }, 250)
-      return () => window.clearTimeout(timeout)
-    }
-    return undefined
-  }, [progress, skip])
+    if (!enabled || progress < 100) return
+    const timer = window.setTimeout(() => setExit(true), 240)
+    return () => window.clearTimeout(timer)
+  }, [enabled, progress])
 
   useEffect(() => {
-    if (!ready) return
+    if (!exit) return
     sessionStorage.setItem('loaderShown', '1')
-    const timeout = window.setTimeout(onDone, 500)
-    return () => window.clearTimeout(timeout)
-  }, [ready, onDone])
+    const timer = window.setTimeout(onDone, reduced ? 180 : 720)
+    return () => window.clearTimeout(timer)
+  }, [exit, onDone, reduced])
 
-  if (skip) return null
+  const pct = useMemo(() => Math.max(4, Math.min(100, Math.round(progress))), [progress])
+
+  if (!enabled) return null
 
   return (
     <motion.div
       aria-label="Loading Portfolio"
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-[var(--background)]"
-      initial={{ opacity: 1 }}
-      animate={ready ? { opacity: 0, clipPath: 'inset(0 50% 0 50%)' } : { opacity: 1, clipPath: 'inset(0 0% 0 0%)' }}
-      transition={{ duration: prefersReducedMotion ? 0.2 : 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed inset-0 z-50 grid place-items-center bg-[var(--background)]"
+      initial={{ opacity: 1, clipPath: 'inset(0 0 0 0)' }}
+      animate={exit ? { clipPath: 'inset(0 50% 0 50%)', opacity: 0 } : { clipPath: 'inset(0 0 0 0)', opacity: 1 }}
+      transition={{ duration: reduced ? 0.2 : 0.85, ease: [0.22, 1, 0.36, 1] }}
     >
-      <motion.div
-        className="t-display text-6xl md:text-8xl"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, scale: ready ? 0.95 : 1 }}
-      >
-        {profile.initials}
-      </motion.div>
-      <div className="h-1 w-64 overflow-hidden rounded-full bg-[var(--border)]">
-        <motion.div
-          className="h-full bg-[var(--accent1)]"
-          animate={{ width: `${Math.max(progress, 6)}%` }}
-          transition={{ duration: 0.3 }}
-        />
+      <div className="flex w-full max-w-xl flex-col items-center gap-4 px-6">
+        <svg viewBox="0 0 360 120" className="w-full max-w-sm" role="img" aria-label={profile.initials}>
+          <text
+            x="50%"
+            y="50%"
+            dominantBaseline="middle"
+            textAnchor="middle"
+            className="fill-transparent stroke-[var(--accent1)] text-[96px] font-extrabold [font-family:var(--font-display)]"
+            style={{ strokeDasharray: 460, strokeDashoffset: exit ? 0 : 460, filter: 'drop-shadow(0 0 14px var(--accent-glow))', transition: 'stroke-dashoffset var(--dur-cinematic) var(--ease-enter)' }}
+          >
+            {profile.initials}
+          </text>
+        </svg>
+
+        <div className="h-px w-72 bg-[var(--border)]">
+          <motion.div className="h-px bg-[var(--accent1)]" animate={{ width: `${pct}%` }} transition={{ duration: 0.25 }} />
+        </div>
+        <p className="t-mono text-[var(--text-secondary)]">{pct}%</p>
       </div>
     </motion.div>
   )
