@@ -78,13 +78,21 @@
   --ease-exit:     cubic-bezier(0.55, 0, 1, 0.45);
   --ease-std:      cubic-bezier(0.4, 0, 0.2, 1);
   --scale-hover:   1.04;
+  --font-display: var(--font-syne);
+  --font-body:    var(--font-dm);
 }
 
 /* ── Reset ─────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  perspective: 1000px;
+}
 
+main {
+  transform-style: preserve-3d;
+}
 body {
   background-color: var(--background);
   color: var(--text-primary);
