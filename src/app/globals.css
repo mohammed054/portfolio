@@ -336,6 +336,34 @@ button { cursor: none; border: none; background: none; }
   font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--text-3);
 }
 
+
+/* ═══════════════════════════════════════
+   DIVE HINT — appears after name reveal
+   requires scroll to proceed
+═══════════════════════════════════════ */
+.dive-hint {
+  position: absolute;
+  bottom: 44px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  z-index: 100; pointer-events: none;
+  animation: fadeSlideUpHint 0.9s var(--ease-out) forwards;
+}
+.dh-line {
+  width: 1px; height: 44px;
+  background: linear-gradient(to bottom, var(--cyan), transparent);
+  animation: linePulse 1.8s ease-in-out infinite;
+}
+.dh-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--text-3);
+}
+@keyframes fadeSlideUpHint {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
 /* ═══════════════════════════════════════
    FILM GRAIN
 ═══════════════════════════════════════ */

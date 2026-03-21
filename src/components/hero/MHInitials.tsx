@@ -1,140 +1,226 @@
 'use client';
+
 import { useRef, useState, useEffect, Suspense } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text3D, Center } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Must match CameraController MH_POS
-export const MH_POSITION: [number, number, number] = [0, 0.2, -11.0];
+export const MH_POSITION: [number, number, number] = [0, 0.2, -11];
 
 interface Props {
   visible: boolean;
-  revealed: boolean;      // true = animate OUT (zoom blast)
+  revealed: boolean;
   onClick: () => void;
   mouseRef: React.MutableRefObject<{ x: number; y: number }>;
 }
 
 function Inner({ visible, revealed, onClick, mouseRef }: Props) {
-  const gRef      = useRef<THREE.Group>(null!);
-  const matRef    = useRef<THREE.MeshStandardMaterial>(null!);
+  const group = useRef<THREE.Group>(null!);
+  const mat = useRef<THREE.MeshStandardMaterial>(null!);
+
+  const ring1 = useRef<THREE.Mesh>(null!);
+  const ring2 = useRef<THREE.Mesh>(null!);
+
   const [hovered, setHovered] = useState(false);
 
-  // Animated values stored in refs (no re-renders)
-  const scaleVal   = useRef(0);
-  const opacityVal = useRef(0);
-  const clickedAt  = useRef<number | null>(null);
+  const appear = useRef(0);
+  const energy = useRef(0);
+  const explode = useRef(0);
 
-  // Trigger zoom-blast when revealed flips true
+  const clickedAt = useRef<number | null>(null);
+
+  // trigger explosion
   useEffect(() => {
-    if (revealed) {
-      clickedAt.current = performance.now();
-    }
+    if (revealed) clickedAt.current = performance.now();
   }, [revealed]);
 
   useFrame(({ clock }) => {
-    if (!gRef.current) return;
     const t = clock.getElapsedTime();
 
-    // ── Scale-in spring when first appearing ──
-    if (!revealed && visible) {
-      scaleVal.current   += (1.0 - scaleVal.current)   * 0.055;
-      opacityVal.current += (1.0 - opacityVal.current) * 0.055;
+    if (!group.current) return;
+
+    // ─────────────────────────────
+    // APPEAR (materialize instead of pop)
+    // ─────────────────────────────
+    if (visible && !revealed) {
+      appear.current += (1 - appear.current) * 0.05;
     }
 
-    // ── Zoom-blast out when revealed ──
-    if (revealed && clickedAt.current !== null) {
-      const elapsed = (performance.now() - clickedAt.current) / 1000;
-      // Rapid scale surge: 1 → 6 over 0.5s
-      const zoomT = Math.min(elapsed / 0.5, 1.0);
-      scaleVal.current   = 1.0 + zoomT * 5.0;
-      opacityVal.current = 1.0 - zoomT;
+    // ─────────────────────────────
+    // ENERGY BUILDUP
+    // ─────────────────────────────
+    const targetEnergy = hovered ? 2.5 : 1.0;
+    energy.current += (targetEnergy - energy.current) * 0.08;
+
+    // ─────────────────────────────
+    // EXPLOSION
+    // ─────────────────────────────
+    if (revealed && clickedAt.current) {
+      const e = (performance.now() - clickedAt.current) / 700;
+      explode.current = Math.min(e, 1);
     }
 
-    const s = Math.max(0, scaleVal.current);
-    gRef.current.scale.set(s, s, s);
+    // ─────────────────────────────
+    // SCALE (non-linear)
+    // ─────────────────────────────
+    const s =
+      appear.current *
+      (1 + energy.current * 0.1) *
+      (1 + explode.current * 6);
 
-    // Opacity via material
-    if (matRef.current) {
-      matRef.current.opacity = opacityVal.current;
+    group.current.scale.setScalar(s);
 
-      // Emissive: idle pulse → max on click
-      const pulseBase = 2.2 + Math.sin(t * 1.2) * 0.7;
-      const hoverBoost = hovered ? 2.0 : 0;
-      const blastBoost = revealed ? 8.0 * (1 - Math.min((performance.now() - (clickedAt.current ?? 0)) / 500, 1)) : 0;
-      const target = pulseBase + hoverBoost + blastBoost;
-      matRef.current.emissiveIntensity += (target - matRef.current.emissiveIntensity) * 0.1;
-    }
-
-    // Gentle float
+    // ─────────────────────────────
+    // FLOAT (subtle)
+    // ─────────────────────────────
     if (!revealed) {
-      gRef.current.position.y = MH_POSITION[1] + Math.sin(t * 0.55) * 0.12;
+      group.current.position.y =
+        MH_POSITION[1] + Math.sin(t * 0.6) * 0.1;
     }
 
-    // Mouse tilt — only when idle
+    // ─────────────────────────────
+    // ROTATION (space instability)
+    // ─────────────────────────────
+    group.current.rotation.y += 0.002 + energy.current * 0.002;
+
+    // mouse influence
     if (!revealed) {
       const { x, y } = mouseRef.current;
-      gRef.current.rotation.x += (-y * 0.10 - gRef.current.rotation.x) * 0.05;
-      gRef.current.rotation.y += ( x * 0.12 - gRef.current.rotation.y) * 0.05;
+
+      group.current.rotation.x += (-y * 0.1 - group.current.rotation.x) * 0.06;
+      group.current.rotation.y += (x * 0.12 - group.current.rotation.y) * 0.06;
+    }
+
+    // ─────────────────────────────
+    // MATERIAL
+    // ─────────────────────────────
+    if (mat.current) {
+      const pulse =
+        2.0 +
+        Math.sin(t * 1.5) * 0.6 +
+        energy.current * 2.0;
+
+      const blast = explode.current * 8;
+
+      const target = pulse + blast;
+
+      mat.current.emissiveIntensity +=
+        (target - mat.current.emissiveIntensity) * 0.1;
+
+      mat.current.opacity =
+        (1 - explode.current) * appear.current;
+    }
+
+    // ─────────────────────────────
+    // RINGS (gravitational field)
+    // ─────────────────────────────
+    if (ring1.current) {
+      ring1.current.rotation.z = t * 0.6;
+
+      const scale =
+        1 +
+        Math.sin(t * 1.2) * 0.08 +
+        energy.current * 0.2;
+
+      ring1.current.scale.setScalar(scale);
+
+      const m = ring1.current.material as THREE.MeshBasicMaterial;
+      m.opacity = 0.25 + energy.current * 0.2;
+    }
+
+    if (ring2.current) {
+      ring2.current.rotation.z = -t * 0.4;
+
+      const scale =
+        1 +
+        Math.sin(t * 0.8 + 1.5) * 0.1 +
+        energy.current * 0.3;
+
+      ring2.current.scale.setScalar(scale);
+
+      const m = ring2.current.material as THREE.MeshBasicMaterial;
+      m.opacity = 0.1 + energy.current * 0.15;
     }
   });
 
   if (!visible) return null;
 
   return (
-    <group ref={gRef} position={MH_POSITION}>
-      {/* Focused lighting just for MH */}
-      <pointLight position={[0, 0, 3]} intensity={6} color="#ffffff" distance={10} decay={2} />
-      <pointLight position={[0, 2, 2]} intensity={3} color="#00D0FF" distance={8}  decay={2} />
+    <>
+      <group ref={group} position={MH_POSITION}>
+        {/* LIGHT ENERGY */}
+        <pointLight position={[0, 0, 3]} intensity={6} />
+        <pointLight position={[0, 2, 2]} intensity={4} color="#00D0FF" />
 
-      <Center>
-        <Text3D
-          font="/fonts/Syne_Bold.json"
-          size={1.1}
-          height={0.28}
-          bevelEnabled
-          bevelThickness={0.03}
-          bevelSize={0.018}
-          bevelSegments={6}
-          curveSegments={24}
-          onClick={(e) => { e.stopPropagation(); if (!revealed) onClick(); }}
-          onPointerOver={() => { setHovered(true); document.body.style.cursor = 'none'; }}
-          onPointerOut={() => setHovered(false)}
-        >
-          MH
-          <meshStandardMaterial
-            ref={matRef}
-            color="#F0F4FF"
-            emissive="#00AAFF"   /* cyan-white — no purple */
-            emissiveIntensity={2.2}
-            metalness={0.95}
-            roughness={0.05}
-            transparent
-            opacity={1}
-          />
-        </Text3D>
-      </Center>
+        <Center>
+          <Text3D
+            font="/fonts/Syne_Bold.json"
+            size={1.1}
+            height={0.28}
+            bevelEnabled
+            bevelThickness={0.03}
+            bevelSize={0.018}
+            bevelSegments={6}
+            curveSegments={32}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!revealed) onClick();
+            }}
+            onPointerOver={() => {
+              setHovered(true);
+              document.body.style.cursor = 'none';
+            }}
+            onPointerOut={() => setHovered(false)}
+          >
+            MH
+            <meshStandardMaterial
+              ref={mat}
+              color="#F5F8FF"
+              emissive="#00AAFF"
+              emissiveIntensity={2}
+              metalness={1}
+              roughness={0.05}
+              transparent
+            />
+          </Text3D>
+        </Center>
 
-      {/* Single clean orbit ring — replaces the two purple pulse rings */}
-      <OrbitRing />
-    </group>
-  );
-}
+        {/* GRAVITY RINGS */}
+        <mesh ref={ring1} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[2.1, 0.015, 16, 120]} />
+          <meshBasicMaterial color="#00D0FF" transparent />
+        </mesh>
 
-function OrbitRing() {
-  const r = useRef<THREE.Mesh>(null!);
-  useFrame(({ clock }) => {
-    if (!r.current) return;
-    const t = clock.getElapsedTime();
-    r.current.rotation.z = t * 0.4;
-    const s = 1 + Math.sin(t * 0.9) * 0.04;
-    r.current.scale.set(s, s, s);
-    (r.current.material as THREE.MeshBasicMaterial).opacity = 0.25 + Math.sin(t * 0.9) * 0.1;
-  });
-  return (
-    <mesh ref={r} rotation={[Math.PI / 2, 0, 0]} position={[0, -0.3, 0]}>
-      <torusGeometry args={[2.0, 0.015, 8, 80]} />
-      <meshBasicMaterial color="#00D0FF" transparent opacity={0.25} />
-    </mesh>
+        <mesh ref={ring2} rotation={[Math.PI / 2.5, 0, 0]}>
+          <torusGeometry args={[2.7, 0.008, 16, 120]} />
+          <meshBasicMaterial color="#88EEFF" transparent />
+        </mesh>
+      </group>
+
+      {/* UI REVEAL */}
+      {revealed && (
+        <div className="mh-overlay">
+          <div className="mh-name">
+            <span>Mohammed</span>
+            <span>Hassoun</span>
+          </div>
+
+          <div className="mh-sub">
+            Software Engineer — Systems • AI • Interfaces
+          </div>
+
+          <div className="mh-cta">
+            <button>Explore Work</button>
+            <button>Contact</button>
+          </div>
+
+          <div className="mh-scroll">
+            <div className="line" />
+            <span>scroll to continue</span>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

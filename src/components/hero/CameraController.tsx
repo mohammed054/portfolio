@@ -1,4 +1,5 @@
 'use client';
+
 import { useFrame, useThree } from '@react-three/fiber';
 import { MutableRefObject, useRef } from 'react';
 import * as THREE from 'three';
@@ -10,28 +11,40 @@ export default function CameraController({
 }) {
   const { camera } = useThree();
 
-  const targetPos = useRef(new THREE.Vector3());
-  const currentPos = useRef(new THREE.Vector3(0, 1.2, 22));
+  const pos = useRef(new THREE.Vector3(0, 1.2, 22));
+  const target = useRef(new THREE.Vector3());
+  const look = useRef(new THREE.Vector3(0, 0, 0));
 
-  const lookAtTarget = useRef(new THREE.Vector3(0, 0, 0));
-  const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
+  const velocity = useRef(0);
 
   useFrame(() => {
     const t = scrollProgress.current;
 
-    // ─── Camera path (designed, not linear) ───
-    targetPos.current.set(
-      0,
-      1.2 - t * 0.5,
-      22 - t * 18
+    // 🎯 NON-LINEAR acceleration (this is EVERYTHING)
+    const accel = Math.pow(t, 2.2);
+
+    // 🎥 camera path
+    target.current.set(
+      Math.sin(t * 2.5) * 0.6,                 // subtle orbit
+      1.2 - accel * 1.4,                       // falling feeling
+      22 - accel * 26                          // aggressive pull
     );
 
-    // ─── Smooth interpolation (this is the KEY) ───
-    currentPos.current.lerp(targetPos.current, 0.06);
-    currentLookAt.current.lerp(lookAtTarget.current, 0.06);
+    // ⚡ velocity (for impact feeling)
+    velocity.current += (accel * 2 - velocity.current) * 0.08;
 
-    camera.position.copy(currentPos.current);
-    camera.lookAt(currentLookAt.current);
+    // smooth movement
+    pos.current.lerp(target.current, 0.08);
+
+    // 🎯 look shifts slightly for realism
+    look.current.set(
+      Math.sin(t * 1.5) * 0.2,
+      0,
+      0
+    );
+
+    camera.position.copy(pos.current);
+    camera.lookAt(look.current);
   });
 
   return null;
