@@ -1,0 +1,357 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════ */
+:root {
+  --bg:          #000010;
+  --border:      #1a1d2a;
+  --cyan:        #00D0FF;
+  --purple:      #7A3CFF;
+  --text:        #F0F4FF;
+  --text-2:      #6A7A96;
+  --text-3:      #30394D;
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ═══════════════════════════════════════
+   RESET
+═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow: hidden; height: 100%; }
+html, body {
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+  cursor: none;
+  scroll-behavior: auto;
+}
+button { cursor: none; border: none; background: none; }
+
+/* ═══════════════════════════════════════
+   HERO FIXED + DIVE
+═══════════════════════════════════════ */
+.hero-fixed {
+  will-change: transform, filter, opacity;
+  transform-origin: 50% 48%;
+}
+
+/* Headfirst dive — gravity grabs you from the top */
+.hero-fixed.dive-out {
+  animation: headfirstDive 2.0s cubic-bezier(0.4, 0, 1, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes headfirstDive {
+  0%   { transform: perspective(1100px) rotateX(0deg)    translateY(0)      scale(1.00); filter: none;                           opacity: 1;    }
+  8%   { transform: perspective(1050px) rotateX(-4deg)   translateY(-1vh)   scale(1.03); filter: blur(0.5px);                    opacity: 1;    }
+  24%  { transform: perspective(880px)  rotateX(-14deg)  translateY(-4vh)   scale(1.20); filter: blur(3px) brightness(1.25);     opacity: 1;    }
+  46%  { transform: perspective(700px)  rotateX(-30deg)  translateY(-9vh)   scale(1.62); filter: blur(9px) brightness(2.0);      opacity: 0.85; }
+  68%  { transform: perspective(520px)  rotateX(-50deg)  translateY(-18vh)  scale(2.40); filter: blur(20px) brightness(3.0);     opacity: 0.40; }
+  100% { transform: perspective(350px)  rotateX(-72deg)  translateY(-36vh)  scale(4.20); filter: blur(45px) brightness(5.5);     opacity: 0;    }
+}
+
+/* ═══════════════════════════════════════
+   TRANSIT DARK (smooth blink over BH)
+═══════════════════════════════════════ */
+.transit-dark {
+  position: absolute; inset: 0; z-index: 92;
+  pointer-events: none;
+  background: #000014;
+}
+
+/* ═══════════════════════════════════════
+   INTERSTELLAR GLOW (no purple)
+   Orange disk-light floods from sides; 
+   faint blue-white at center.
+═══════════════════════════════════════ */
+.interstellar-glow {
+  position: absolute; inset: 0; z-index: 88;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 30% 100% at  4% 50%, rgba(255,128,30,0.20)  0%, transparent 60%),
+    radial-gradient(ellipse 30% 100% at 96% 50%, rgba(255,128,30,0.20)  0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(20, 70,240,0.05)   0%, transparent 65%);
+  mix-blend-mode: screen;
+}
+
+/* ═══════════════════════════════════════
+   CURSOR
+═══════════════════════════════════════ */
+.c-dot {
+  position: fixed; top: 0; left: 0; z-index: 9999;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--cyan);
+  pointer-events: none; transform: translate(-50%,-50%);
+  mix-blend-mode: screen;
+}
+.c-ring {
+  position: fixed; top: 0; left: 0; z-index: 9998;
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid rgba(0, 208, 255, 0.35);
+  pointer-events: none; transform: translate(-50%,-50%);
+  transition: width .3s var(--ease-spring), height .3s var(--ease-spring);
+}
+
+/* ═══════════════════════════════════════
+   SCROLL HINT
+═══════════════════════════════════════ */
+.scroll-hint {
+  position: absolute; bottom: 44px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  z-index: 100; opacity: 0; transition: opacity .6s ease; pointer-events: none;
+}
+.scroll-hint.visible { opacity: 1; }
+.sh-line {
+  width: 1px; height: 44px;
+  background: linear-gradient(to bottom, var(--cyan), transparent);
+  animation: linePulse 1.8s ease-in-out infinite;
+}
+.sh-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--text-3);
+}
+@keyframes linePulse {
+  0%,100% { opacity:.3; transform:scaleY(.8); }
+  50%     { opacity:1;  transform:scaleY(1);  }
+}
+
+/* ═══════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════ */
+.progress-bar-track {
+  position: absolute; right: 28px; top: 50%;
+  transform: translateY(-50%);
+  width: 1px; height: 120px; background: var(--border); z-index: 100;
+}
+.progress-bar-fill {
+  position: absolute; bottom: 0; left: 0; width: 100%;
+  background: linear-gradient(to top, var(--cyan), var(--purple));
+  box-shadow: 0 0 6px var(--cyan);
+  transition: height .1s linear;
+}
+
+/* ═══════════════════════════════════════
+   CLICK PROMPT
+═══════════════════════════════════════ */
+.click-prompt {
+  position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%);
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: .2em; text-transform: uppercase; color: var(--cyan);
+  opacity: 0; transition: opacity .8s var(--ease-out); z-index: 100;
+  pointer-events: none; animation: clickPulse 2s ease-in-out infinite;
+}
+.click-prompt.visible { opacity: 1; }
+@keyframes clickPulse { 0%,100%{opacity:.4;} 50%{opacity:1;} }
+
+/* ═══════════════════════════════════════
+   VOID LABEL
+═══════════════════════════════════════ */
+.void-label {
+  position: absolute; top: 28px; left: 28px;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: .22em; text-transform: uppercase; color: var(--text-3);
+  z-index: 100; transition: color .6s ease; pointer-events: none;
+}
+
+/* ═══════════════════════════════════════
+   ╔═══════════════════════════════════╗
+   ║   NAME REVEAL — M→Mohammed       ║
+   ║                 H→Hassoun        ║
+   ╚═══════════════════════════════════╝
+
+   The M and H from the 3D scene 
+   continue as the anchors of the full
+   name. They start HUGE (matching the
+   visual mass of the 3D zoom-blast)
+   then "ohammed" and "assoun" slide
+   out from their right edges as the 
+   anchors contract to final size.
+   Zero purple gradients.
+═══════════════════════════════════════ */
+.nr-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  /* Pure deep space — no gradient */
+  background: #000010;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  overflow: hidden;
+}
+
+/* Snap visible as soon as phase starts */
+.nr-appear,
+.nr-expand,
+.nr-sub,
+.nr-done {
+  opacity: 1;
+}
+
+.nr-inner {
+  display: flex; flex-direction: column;
+  align-items: flex-start;
+  position: relative; z-index: 2;
+  /* Horizontal padding so text doesn't hit viewport edges */
+  padding: 0 8vw;
+}
+
+/* ── Each name line ── */
+.nr-line {
+  display: flex;
+  align-items: baseline;
+  line-height: 0.9;
+  white-space: nowrap;
+}
+.nr-line:first-child { margin-bottom: 0.04em; }
+
+/* ── Anchor letters (M and H) ──
+   Start at the "zoomed" size (~18vw feels large).
+   Contract to final name size during expand phase.
+   The shrink is what makes room for the sliding text.         */
+.nr-anchor {
+  font-family: 'Syne', 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  color: var(--text);
+  display: inline-block;
+  line-height: 1;
+  /* INITIAL: big — matches the visual weight of the 3D zoom-blast */
+  font-size: clamp(90px, 18vw, 200px);
+  transition: font-size 0.75s var(--ease-out);
+}
+
+/* CONTRACT when expanding */
+.nr-expand .nr-anchor,
+.nr-sub    .nr-anchor,
+.nr-done   .nr-anchor {
+  font-size: clamp(56px, 10.5vw, 118px);
+}
+
+/* Subtle glow on M and H — no solid purple, just light bloom */
+.nr-m { text-shadow: 0 0 60px rgba(0,180,255,0.35), 0 0 120px rgba(0,180,255,0.12); }
+.nr-h { text-shadow: 0 0 60px rgba(0,220,255,0.30), 0 0 120px rgba(0,220,255,0.10); }
+
+/* ── The sliding part (ohammed / assoun) ──
+   Container clips the text.
+   Inner element slides from left (hidden) into view.         */
+.nr-rest {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: baseline;
+  /* Match the final anchor font size */
+  font-size: clamp(56px, 10.5vw, 118px);
+  line-height: 1;
+}
+
+.nr-rest-inner {
+  display: inline-block;
+  font-family: 'Syne', 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  color: var(--text);
+  /* Starts hidden: shifted left by its own width + a bit */
+  transform: translateX(-108%);
+  opacity: 0;
+  transition:
+    transform 0.72s var(--ease-spring),
+    opacity   0.40s ease;
+}
+
+/* SLIDE IN when expanding */
+.nr-rest-inner.in {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* ── Sub-line: role + tagline ── */
+.nr-sub {
+  margin-top: 32px;
+  display: flex; align-items: center; gap: 14px;
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
+  flex-wrap: wrap;
+}
+.nr-sub.in { opacity: 1; transform: translateY(0); }
+
+.nr-role {
+  font-family: 'JetBrains Mono', 'DM Mono', monospace;
+  font-size: clamp(11px, 1.4vw, 14px);
+  letter-spacing: .26em; text-transform: uppercase;
+  color: var(--cyan);
+}
+.nr-dash { color: var(--text-3); font-size: 11px; }
+.nr-tag {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(12px, 1.4vw, 15px);
+  color: var(--text-2); font-style: italic;
+}
+
+/* ── CTA buttons ── */
+.nr-cta {
+  margin-top: 36px; display: flex; gap: 12px;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.75s var(--ease-out) 0.1s, transform 0.75s var(--ease-out) 0.1s;
+}
+.nr-cta.in { opacity: 1; transform: translateY(0); }
+
+.nr-btn {
+  padding: 11px 28px;
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  letter-spacing: .14em; text-transform: uppercase; border-radius: 2px;
+  cursor: none; transition: all .25s var(--ease-spring);
+}
+.nr-btn-primary {
+  background: var(--cyan); color: #000814;
+  border: 1px solid var(--cyan);
+  font-weight: 700;
+}
+.nr-btn-primary:hover { background: transparent; color: var(--cyan); box-shadow: 0 0 24px rgba(0,208,255,.4); }
+.nr-btn-ghost {
+  background: transparent; color: var(--text-2);
+  border: 1px solid var(--border);
+}
+.nr-btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+
+/* ── Scroll nudge after everything appears ── */
+.nr-scroll-hint {
+  margin-top: 52px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  animation: fadeSlideUp 0.8s var(--ease-out) both;
+  /* Centered horizontally relative to nr-inner */
+  align-self: center;
+}
+@keyframes fadeSlideUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.nr-sh-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--cyan), transparent);
+  animation: linePulse 1.8s ease-in-out infinite;
+}
+.nr-sh-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--text-3);
+}
+
+/* ═══════════════════════════════════════
+   FILM GRAIN
+═══════════════════════════════════════ */
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 9000;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 180px 180px; opacity: 0.025; mix-blend-mode: overlay;
+}
+
+/* ═══════════════════════════════════════
+   REDUCED MOTION
+═══════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, .nr-rest-inner, .nr-sub, .nr-cta, .hero-fixed {
+    animation: none !important;
+    transition: opacity .3s ease !important;
+  }
+}
