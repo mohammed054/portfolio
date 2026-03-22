@@ -1,226 +1,178 @@
 'use client';
 
+/**
+ * MHInitials — 3D text anchored in space.
+ *
+ * Fixes:
+ *   ✓ No continuous rotation.y accumulation (no flip)
+ *   ✓ Camera-facing via lookAt — always readable
+ *   ✓ Mouse influence = gentle tilt, not rotation override
+ *   ✓ Click: energy-pulse dissolve → smooth UI fade-in
+ *   ✓ Position z=-6.5 → clear of camera near-plane
+ *   ✓ Scale driven by appear/energy, not explode-scale (no clip)
+ */
 import { useRef, useState, useEffect, Suspense } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Text3D, Center } from '@react-three/drei';
 import * as THREE from 'three';
 
-export const MH_POSITION: [number, number, number] = [0, 0.2, -11];
+export const MH_POSITION: [number, number, number] = [0, 0.1, -6.5];
 
 interface Props {
-  visible: boolean;
+  visible:  boolean;
   revealed: boolean;
-  onClick: () => void;
+  onClick:  () => void;
   mouseRef: React.MutableRefObject<{ x: number; y: number }>;
 }
 
 function Inner({ visible, revealed, onClick, mouseRef }: Props) {
-  const group = useRef<THREE.Group>(null!);
-  const mat = useRef<THREE.MeshStandardMaterial>(null!);
+  const { camera } = useThree();
 
-  const ring1 = useRef<THREE.Mesh>(null!);
-  const ring2 = useRef<THREE.Mesh>(null!);
+  const group    = useRef<THREE.Group>(null!);
+  const mat      = useRef<THREE.MeshStandardMaterial>(null!);
+  const ring1    = useRef<THREE.Mesh>(null!);
+  const ring2    = useRef<THREE.Mesh>(null!);
 
   const [hovered, setHovered] = useState(false);
 
-  const appear = useRef(0);
-  const energy = useRef(0);
-  const explode = useRef(0);
+  const appear   = useRef(0);
+  const energy   = useRef(0);
+  const dissolve = useRef(0);
 
-  const clickedAt = useRef<number | null>(null);
+  // Smooth mouse target to avoid jitter
+  const smoothTilt = useRef(new THREE.Vector2());
 
-  // trigger explosion
   useEffect(() => {
-    if (revealed) clickedAt.current = performance.now();
+    if (revealed) {
+      // Dissolve triggers the energy-out animation
+      dissolve.current = 0;
+    }
   }, [revealed]);
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
-
     if (!group.current) return;
 
-    // ─────────────────────────────
-    // APPEAR (materialize instead of pop)
-    // ─────────────────────────────
-    if (visible && !revealed) {
-      appear.current += (1 - appear.current) * 0.05;
+    // ── APPEAR (gradual materialise) ──
+    if (visible) {
+      appear.current += (1 - appear.current) * 0.04;
+    } else {
+      appear.current += (0 - appear.current) * 0.1;
     }
 
-    // ─────────────────────────────
-    // ENERGY BUILDUP
-    // ─────────────────────────────
-    const targetEnergy = hovered ? 2.5 : 1.0;
-    energy.current += (targetEnergy - energy.current) * 0.08;
+    // ── ENERGY BUILDUP (hover) ──
+    const eTarget = hovered ? 2.2 : 1.0;
+    energy.current += (eTarget - energy.current) * 0.07;
 
-    // ─────────────────────────────
-    // EXPLOSION
-    // ─────────────────────────────
-    if (revealed && clickedAt.current) {
-      const e = (performance.now() - clickedAt.current) / 700;
-      explode.current = Math.min(e, 1);
+    // ── DISSOLVE ON REVEAL ──
+    if (revealed) {
+      dissolve.current += (1 - dissolve.current) * 0.04;
     }
 
-    // ─────────────────────────────
-    // SCALE (non-linear)
-    // ─────────────────────────────
-    const s =
-      appear.current *
-      (1 + energy.current * 0.1) *
-      (1 + explode.current * 6);
+    // ── LOOK AT CAMERA (no flip, always readable) ──
+    // Use quaternion lookAt so we never accumulate euler angles
+    const worldPos = new THREE.Vector3(...MH_POSITION);
+    const dir      = camera.position.clone().sub(worldPos).normalize();
+    const up       = new THREE.Vector3(0, 1, 0);
+    const mat4     = new THREE.Matrix4().lookAt(worldPos, worldPos.clone().add(dir), up);
+    group.current.setRotationFromMatrix(mat4);
 
-    group.current.scale.setScalar(s);
+    // ── MOUSE TILT (subtle, additive on top of lookAt) ──
+    smoothTilt.current.lerp(
+      new THREE.Vector2(mouseRef.current.x, mouseRef.current.y), 0.04
+    );
+    group.current.rotation.x += smoothTilt.current.y * -0.08;
+    group.current.rotation.y += smoothTilt.current.x *  0.10;
 
-    // ─────────────────────────────
-    // FLOAT (subtle)
-    // ─────────────────────────────
-    if (!revealed) {
-      group.current.position.y =
-        MH_POSITION[1] + Math.sin(t * 0.6) * 0.1;
-    }
+    // ── FLOAT ──
+    const floatY = Math.sin(t * 0.55) * 0.09;
+    group.current.position.set(
+      MH_POSITION[0],
+      MH_POSITION[1] + floatY * (1 - dissolve.current),
+      MH_POSITION[2]
+    );
 
-    // ─────────────────────────────
-    // ROTATION (space instability)
-    // ─────────────────────────────
-    group.current.rotation.y += 0.002 + energy.current * 0.002;
+    // ── SCALE: no jump, no explode past safe size ──
+    const s = appear.current * (1 + energy.current * 0.08) * (1 - dissolve.current * 0.98);
+    group.current.scale.setScalar(Math.max(0, s));
 
-    // mouse influence
-    if (!revealed) {
-      const { x, y } = mouseRef.current;
-
-      group.current.rotation.x += (-y * 0.1 - group.current.rotation.x) * 0.06;
-      group.current.rotation.y += (x * 0.12 - group.current.rotation.y) * 0.06;
-    }
-
-    // ─────────────────────────────
-    // MATERIAL
-    // ─────────────────────────────
+    // ── MATERIAL ──
     if (mat.current) {
-      const pulse =
-        2.0 +
-        Math.sin(t * 1.5) * 0.6 +
-        energy.current * 2.0;
-
-      const blast = explode.current * 8;
-
-      const target = pulse + blast;
-
-      mat.current.emissiveIntensity +=
-        (target - mat.current.emissiveIntensity) * 0.1;
-
-      mat.current.opacity =
-        (1 - explode.current) * appear.current;
+      const pulse = 1.8 + Math.sin(t * 1.4) * 0.5 + energy.current * 1.5;
+      const blast = dissolve.current * 12;
+      mat.current.emissiveIntensity = THREE.MathUtils.lerp(
+        mat.current.emissiveIntensity, pulse + blast, 0.1
+      );
+      mat.current.opacity = Math.max(0, (1 - dissolve.current) * appear.current);
     }
 
-    // ─────────────────────────────
-    // RINGS (gravitational field)
-    // ─────────────────────────────
+    // ── RINGS ──
     if (ring1.current) {
-      ring1.current.rotation.z = t * 0.6;
-
-      const scale =
-        1 +
-        Math.sin(t * 1.2) * 0.08 +
-        energy.current * 0.2;
-
-      ring1.current.scale.setScalar(scale);
-
-      const m = ring1.current.material as THREE.MeshBasicMaterial;
-      m.opacity = 0.25 + energy.current * 0.2;
+      ring1.current.rotation.z = t * 0.55;
+      const rs1 = 1 + Math.sin(t * 1.1) * 0.07 + energy.current * 0.18;
+      ring1.current.scale.setScalar(rs1);
+      (ring1.current.material as THREE.MeshBasicMaterial).opacity =
+        (0.22 + energy.current * 0.15) * (1 - dissolve.current);
     }
-
     if (ring2.current) {
-      ring2.current.rotation.z = -t * 0.4;
-
-      const scale =
-        1 +
-        Math.sin(t * 0.8 + 1.5) * 0.1 +
-        energy.current * 0.3;
-
-      ring2.current.scale.setScalar(scale);
-
-      const m = ring2.current.material as THREE.MeshBasicMaterial;
-      m.opacity = 0.1 + energy.current * 0.15;
+      ring2.current.rotation.z = -t * 0.38;
+      const rs2 = 1 + Math.sin(t * 0.75 + 1.5) * 0.09 + energy.current * 0.25;
+      ring2.current.scale.setScalar(rs2);
+      (ring2.current.material as THREE.MeshBasicMaterial).opacity =
+        (0.10 + energy.current * 0.12) * (1 - dissolve.current);
     }
   });
 
   if (!visible) return null;
 
   return (
-    <>
-      <group ref={group} position={MH_POSITION}>
-        {/* LIGHT ENERGY */}
-        <pointLight position={[0, 0, 3]} intensity={6} />
-        <pointLight position={[0, 2, 2]} intensity={4} color="#00D0FF" />
+    <group ref={group} position={MH_POSITION}>
+      <pointLight position={[0, 1, 2.5]} intensity={5}  color="#ffffff" />
+      <pointLight position={[0, 2, 1.5]} intensity={3.5} color="#00BBFF" />
 
-        <Center>
-          <Text3D
-            font="/fonts/Syne_Bold.json"
-            size={1.1}
-            height={0.28}
-            bevelEnabled
-            bevelThickness={0.03}
-            bevelSize={0.018}
-            bevelSegments={6}
-            curveSegments={32}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!revealed) onClick();
-            }}
-            onPointerOver={() => {
-              setHovered(true);
-              document.body.style.cursor = 'none';
-            }}
-            onPointerOut={() => setHovered(false)}
-          >
-            MH
-            <meshStandardMaterial
-              ref={mat}
-              color="#F5F8FF"
-              emissive="#00AAFF"
-              emissiveIntensity={2}
-              metalness={1}
-              roughness={0.05}
-              transparent
-            />
-          </Text3D>
-        </Center>
+      <Center>
+        <Text3D
+          font="/fonts/Syne_Bold.json"
+          size={2.2}
+          height={0.34}
+          bevelEnabled
+          bevelThickness={0.03}
+          bevelSize={0.016}
+          bevelSegments={6}
+          curveSegments={32}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!revealed) onClick();
+          }}
+          onPointerOver={() => {
+            setHovered(true);
+            document.body.style.cursor = 'none';
+          }}
+          onPointerOut={() => setHovered(false)}
+        >
+          MH
+          <meshStandardMaterial
+            ref={mat}
+            color="#F0F5FF"
+            emissive="#00A8FF"
+            emissiveIntensity={1.8}
+            metalness={0.9}
+            roughness={0.06}
+            transparent
+          />
+        </Text3D>
+      </Center>
 
-        {/* GRAVITY RINGS */}
-        <mesh ref={ring1} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[2.1, 0.015, 16, 120]} />
-          <meshBasicMaterial color="#00D0FF" transparent />
-        </mesh>
-
-        <mesh ref={ring2} rotation={[Math.PI / 2.5, 0, 0]}>
-          <torusGeometry args={[2.7, 0.008, 16, 120]} />
-          <meshBasicMaterial color="#88EEFF" transparent />
-        </mesh>
-      </group>
-
-      {/* UI REVEAL */}
-      {revealed && (
-        <div className="mh-overlay">
-          <div className="mh-name">
-            <span>Mohammed</span>
-            <span>Hassoun</span>
-          </div>
-
-          <div className="mh-sub">
-            Software Engineer — Systems • AI • Interfaces
-          </div>
-
-          <div className="mh-cta">
-            <button>Explore Work</button>
-            <button>Contact</button>
-          </div>
-
-          <div className="mh-scroll">
-            <div className="line" />
-            <span>scroll to continue</span>
-          </div>
-        </div>
-      )}
-    </>
+      {/* Gravity rings */}
+      <mesh ref={ring1} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[2.2, 0.014, 16, 128]} />
+        <meshBasicMaterial color="#00CCFF" transparent />
+      </mesh>
+      <mesh ref={ring2} rotation={[Math.PI / 2.4, 0, 0]}>
+        <torusGeometry args={[2.9, 0.008, 16, 128]} />
+        <meshBasicMaterial color="#88DDFF" transparent />
+      </mesh>
+    </group>
   );
 }
 

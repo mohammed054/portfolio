@@ -1,252 +1,212 @@
 'use client';
-
-import BlackHoleLensing from './BlackHoleLensing';
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
-import { Canvas } from '@react-three/fiber';
-import {
-  EffectComposer,
-  Bloom,
-  ChromaticAberration,
-  Vignette,
-} from '@react-three/postprocessing';
-import { BlendFunction } from 'postprocessing';
+import { Canvas, useThree } from '@react-three/fiber';
+import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
 
-import BlackHole from './BlackHoleModel';
-import ParticleField from './ParticleField';
-import MHInitials from './MHInitials';
-import CameraController from './CameraController';
-import { useMouse } from '@/hooks/useMouse';
+import BlackHole            from './BlackHoleModel';
+import Starfield            from './Starfield';
+import ParticleField        from './ParticleField';
+import CameraController     from './CameraController';
+import LightRays            from './LightRays';
+import GravitationalLensing from './GravitationalLensing';
+import InsideScene          from './InsideScene';
 
-type ScenePhase =
-  | 'IDLE'
-  | 'APPROACH'
-  | 'HORIZON'
-  | 'INSIDE'
-  | 'MH_READY'
-  | 'REVEALED'
-  | 'RELEASED';
+type Phase = 'SPACE'|'APPROACH'|'HORIZON'|'LOCKED'|'EXPANDING'|'REVEALED'|'DIVING'|'INSIDE';
+
+function SetBlack() {
+  const { scene } = useThree();
+  useMemo(()=>{ scene.background = new THREE.Color(0,0,0); },[scene]);
+  return null;
+}
 
 export default function HeroScene() {
-  const scroll = useRef(0);
-  const targetScroll = useRef(0);
-  const velocity = useRef(0);
-
-  const mouse = useMouse();
+  const scrollRef    = useRef(0);
+  const targetRef    = useRef(0);
+  const velRef       = useRef(0);
+  const bodyScroll   = useRef(0);   // 0→1 through portfolio after dive
+  const lensingRef   = useRef(0);
+  const lightRayRef  = useRef(0);
+  const insideMixRef = useRef(0);
 
   const [progress, setProgress] = useState(0);
-  const [phase, setPhase] = useState<ScenePhase>('IDLE');
+  const [phase,    setPhase]    = useState<Phase>('SPACE');
+  const phaseRef = useRef<Phase>('SPACE');
 
-  // ─────────────────────────────
-  // 🎯 PHASE SYSTEM
-  // ─────────────────────────────
-  useEffect(() => {
-    if (progress > 0.02 && phase === 'IDLE') setPhase('APPROACH');
-    if (progress > 0.55 && phase === 'APPROACH') setPhase('HORIZON');
-    if (progress > 0.7 && phase === 'HORIZON') setPhase('INSIDE');
-    if (progress > 0.82 && phase === 'INSIDE') setPhase('MH_READY');
-  }, [progress, phase]);
+  function setP(p: Phase) { phaseRef.current = p; setPhase(p); }
 
-  const showMH = phase === 'MH_READY' || phase === 'REVEALED' || phase === 'RELEASED';
-  const revealed = phase === 'REVEALED' || phase === 'RELEASED';
-  const released = phase === 'RELEASED';
+  // ── PHASE TRANSITIONS ─────────────────────────────────────────────────────
+  useEffect(()=>{
+    const p = progress;
+    const ph = phaseRef.current;
+    if(ph==='INSIDE'||ph==='DIVING') return;
+    if(p>0.04 && ph==='SPACE')    setP('APPROACH');
+    if(p<0.03 && ph==='APPROACH') setP('SPACE');
+    if(p>0.50 && ph==='APPROACH') setP('HORIZON');
+    if(p<0.44 && ph==='HORIZON')  setP('APPROACH');
+    if(p>0.86 && ph==='HORIZON')  setP('LOCKED');
+    if(p<0.79 && ph==='LOCKED')   setP('HORIZON');
+  },[progress]);
 
-  // ─────────────────────────────
-  // 🌀 SCROLL ENGINE
-  // ─────────────────────────────
-  useEffect(() => {
-    if (released) return;
-
-    const SPEED = 0.0012;
-
+  // ── WHEEL HIJACK ──────────────────────────────────────────────────────────
+  useEffect(()=>{
+    const SPEED = 0.0011;
     const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-
-      targetScroll.current += e.deltaY * SPEED;
-      targetScroll.current = THREE.MathUtils.clamp(targetScroll.current, 0, 1);
-
-      // lock before reveal
-      if (phase !== 'REVEALED') {
-        targetScroll.current = Math.min(targetScroll.current, 0.95);
-      }
-    };
-
-    window.addEventListener('wheel', onWheel, { passive: false });
-    return () => window.removeEventListener('wheel', onWheel);
-  }, [phase, released]);
-
-  useEffect(() => {
-    let raf: number;
-
-    const update = () => {
-      const diff = targetScroll.current - scroll.current;
-
-      velocity.current = diff * 60;
-      scroll.current += diff * 0.08;
-
-      setProgress(scroll.current);
-      raf = requestAnimationFrame(update);
-    };
-
-    raf = requestAnimationFrame(update);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  // ─────────────────────────────
-  // 🌌 GLOBAL GRAVITY SYSTEM (KEY)
-  // ─────────────────────────────
-  const gravity = useMemo(() => {
-    return Math.min(
-      1,
-      progress * 1.3 + Math.abs(velocity.current) * 0.7
-    );
-  }, [progress]);
-
-  const gravityRef = useRef(0);
-  gravityRef.current = gravity;
-
-  // ─────────────────────────────
-  // 🎯 ACTIONS
-  // ─────────────────────────────
-  const handleMHClick = useCallback(() => {
-    if (phase === 'MH_READY') setPhase('REVEALED');
-  }, [phase]);
-
-  // release scroll after reveal
-  useEffect(() => {
-    if (!revealed || released) return;
-
-    const onWheel = (e: WheelEvent) => {
-      if (e.deltaY > 0) {
+      const ph = phaseRef.current;
+      if(ph==='LOCKED'||ph==='EXPANDING') { e.preventDefault(); return; }
+      if(ph==='REVEALED') {
         e.preventDefault();
-        setPhase('RELEASED');
-
-        setTimeout(() => {
-          document.body.style.overflow = 'auto';
-        }, 1200);
+        if(e.deltaY>0) {
+          setP('DIVING');
+          setTimeout(()=>{
+            document.body.style.overflow='auto';
+            document.body.style.overflowX='hidden';
+            setP('INSIDE');
+          }, 1450);
+        }
+        return;
       }
+      if(ph==='DIVING'||ph==='INSIDE') return;
+      e.preventDefault();
+      targetRef.current = THREE.MathUtils.clamp(targetRef.current+e.deltaY*SPEED,0,0.97);
     };
+    window.addEventListener('wheel', onWheel, {passive:false});
+    return ()=>window.removeEventListener('wheel', onWheel);
+  },[]);
 
-    window.addEventListener('wheel', onWheel, { passive: false });
-    return () => window.removeEventListener('wheel', onWheel);
-  }, [revealed, released]);
+  // ── SCROLL ANIMATION LOOP ─────────────────────────────────────────────────
+  useEffect(()=>{
+    let raf: number;
+    const tick = ()=>{
+      const diff = targetRef.current - scrollRef.current;
+      velRef.current    = diff * 60;
+      scrollRef.current += diff * 0.07;
+      const s = scrollRef.current;
+      // Lensing grows smoothly, capped
+      lensingRef.current  += (THREE.MathUtils.smootherstep(s,0.10,0.62)*0.32 - lensingRef.current)*0.06;
+      // Light rays appear from 20% onward
+      lightRayRef.current += (THREE.MathUtils.smootherstep(s,0.18,0.72)*0.88 - lightRayRef.current)*0.05;
+      // Inside mix (particle tunnel)
+      insideMixRef.current += (THREE.MathUtils.smootherstep(s,0.70,0.92) - insideMixRef.current)*0.05;
+      setProgress(s);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return ()=>cancelAnimationFrame(raf);
+  },[]);
 
-  // ─────────────────────────────
-  // 🎬 CINEMATIC FX (NOW SYNCED)
-  // ─────────────────────────────
-  const bloom = 0.8 + gravity * 2.0;
-  const chromatic = 0.0005 + gravity * 0.015;
+  // ── BODY SCROLL TRACKING (for inside camera drift) ────────────────────────
+  useEffect(()=>{
+    if(phase!=='INSIDE') return;
+    const onScroll = ()=>{
+      const max = document.body.scrollHeight - window.innerHeight;
+      bodyScroll.current = max>0 ? window.scrollY/max : 0;
+    };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    return ()=>window.removeEventListener('scroll', onScroll);
+  },[phase]);
 
-  const textVisible = revealed;
+  // ── MH CLICK ──────────────────────────────────────────────────────────────
+  const handleMHClick = useCallback(()=>{
+    if(phaseRef.current!=='LOCKED') return;
+    setP('EXPANDING');
+    setTimeout(()=>setP('REVEALED'), 1650);
+  },[]);
 
-  // ─────────────────────────────
-  // 🎬 RENDER
-  // ─────────────────────────────
+  // ── DERIVED ───────────────────────────────────────────────────────────────
+  const insideMix  = THREE.MathUtils.smootherstep(progress,0.70,0.92);
+  const outsideMix = 1 - insideMix;
+  const starOp     = outsideMix*(1-THREE.MathUtils.smootherstep(progress,0.75,0.97)*0.5)+0.04;
+  const bloom      = 0.36 + progress*0.58*outsideMix + (phase==='INSIDE'?0.22:0);
+
+  const showMH    = phase==='LOCKED'||phase==='EXPANDING'||phase==='REVEALED';
+  const expanding = phase==='EXPANDING'||phase==='REVEALED';
+  const diving    = phase==='DIVING';
+  const inside    = phase==='INSIDE';
+
   return (
     <div
+      className={`hero-wrap${diving?' hero-diving':''}`}
       style={{
-        position: 'fixed',
-        inset: 0,
-        background: '#000',
-        overflow: 'hidden',
-        zIndex: 10,
+        position:'fixed', inset:0, zIndex:10, background:'#000',
+        pointerEvents: inside ? 'none' : 'auto',
       }}
     >
+      {/* ── CANVAS ─────────────────────────────────────────────────────── */}
       <Canvas
-        camera={{ position: [0, 1.2, 22], fov: 60 }}
-        dpr={[1, 2]}
-        gl={{
-          antialias: true,
-          powerPreference: 'high-performance',
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1,
-        }}
+        camera={{position:[0,7.5,30], fov:57, near:0.05, far:650}}
+        dpr={[1,2]}
+        gl={{antialias:true, powerPreference:'high-performance', toneMapping:THREE.ACESFilmicToneMapping, toneMappingExposure:1.0}}
       >
-        <ambientLight intensity={0.02} />
+        <SetBlack/>
 
-        {/* CORE SYSTEM */}
-        <CameraController scrollProgress={scroll} />
+        {!inside && <CameraController scrollRef={scrollRef}/>}
 
-        <ParticleField
-          mouseRef={mouse}
-          scrollProgress={scroll}
-          scrollVelocity={velocity}
-        />
+        {!inside && (<>
+          <Starfield opacity={starOp}/>
+          <ParticleField scrollRef={scrollRef} velRef={velRef} insideMixRef={insideMixRef}/>
+          <BlackHole/>
+          <LightRays strengthRef={lightRayRef}/>
+        </>)}
 
-        <BlackHole />
+        <InsideScene visible={inside} bodyScroll={bodyScroll}/>
 
-        {/* 🔥 LENSING (NOW CONNECTED) */}
-        <BlackHoleLensing strengthRef={gravityRef} />
-
-        {/* MH */}
-        {showMH && (
-          <MHInitials
-            visible
-            revealed={revealed}
-            onClick={handleMHClick}
-            mouseRef={mouse}
-          />
-        )}
-
-        {/* POST */}
         <EffectComposer>
-          <Bloom
-            intensity={bloom}
-            luminanceThreshold={0.6}
-            luminanceSmoothing={0.2}
-          />
-
-          {/* @ts-ignore */}
-          <ChromaticAberration
-            blendFunction={BlendFunction.NORMAL}
-            offset={new THREE.Vector2(chromatic, chromatic)}
-          />
-
-          <Vignette eskil={false} offset={0.2} darkness={0.9} />
+          {!inside && <GravitationalLensing strengthRef={lensingRef}/>}
+          <Bloom intensity={bloom} luminanceThreshold={0.68} luminanceSmoothing={0.20}/>
+          <Vignette eskil={false} offset={0.22} darkness={0.80}/>
         </EffectComposer>
       </Canvas>
 
-      {/* UI */}
-      <div className={`hero-text-overlay ${textVisible ? 'visible' : ''}`}>
-        <h1 className="hero-name">
-          Mohammed<br />Hassoun
-        </h1>
+      {/* ── MH REVEAL ──────────────────────────────────────────────────── */}
+      {showMH && (
+        <div
+          className={`mh-container${phase==='LOCKED'?' mh-idle':''}${expanding?' mh-expanding':''}`}
+          onClick={handleMHClick}
+          style={{pointerEvents: phase==='LOCKED'?'auto':'none'}}
+        >
+          <div className="mh-row">
+            <span className="mh-letter">
+              <span className="mh-initial">M</span>
+              <span className="mh-rest mh-rest-m">ohammed</span>
+            </span>
+            <span className="mh-letter">
+              <span className="mh-initial">H</span>
+              <span className="mh-rest mh-rest-h">assoun</span>
+            </span>
+          </div>
+          {phase==='LOCKED' && <p className="mh-hint">— click to reveal —</p>}
+        </div>
+      )}
 
-        <p className="hero-role">Software Engineer</p>
-
-        <p className="hero-tagline">
-          "I only design what's necessary,<br />not what's flashy."
-        </p>
-
-        <div className="hero-cta">
-          <button className="cta-btn cta-btn-primary">Explore Work</button>
-          <button className="cta-btn cta-btn-secondary">Contact</button>
+      {/* ── SUBTITLE ───────────────────────────────────────────────────── */}
+      <div className={`hero-sub${phase==='REVEALED'?' hs-visible':''}`}>
+        <p className="hs-role">Software Engineer</p>
+        <p className="hs-tag">"I only design what's necessary, not what's flashy."</p>
+        <div className="hs-cta">
+          <button className="btn-primary"
+            onClick={()=>{ if(phaseRef.current==='REVEALED'){ setP('DIVING'); setTimeout(()=>{ document.body.style.overflow='auto'; setP('INSIDE'); },1450); } }}>
+            Explore Work
+          </button>
+          <button className="btn-secondary">Contact</button>
+        </div>
+        <div className="hs-dive-hint">
+          <div className="hs-line"/>
+          <span>scroll to dive in</span>
         </div>
       </div>
 
-      {/* STATES */}
-      {phase === 'IDLE' && (
-        <div className="scroll-hint">
-          <div className="sh-line" />
-          <span>scroll to enter</span>
+      {/* ── HUD ─────────────────────────────────────────────────────────── */}
+      {phase==='SPACE' && (
+        <div className="scroll-hint visible">
+          <div className="sh-line"/><span className="sh-text">scroll to enter</span>
         </div>
       )}
-
-      {phase === 'MH_READY' && (
-        <div className="click-prompt">— click to reveal —</div>
-      )}
-
-      {phase === 'APPROACH' && (
+      {(phase==='APPROACH'||phase==='HORIZON') && (
         <div className="void-label">
-          {progress < 0.55
-            ? 'APPROACHING SINGULARITY'
-            : progress < 0.7
-            ? 'EVENT HORIZON'
-            : 'SPAGHETTIFICATION'}
+          {progress<0.50?'APPROACHING SINGULARITY':progress<0.70?'EVENT HORIZON':'CROSSING THRESHOLD'}
         </div>
       )}
-
-      {released && <div style={{ height: '100vh', background: '#000' }} />}
     </div>
   );
 }

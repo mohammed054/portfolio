@@ -1,10 +1,11 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Effect } from 'postprocessing';
 import { Uniform, Vector2 } from 'three';
 import { useFrame } from '@react-three/fiber';
 
+// ─── GLSL ───────────────────────────────────────────────────────────────────
 const fragmentShader = `
 uniform float uTime;
 uniform vec2 uCenter;
@@ -43,10 +44,10 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
 }
 `;
 
+// ─── EFFECT CLASS ────────────────────────────────────────────────────────────
 class LensingEffect extends Effect {
   constructor() {
     super('LensingEffect', fragmentShader, {
-      // ✅ Must be a Map<string, Uniform>, not a plain object
       uniforms: new Map<string, Uniform>([
         ['uTime', new Uniform(0)],
         ['uCenter', new Uniform(new Vector2(0.5, 0.5))],
@@ -56,19 +57,25 @@ class LensingEffect extends Effect {
   }
 }
 
+// ─── PUBLIC COMPONENT ────────────────────────────────────────────────────────
 export default function BlackHoleLensing({
   strengthRef,
 }: {
   strengthRef: React.MutableRefObject<number>;
 }) {
-  // ✅ Use the memoised instance directly — no need for effectRef
   const effect = useMemo(() => new LensingEffect(), []);
 
   useFrame(({ clock }) => {
-    // ✅ Fully typed — no 'any' cast needed
     effect.uniforms.get('uTime')!.value = clock.getElapsedTime();
     effect.uniforms.get('uStrength')!.value = strengthRef.current;
   });
 
+  useEffect(() => {
+    return () => {
+      effect.dispose();
+    };
+  }, [effect]);
+
+  // Rendered inside <EffectComposer> in HeroScene
   return <primitive object={effect} />;
 }
