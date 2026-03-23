@@ -50,8 +50,32 @@ export default function HeroScene() {
   const [heroHidden,   setHeroHidden]   = useState(false);
 
   const phaseRef      = useRef<Phase>('SPACE');
+  const heroExited    = useSceneStore(s => s.heroExited);
   const setHeroExited = useSceneStore(s => s.setHeroExited);
   const set = (p: Phase) => { phaseRef.current = p; setPhase(p); };
+
+  // Resume at end of hero when returning from post-hero
+  const prevExitedRef = useRef(heroExited);
+  useEffect(() => {
+    const prev = prevExitedRef.current;
+    prevExitedRef.current = heroExited;
+
+    // Returning from post-hero → resume at the revealed state (not reset)
+    if (prev && !heroExited) {
+      const resume = DIVE_START + 0.08;
+      scrollRef.current = resume;
+      targetRef.current = resume;
+      velRef.current    = 0;
+      hasExpandedRef.current = true;
+      phaseRef.current  = 'REVEALED';
+      setPhase('REVEALED');
+      setProgress(resume);
+      const dp = THREE.MathUtils.clamp((resume - DIVE_START) / (DIVE_END - DIVE_START), 0, 1);
+      setDiveProgress(dp);
+      setHeroHidden(false);
+      return;
+    }
+  }, [heroExited]);
 
   useEffect(() => {
     const p  = progress;
