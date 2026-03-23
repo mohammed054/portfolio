@@ -19,7 +19,8 @@
    RESET
 ═══════════════════════════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { overflow: hidden; height: 100%; scroll-behavior: auto; }
+html { overflow: hidden; scroll-behavior: auto; }
+/* Hero exit sets height:auto via JS — base rule stays hidden during hero */
 html, body { background: #000; color: var(--text); overflow-x: hidden; cursor: none; }
 button { cursor: none; border: none; background: none; font: inherit; }
 
@@ -79,181 +80,217 @@ button { cursor: none; border: none; background: none; font: inherit; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(5px);} to{opacity:1;transform:translateY(0);} }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   MH → MOHAMMED / HASSOUN
-
-   Two-state design:
-   ─────────────────
-   LOCKED (.mh-idle):
-     • Font at working size: clamp(88px, 10vw, 140px)
-     • SCALE 1.6× via transform → letters appear ~1.6× larger
-     • M and H are ~16vw each visually = dramatic
-     • overflow:hidden on .hero-wrap clips nothing (inset:0)
-
-   EXPANDING (.mh-expanding):
-     • .mh-initial scale transitions back to 1.0 over 0.7s
-     • .mh-rest animates from max-width:0 → max-width:1000px
-     • At scale 1: full word fits — "Mohammed" = ~8 × 10vw × 0.6 = ~48vw + 7vw pad = 55vw ✓
-
-   This is the cleanest solution: one font-size works for both states.
+   HERO RADIAL SCRIM
+   A CSS-only radial gradient overlay that darkens the outer edges.
+   This creates a natural "spotlight on center" without touching the 3D scene.
+   Sits between canvas and text — z-index 150.
 ═══════════════════════════════════════════════════════════════════════════ */
-.mh-container {
-  position:absolute; inset:0; z-index:200;
-  display:flex; flex-direction:column;
-  align-items:flex-start; justify-content:center;
-  padding-left:clamp(28px, 7vw, 96px);
-  pointer-events:none;
-  user-select:none;
+.hero-radial-scrim {
+  position:absolute; inset:0; z-index:150; pointer-events:none;
+  background:radial-gradient(ellipse 60% 60% at 50% 50%,
+    transparent          0%,
+    rgba(0,0,0,0.15)    40%,
+    rgba(0,0,0,0.55)    68%,
+    rgba(0,0,0,0.88)   100%);
 }
-.mh-container.mh-idle {
-  pointer-events:auto;
-  animation:mhAppear .88s var(--ease-out) both;
-}
-@keyframes mhAppear {
-  from { opacity:0; filter:blur(20px) brightness(0.3); transform:scale(.92); }
-  to   { opacity:1; filter:blur(0)    brightness(1);   transform:scale(1); }
-}
-
-.mh-row {
-  display:flex; flex-direction:column;
-  line-height:.88;
-}
-
-.mh-letter {
-  display:flex; align-items:baseline;
-}
-
-/*
-  Base font: works for the full word (Mohammed = ~8 chars)
-  At 10vw: 8 × 10vw × 0.6 = 48vw + 7vw left pad = 55vw → fits fine
-*/
-.mh-initial {
-  font-family:var(--font-syne,'Syne'),sans-serif;
-  font-weight:800;
-  font-size:clamp(88px, 10vw, 140px);
-  color:#ffffff;
-  line-height:.88;
-  display:block;
-  /* Scale up in locked state — letter fills screen */
-  transform:scale(1.65);
-  transform-origin:left center;
-  transition:transform .7s var(--ease-out);
-  text-shadow:
-    0 0 60px rgba(0,195,255,.32),
-    0 0 120px rgba(0,135,220,.14);
-}
-
-/* Locked: glow pulse */
-.mh-idle .mh-initial {
-  animation:mhGlow 2.6s ease-in-out infinite;
-}
-@keyframes mhGlow {
-  0%,100% { text-shadow:0 0 42px rgba(0,180,255,.22),0 0 90px rgba(0,120,220,.08); }
-  50%     { text-shadow:0 0 72px rgba(0,215,255,.55),0 0 150px rgba(0,175,255,.24); }
-}
-
-/* Expanding: scale back to 1 so the full word fits */
-.mh-expanding .mh-initial,
-.mh-revealed  .mh-initial {
-  transform:scale(1);
-  transform-origin:left center;
-}
-
-/* The suffix (ohammed / assoun) — hidden until expansion */
-.mh-rest {
-  font-family:var(--font-syne,'Syne'),sans-serif;
-  font-weight:800;
-  font-size:clamp(88px, 10vw, 140px);
-  color:#ffffff;
-  line-height:.88;
-  white-space:nowrap;
-  display:block;
-  /* Hidden: collapsed */
-  max-width:0; opacity:0; overflow:hidden;
-  text-shadow:0 0 55px rgba(0,180,255,.22), 0 0 100px rgba(0,120,220,.09);
-}
-
-@keyframes wordSlide {
-  from { max-width:0; opacity:0; filter:blur(14px); }
-  55%  { opacity:1;   filter:blur(0); }
-  to   { max-width:1100px; opacity:1; filter:blur(0); }
-}
-.mh-expanding .mh-rest,
-.mh-revealed  .mh-rest {
-  animation:wordSlide 1.0s var(--ease-out) forwards;
-}
-.mh-expanding .mh-rest-m { animation-delay:.04s; }
-.mh-expanding .mh-rest-h { animation-delay:.18s; }
-
-.mh-hint {
-  margin-top:clamp(32px, 4vh, 60px);
-  font-family:'JetBrains Mono',monospace;
-  font-size:11px; letter-spacing:.25em; text-transform:uppercase;
-  color:rgba(0,210,255,.62);
-  animation:hintBlink 2.2s ease-in-out infinite;
-}
-@keyframes hintBlink { 0%,100%{opacity:.28;} 50%{opacity:1;} }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   HERO SUBTITLE
+   MH — LOCKED STATE: centred badge inside the black hole
+   Rules:
+   • Centred over the singularity (50% / 50%)
+   • Dark oval glass behind letters — fully transparent at edges, never a rect
+   • Letters use: drop-shadow for depth + cyan glow for identity
+   • "click to reveal" hint below, blinking
+═══════════════════════════════════════════════════════════════════════════ */
+.mh-badge {
+  position:absolute; inset:0; z-index:200;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  cursor:pointer; user-select:none;
+  animation:mhBadgeIn 1.0s var(--ease-out) both;
+}
+@keyframes mhBadgeIn {
+  from { opacity:0; transform:scale(0.88); filter:blur(22px); }
+  to   { opacity:1; transform:scale(1);    filter:blur(0); }
+}
+
+/* .mh-badge-glass removed — letter drop-shadows provide all contrast needed */
+
+.mh-badge-inner {
+  position:relative;
+  display:flex; align-items:center;
+}
+
+.mh-badge-letter {
+  font-family:var(--font-syne,'Syne'), sans-serif;
+  font-weight:800;
+  /* Large enough to feel dramatic; smaller than the full name so click target is clear */
+  font-size:clamp(100px, 14vw, 200px);
+  color:#ffffff;
+  letter-spacing:-0.01em;
+  line-height:1;
+  /* Strong shadow stack: dark drop-shadow for contrast + cyan glow for identity */
+  text-shadow:
+    0 3px 40px rgba(0,0,0,.90),
+    0 0 50px rgba(0,195,255,.45),
+    0 0 110px rgba(0,145,220,.22),
+    0 0 220px rgba(0,100,200,.10);
+  animation:mhLetterBreath 3.0s ease-in-out infinite;
+}
+@keyframes mhLetterBreath {
+  0%,100% {
+    text-shadow:
+      0 4px 28px rgba(0,0,0,.95),
+      0 0  44px rgba(0,185,255,.32),
+      0 0 100px rgba(0,130,215,.12);
+  }
+  50% {
+    text-shadow:
+      0 4px 28px rgba(0,0,0,.95),
+      0 0  72px rgba(0,220,255,.62),
+      0 0 160px rgba(0,175,255,.26),
+      0 0 280px rgba(0,130,220,.10);
+  }
+}
+
+/* glowing cyan separator */
+.mh-badge-sep {
+  width:1px;
+  height:clamp(60px, 8.5vw, 125px);
+  margin:0 clamp(16px, 2.4vw, 36px);
+  background:linear-gradient(to bottom,
+    transparent 0%,
+    rgba(0,208,255,.85) 22%,
+    rgba(0,208,255,.85) 78%,
+    transparent 100%);
+  box-shadow:0 0 10px rgba(0,208,255,.55), 0 0 22px rgba(0,180,255,.22);
+}
+
+.mh-hint {
+  margin-top:clamp(22px, 3vh, 44px);
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+  color:rgba(0,210,255,.55);
+  /* same subtle dark drop so hint is readable on bright bg too */
+  text-shadow:0 1px 12px rgba(0,0,0,.8);
+  animation:hintBlink 2.2s ease-in-out infinite;
+}
+@keyframes hintBlink { 0%,100%{opacity:.22;} 50%{opacity:.88;} }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FULL NAME — EXPANDING / REVEALED
+═══════════════════════════════════════════════════════════════════════════ */
+.mh-name {
+  position:absolute; inset:0; z-index:200;
+  display:flex; align-items:center; justify-content:center;
+  pointer-events:none; user-select:none;
+}
+/* .mh-name-scrim removed — letter shadows + radial-scrim layer handle contrast */
+.mh-name-text {
+  position:relative;
+  display:flex; flex-direction:column;
+  align-items:flex-start;
+  padding-left:clamp(28px, 6vw, 88px);
+  line-height:.90;
+}
+.mh-name-row { display:flex; align-items:baseline; overflow:hidden; }
+
+.mh-name-initial {
+  font-family:var(--font-syne,'Syne'),sans-serif;
+  font-weight:800;
+  font-size:clamp(80px, 10vw, 138px);
+  color:#ffffff; line-height:.90;
+  text-shadow:
+    0 3px 24px rgba(0,0,0,.92),
+    0 0  44px rgba(0,185,255,.18),
+    0 0  90px rgba(0,130,215,.08);
+}
+.mh-name-rest {
+  font-family:var(--font-syne,'Syne'),sans-serif;
+  font-weight:800;
+  font-size:clamp(80px, 10vw, 138px);
+  color:#ffffff; line-height:.90;
+  white-space:nowrap; max-width:0; opacity:0; overflow:hidden;
+  text-shadow:0 3px 24px rgba(0,0,0,.92), 0 0 44px rgba(0,185,255,.18);
+}
+@keyframes nameSlide {
+  from { max-width:0;      opacity:0; filter:blur(18px); }
+  50%  { opacity:1;        filter:blur(0); }
+  to   { max-width:1200px; opacity:1; filter:blur(0); }
+}
+.mh-name-expanding .mh-name-rest { animation:nameSlide 1.1s var(--ease-out) forwards; }
+.mh-name-expanding .mh-name-rest-m { animation-delay:.02s; }
+.mh-name-expanding .mh-name-rest-h { animation-delay:.22s; }
+/* REVEALED: hold the expanded state permanently, no animation */
+.mh-name-revealed .mh-name-rest {
+  max-width:1200px; opacity:1; overflow:hidden;
+  filter:blur(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HERO SUBTITLE — dark card, scroll-driven, never on bright background
 ═══════════════════════════════════════════════════════════════════════════ */
 .hero-sub {
-  position:absolute; bottom:clamp(52px,9vh,100px); left:0; right:0;
-  display:flex; flex-direction:column; align-items:center; gap:12px;
-  z-index:210;
-  opacity:0; transform:translateY(26px);
-  transition:opacity 1.1s var(--ease-out) 1.2s, transform 1.1s var(--ease-out) 1.2s;
+  position:absolute;
+  bottom:clamp(40px,7vh,88px);
+  left:0; right:0;
+  display:flex; flex-direction:column; align-items:center; gap:0;
+  z-index:220;
+  opacity:0; transform:translateY(28px);
+  transition:opacity .85s var(--ease-out), transform .85s var(--ease-out);
   pointer-events:none;
 }
 .hero-sub.hs-visible { opacity:1; transform:translateY(0); pointer-events:auto; }
 
-.hs-role { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--cyan); }
-.hs-tag  { font-family:'DM Sans',sans-serif; font-size:clamp(13px,1.8vw,17px); color:var(--text-2); text-align:center; max-width:480px; line-height:1.6; }
-.hs-cta  { display:flex; gap:12px; margin-top:6px; }
+.hero-sub-card {
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  padding:28px 40px 24px;
+  background:rgba(0,3,14,.72);
+  border:1px solid rgba(0,208,255,.10);
+  border-radius:4px;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  box-shadow:0 0 60px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.04);
+  margin-bottom:20px;
+}
+.hs-role {
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px; letter-spacing:.30em; text-transform:uppercase; color:var(--cyan);
+}
+.hs-tag {
+  font-family:'DM Sans',sans-serif;
+  font-size:clamp(13px,1.6vw,16px); color:rgba(160,180,210,.80);
+  text-align:center; max-width:440px; line-height:1.65;
+}
+.hs-cta { display:flex; gap:12px; margin-top:6px; }
 
 .btn-primary {
-  padding:11px 26px; background:var(--cyan); color:#000814;
+  padding:11px 28px; background:var(--cyan); color:#000814;
   border:1px solid var(--cyan); border-radius:2px; cursor:pointer;
-  font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700;
-  letter-spacing:.12em; text-transform:uppercase;
-  box-shadow:0 0 22px rgba(0,208,255,.36);
+  font-family:'DM Sans',sans-serif; font-size:11px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase;
+  box-shadow:0 0 20px rgba(0,208,255,.30);
   transition:background .22s, color .22s, box-shadow .22s;
 }
-.btn-primary:hover { background:transparent; color:var(--cyan); box-shadow:0 0 34px rgba(0,208,255,.60); }
+.btn-primary:hover { background:transparent; color:var(--cyan); box-shadow:0 0 32px rgba(0,208,255,.55); }
 .btn-secondary {
-  padding:11px 26px; background:transparent; color:var(--text-2);
-  border:1px solid var(--border); border-radius:2px; cursor:pointer;
-  font-family:'DM Sans',sans-serif; font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  padding:11px 28px; background:transparent; color:rgba(160,180,210,.70);
+  border:1px solid rgba(255,255,255,.10); border-radius:2px; cursor:pointer;
+  font-family:'DM Sans',sans-serif; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
   transition:border-color .22s, color .22s;
 }
 .btn-secondary:hover { border-color:var(--cyan); color:var(--cyan); }
 
 .hs-scroll-dive {
-  margin-top:8px; display:flex; flex-direction:column; align-items:center; gap:8px;
-  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.22em;
-  text-transform:uppercase; color:var(--text-3);
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.24em;
+  text-transform:uppercase; color:rgba(100,140,180,.55);
 }
-.hs-line { width:1px; height:36px; background:linear-gradient(to bottom,var(--cyan),transparent); animation:linePulse 1.9s ease-in-out infinite; }
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   VOID BRIDGE (post-hero transition text)
-═══════════════════════════════════════════════════════════════════════════ */
-.void-bridge {
-  min-height:50vh; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:14px;
-  background:#000; text-align:center; padding:80px 24px;
-  border-bottom:1px solid var(--border);
+.hs-line {
+  width:1px; height:32px;
+  background:linear-gradient(to bottom,var(--cyan),transparent);
+  animation:linePulse 2.0s ease-in-out infinite;
 }
-.vb-text {
-  font-family:'Syne',sans-serif; font-weight:700;
-  font-size:clamp(22px,4vw,40px); color:var(--text);
-  opacity:0; animation:bridgeFade 1.2s var(--ease-out) .2s forwards;
-}
-.vb-sub {
-  font-family:'DM Sans',sans-serif; font-size:clamp(14px,2vw,17px);
-  color:var(--text-2); font-style:italic;
-  opacity:0; animation:bridgeFade 1.2s var(--ease-out) .6s forwards;
-}
-@keyframes bridgeFade { from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ABOUT SECTION
