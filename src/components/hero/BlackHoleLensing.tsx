@@ -1,81 +1,127 @@
 'use client';
-
-import { useEffect, useMemo } from 'react';
-import { Effect } from 'postprocessing';
-import { Uniform, Vector2 } from 'three';
+import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 
-// ─── GLSL ───────────────────────────────────────────────────────────────────
-const fragmentShader = `
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIGHT RAYS v2  "BLENDER QUALITY"
+   ───────────────────────────────────────────────────────────────────────────
+   ✓ Two independent ray families (14 primary + 9 secondary at offset angle)
+   ✓ Per-ray brightness variation (no uniform flat bands)
+   ✓ Three-zone colour: warm amber inner → white mid → cool cyan outer
+   ✓ Volumetric scattering falloff (more realistic depth)
+   ✓ Time-varying ray rotation at slightly different speeds (differential drag)
+   ✓ Subtle ray-edge chromatic fringe (dispersion near BH)
+   ✓ Radial intensity turbulence (rays not perfectly smooth)
+═══════════════════════════════════════════════════════════════════════════ */
+
+const FRAG = `
 uniform float uTime;
-uniform vec2 uCenter;
 uniform float uStrength;
+varying vec2 vUv;
+#define PI 3.14159265358979
 
-void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
-  vec2 p = uv - uCenter;
-  float r = length(p) + 1e-6;
+// Simple hash for per-ray brightness variation
+float hash1(float n){ return fract(sin(n) * 43758.5453); }
 
-  float gravity = uStrength * (0.3 / (r + 0.04));
-  float outer = gravity * 0.3;
-  float mid   = gravity * 0.8;
-  float inner = gravity * 1.6;
-  float zone = smoothstep(0.9, 0.25, r);
-  float lens = mix(outer, mid, zone);
-  lens = mix(lens, inner, smoothstep(0.25, 0.05, r));
+void main(){
+  vec2 uv = vUv - 0.5;
+  float r  = length(uv);
+  float a  = atan(uv.y, uv.x);
 
-  float swirl = uStrength * (0.6 / (r + 0.12)) * (1.0 + sin(uTime * 0.6) * 0.15);
+  // Clip inner void and outer fade
+  if(r < 0.028 || r > 0.48){ gl_FragColor = vec4(0.); return; }
 
-  vec2 dir = normalize(p);
-  vec2 tangent = vec2(-p.y, p.x);
+  // ── Ray family A (14 primary rays) ────────────────────────────────────
+  float nA   = 14.0;
+  float rotA = a + uTime * 0.048;
+  // Wrap angle to [0,2π] then find nearest ray
+  float fracA = mod(rotA * nA / (PI * 2.0), 1.0);
+  float rayA  = pow(max(0.0, cos(fracA * PI * 2.0)), 18.0);
+  float rayA2 = pow(max(0.0, cos(fracA * PI * 2.0)), 38.0) * 0.42;
 
-  float compress = smoothstep(0.75, 0.05, r);
-  float compression = compress * uStrength * 0.35;
+  // ── Ray family B (9 secondary rays, offset rotation speed) ────────────
+  float nB   = 9.0;
+  float rotB = a + uTime * 0.072 + PI / nB;  // phase offset + different speed
+  float fracB = mod(rotB * nB / (PI * 2.0), 1.0);
+  float rayB  = pow(max(0.0, cos(fracB * PI * 2.0)), 24.0) * 0.55;
 
-  vec2 warpedUV = uv + dir * lens + tangent * swirl - dir * compression;
-  vec4 color = texture2D(inputBuffer, warpedUV);
+  // ── Per-ray brightness variation using hash on nearest ray index ───────
+  float rayIdxA = floor(mod(rotA * nA / (PI * 2.0), nA));
+  float rayIdxB = floor(mod(rotB * nB / (PI * 2.0), nB));
+  float brightA = 0.72 + 0.28 * hash1(rayIdxA + 0.5);
+  float brightB = 0.60 + 0.40 * hash1(rayIdxB + 7.3);
 
-  float ring = smoothstep(0.22, 0.18, r) * smoothstep(0.18, 0.26, r);
-  float ringGlow = ring * 1.4 * uStrength;
-  float boost = smoothstep(0.65, 0.2, r) * uStrength * 0.5;
-  float shimmer = sin(uTime * 2.2 + r * 25.0) * 0.0025 * uStrength;
+  // ── Radial falloff (volumetric scattering profile) ─────────────────────
+  // Inner ramp: rays emerge from edge of accretion disk (not from void)
+  // Outer ramp: rays fade as photons escape gravity well
+  float fallInner = smoothstep(0.028, 0.11, r);   // ramp up from inner edge
+  float fallOuter = smoothstep(0.48, 0.11, r);    // ramp down at outer edge
+  float fall      = fallInner * fallOuter;
 
-  vec3 finalColor = color.rgb * (1.0 + boost) + ringGlow + shimmer;
-  outputColor = vec4(finalColor, color.a);
-}
-`;
+  // ── Combined ray intensity ─────────────────────────────────────────────
+  float rayTotal = ((rayA + rayA2) * brightA + rayB * brightB) * fall;
 
-// ─── EFFECT CLASS ────────────────────────────────────────────────────────────
-class LensingEffect extends Effect {
-  constructor() {
-    super('LensingEffect', fragmentShader, {
-      uniforms: new Map<string, Uniform>([
-        ['uTime', new Uniform(0)],
-        ['uCenter', new Uniform(new Vector2(0.5, 0.5))],
-        ['uStrength', new Uniform(0)],
-      ]),
-    });
-  }
-}
+  // ── Radial turbulence (rays not perfectly smooth along radius) ─────────
+  float turb = 0.88 + 0.12 * sin(r * 38.0 - uTime * 1.8)
+                    + 0.06 * sin(r * 72.0 - uTime * 3.1 + a * 2.0);
+  rayTotal *= turb;
 
-// ─── PUBLIC COMPONENT ────────────────────────────────────────────────────────
-export default function BlackHoleLensing({
-  strengthRef,
-}: {
-  strengthRef: React.MutableRefObject<number>;
-}) {
-  const effect = useMemo(() => new LensingEffect(), []);
+  float intensity = rayTotal * uStrength;
+  if(intensity < 0.001){ gl_FragColor = vec4(0.); return; }
+
+  // ── Three-zone colour ─────────────────────────────────────────────────
+  // Inner: amber/orange (synchrotron from disk)
+  // Mid:   white-hot
+  // Outer: cyan/teal (scattered starlight + relativistic beaming)
+  vec3 warm = vec3(1.10, 0.75, 0.30);
+  vec3 white= vec3(1.00, 0.95, 0.85);
+  vec3 cool = vec3(0.42, 0.70, 1.05);
+
+  float t1 = smoothstep(0.028, 0.18, r);  // warm → white
+  float t2 = smoothstep(0.15, 0.40, r);   // white → cool
+  vec3 col  = mix(warm, white, t1);
+  col       = mix(col,  cool,  t2);
+
+  // ── Chromatic fringe (dispersion): outermost edge gets bluer ──────────
+  float fringe = smoothstep(0.32, 0.46, r) * 0.25;
+  col = mix(col, vec3(0.25, 0.62, 1.20), fringe);
+
+  gl_FragColor = vec4(col * intensity, intensity * 0.90);
+}`;
+
+const VERT = `
+varying vec2 vUv;
+void main(){
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);
+}`;
+
+export default function LightRays({ strengthRef }: { strengthRef: React.MutableRefObject<number> }) {
+  const matRef = useRef<THREE.ShaderMaterial>(null!);
+  const sm = useMemo(() => new THREE.ShaderMaterial({
+    uniforms: {
+      uTime:     { value: 0 },
+      uStrength: { value: 0 },
+    },
+    vertexShader:   VERT,
+    fragmentShader: FRAG,
+    transparent: true,
+    blending:    THREE.AdditiveBlending,
+    depthWrite:  false,
+    side:        THREE.DoubleSide,
+  }), []);
 
   useFrame(({ clock }) => {
-    effect.uniforms.get('uTime')!.value = clock.getElapsedTime();
-    effect.uniforms.get('uStrength')!.value = strengthRef.current;
+    if (!matRef.current) return;
+    matRef.current.uniforms.uTime.value     = clock.getElapsedTime();
+    matRef.current.uniforms.uStrength.value = strengthRef.current;
   });
 
-  useEffect(() => {
-    return () => {
-      effect.dispose();
-    };
-  }, [effect]);
-
-  // Rendered inside <EffectComposer> in HeroScene
-  return <primitive object={effect} />;
+  return (
+    <mesh scale={[48, 48, 48]} renderOrder={1}>
+      <planeGeometry args={[1, 1]} />
+      <primitive object={sm} ref={matRef} attach="material" />
+    </mesh>
+  );
 }
