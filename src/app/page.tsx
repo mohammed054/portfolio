@@ -1,6 +1,6 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PostHeroSection from '@/components/PostHeroSection/PostHeroSection';
 import { useSceneStore } from '@/store/scene';
 
@@ -24,42 +24,52 @@ export default function Home() {
   const setHeroExited = useSceneStore(s => s.setHeroExited);
   const lastScrollY   = useRef(0);
 
-  /* Restore scroll to top on first mount */
+  const [flashOpacity,    setFlashOpacity]    = useState(0);
+  const [flashTransition, setFlashTransition] = useState(false);
+
+  /* Restore scroll to top on first mount + lock overflow for hero phase */
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow            = 'hidden';
   }, []);
 
-  /* When hero exits: unlock the page scroll and jump to top of post-hero */
+  /* When hero exits: unlock scroll + flash-bridge + reveal post-hero */
   useEffect(() => {
     if (heroExited) {
       document.documentElement.style.overflow = 'auto';
       document.body.style.overflow            = 'auto';
-      // Start post-hero at its very top
       window.scrollTo({ top: 0, behavior: 'instant' });
+
+      setFlashTransition(false);
+      setFlashOpacity(0.85);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setFlashTransition(true);
+          setFlashOpacity(0);
+        });
+      });
     }
   }, [heroExited]);
 
   /* Wheel-up at page top → go back to hero */
   useEffect(() => {
     if (!heroExited) return;
-
     const onWheel = (e: WheelEvent) => {
       if (window.scrollY <= 0 && e.deltaY < 0) {
         e.preventDefault();
         setHeroExited(false);
-        // Re-lock scroll for the hero's internal scroll mechanism
         document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow            = 'hidden';
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
     };
-
     window.addEventListener('wheel', onWheel, { passive: false });
     return () => window.removeEventListener('wheel', onWheel);
   }, [heroExited, setHeroExited]);
 
-  /* Track scroll for the "snap back to top" feel */
+  /* Track scroll */
   useEffect(() => {
     const onScroll = () => { lastScrollY.current = window.scrollY; };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -68,13 +78,30 @@ export default function Home() {
 
   return (
     <main>
-      {/* Hero always rendered in the DOM; hidden under post-hero via z-index */}
-      <HeroScene />
+      {/*
+        ─── KEY FIX ────────────────────────────────────────────────────
+        HeroScene is position:fixed so it takes ZERO space in the
+        document flow. This means:
+          • PostHeroSection owns the document from y = 0
+          • Total page height = TOTAL_VH * vh (no extra 100vh gap)
+          • PostHeroSection's scroll lock lands exactly at the bottom
+          • No dead air gap below the section
+        ────────────────────────────────────────────────────────────────
+      */}
+      <div
+        style={{
+          position:      'fixed',
+          inset:         0,
+          zIndex:        heroExited ? 0 : 10,   // behind post-hero after exit
+          pointerEvents: heroExited ? 'none' : 'auto',
+        }}
+      >
+        <HeroScene />
+      </div>
 
       {/*
-        Post-hero sits above the hero after exit.
-        During hero: z-index 5 (below hero z:10), opacity 0, no pointer events.
-        After hero:  z-index 20, opacity 1, pointer events on.
+        post-hero starts at y = 0 now (no hero block above it in flow).
+        zIndex:20 keeps it above the fixed hero layer.
       */}
       <div
         id="post-hero"
@@ -84,12 +111,24 @@ export default function Home() {
           background:    '#000',
           opacity:       heroExited ? 1 : 0,
           pointerEvents: heroExited ? 'auto' : 'none',
-          // Only transition opacity in; instant out so wheel-back is snappy.
-          transition:    heroExited ? 'opacity 0.65s ease 0.05s' : 'none',
+          transition:    heroExited ? 'opacity 0.35s ease 0.05s' : 'none',
         }}
       >
         <PostHeroSection />
       </div>
+
+      {/* Flash bridge */}
+      <div
+        style={{
+          position:      'fixed',
+          inset:         0,
+          zIndex:        30,
+          background:    '#fff',
+          opacity:       flashOpacity,
+          transition:    flashTransition ? 'opacity 0.75s ease' : 'none',
+          pointerEvents: 'none',
+        }}
+      />
     </main>
   );
 }

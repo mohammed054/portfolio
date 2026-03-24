@@ -170,13 +170,14 @@ export default function HeroScene() {
   const nameFade  = showName ? Math.max(0,1-Math.max(0,(diveProgress-0.30)/0.25)) : 0;
   const showSub   = phase === 'REVEALED' && diveProgress > 0.05;
 
-  if (heroHidden) return null;
-
   return (
     <div className="hero-wrap" style={{
       position:'fixed', inset:0, zIndex:10, background:'#000',
-      opacity:diveOpacity, transition:'none',
-      pointerEvents: phase==='EXITED' ? 'none' : 'auto',
+      opacity: heroHidden ? 0 : diveOpacity,
+      transition: heroHidden ? 'none' : 'none',
+      pointerEvents: (heroHidden || phase==='EXITED') ? 'none' : 'auto',
+      // Keep canvas mounted — never return null — so state is preserved when
+      // the user scrolls back up from post-hero (no blackhole "reload").
     }}>
       <Canvas
         camera={{ position:[0,7.5,30], fov:57, near:0.05, far:650 }}
