@@ -239,35 +239,6 @@ function CountUp({ to, suffix, active, delay }: {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   WHEEL PROXY
-   The R3F Canvas fills the sticky viewport and swallows all
-   wheel events — they never reach the window scroll container.
-   This component re-emits them as window.scrollBy calls.
-   No clamping. No overshoot logic. Just forwarding.
-   The one guard: wheel-up at page-top is left alone so
-   page.tsx's hero-return handler can catch it.
-═══════════════════════════════════════════════════════════════ */
-
-function WheelProxy() {
-  const { gl } = useThree();
-
-  useEffect(() => {
-    const canvas = gl.domElement;
-
-    const onWheel = (e: WheelEvent) => {
-      if (window.scrollY <= 0 && e.deltaY < 0) return;
-      e.preventDefault();
-      window.scrollBy({ top: e.deltaY, left: 0 });
-    };
-
-    canvas.addEventListener('wheel', onWheel, { passive: false });
-    return () => canvas.removeEventListener('wheel', onWheel);
-  }, [gl]);
-
-  return null;
-}
-
-/* ═══════════════════════════════════════════════════════════════
    DEBRIS STREAKS
 ═══════════════════════════════════════════════════════════════ */
 
@@ -494,7 +465,6 @@ function Scene({
 
   return (
     <>
-      <WheelProxy />
       <Starfield opacity={starOp} />
       <ambientLight intensity={0.18} />
       <hemisphereLight intensity={0.22} color="#c7ddff" groundColor="#0b1020" />
@@ -601,6 +571,7 @@ function TLDots({ active, total, visible }: { active: number; total: number; vis
 
 export default function PostHeroSection() {
   const outerRef  = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef(0);
   const activeRef = useRef(0);
   const hoverRef  = useRef(-1);
@@ -670,6 +641,35 @@ export default function PostHeroSection() {
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
+  /*
+   * Wheel handler on the sticky container — NOT inside the R3F canvas.
+   *
+   * Why: WheelProxy (inside the canvas) only catches events that land on
+   * the <canvas> DOM element. HTML overlays with pointer-events:auto
+   * (e.g. AboutOverlay) intercept their own wheel events and never pass
+   * them to the canvas, so WheelProxy never fires, preventDefault is
+   * never called, and the browser triggers an uncontrolled native scroll
+   * that fights the sticky layout → black gap + jump.
+   *
+   * Fix: attach one { passive:false } listener on the sticky div.
+   * CAPTURE phase on the sticky container — fires before R3F's own
+   * canvas event system, which calls stopPropagation() internally and
+   * swallows the event before a bubble handler ever sees it.
+   * capture:true guarantees we intercept every wheel event in the
+   * viewport regardless of what child (canvas or overlay) is hovered.
+   */
+  useEffect(() => {
+    const el = stickyRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (window.scrollY <= 0 && e.deltaY < 0) return;
+      e.preventDefault();
+      window.scrollBy({ top: e.deltaY, left: 0 });
+    };
+    el.addEventListener('wheel', onWheel, { passive: false, capture: true });
+    return () => el.removeEventListener('wheel', onWheel, { capture: true } as EventListenerOptions);
+  }, []);
+
   const inTL       = sp >= PH.tlStart;
   const tlProgress = inTL ? (sp - PH.tlStart) / Math.max(1 - PH.tlStart, 1e-5) : 0;
   const isOverview = inTL && tlProgress * (CAM_KEYS.length - 1) < 0.5;
@@ -691,7 +691,7 @@ export default function PostHeroSection() {
         overscrollBehavior: 'none',
       }}
     >
-      <div style={{ position: 'sticky', top: 0, width: '100%', height: '100vh', overflow: 'hidden' }}>
+      <div ref={stickyRef} style={{ position: 'sticky', top: 0, width: '100%', height: '100vh', overflow: 'clip', willChange: 'transform' }}>
 
         <div style={{ position: 'absolute', inset: 0 }}>
           <Canvas

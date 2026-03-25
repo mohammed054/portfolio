@@ -32,14 +32,12 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'instant' });
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow            = 'hidden';
   }, []);
 
   /* When hero exits: unlock scroll + flash-bridge + reveal post-hero */
   useEffect(() => {
     if (heroExited) {
       document.documentElement.style.overflow = 'auto';
-      document.body.style.overflow            = 'auto';
       window.scrollTo({ top: 0, behavior: 'instant' });
 
       setFlashTransition(false);
@@ -61,7 +59,6 @@ export default function Home() {
         e.preventDefault();
         setHeroExited(false);
         document.documentElement.style.overflow = 'hidden';
-        document.body.style.overflow            = 'hidden';
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
     };

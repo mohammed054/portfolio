@@ -36,7 +36,8 @@ html {
 html, body {
   background: #000;
   color: var(--text);
-  overflow-x: hidden;
+  overflow-x: clip;               /* clip (not hidden) — hidden promotes overflow-y to auto which
+                                     makes body a scroll container and BREAKS position:sticky */
   /* overflow-y NOT set here — html rule governs it */
   overscroll-behavior: none;      /* prevent pull-to-refresh / bounce bleed */
   cursor: none;
