@@ -34,15 +34,19 @@ export default function Home() {
     document.documentElement.style.overflow = 'hidden';
   }, []);
 
-  /* When hero exits: unlock scroll + flash-bridge + reveal post-hero */
+  /* When hero exits: reset scroll FIRST, then unlock, then fade flash */
   useEffect(() => {
     if (heroExited) {
-      document.documentElement.style.overflow = 'auto';
+      // 1. Hard-reset position before any overflow change so the browser
+      //    never sees a non-zero scrollY while html is still hidden.
       window.scrollTo({ top: 0, behavior: 'instant' });
-
+      document.body.style.overflow = '';           // keep body clean
       setFlashTransition(false);
       setFlashOpacity(0.85);
+
+      // 2. Unlock html in the next frame — layout settled, sticky valid.
       requestAnimationFrame(() => {
+        document.documentElement.style.overflow = 'auto';
         requestAnimationFrame(() => {
           setFlashTransition(true);
           setFlashOpacity(0);

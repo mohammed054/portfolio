@@ -642,33 +642,12 @@ export default function PostHeroSection() {
   }, []);
 
   /*
-   * Wheel handler on the sticky container — NOT inside the R3F canvas.
-   *
-   * Why: WheelProxy (inside the canvas) only catches events that land on
-   * the <canvas> DOM element. HTML overlays with pointer-events:auto
-   * (e.g. AboutOverlay) intercept their own wheel events and never pass
-   * them to the canvas, so WheelProxy never fires, preventDefault is
-   * never called, and the browser triggers an uncontrolled native scroll
-   * that fights the sticky layout → black gap + jump.
-   *
-   * Fix: attach one { passive:false } listener on the sticky div.
-   * CAPTURE phase on the sticky container — fires before R3F's own
-   * canvas event system, which calls stopPropagation() internally and
-   * swallows the event before a bubble handler ever sees it.
-   * capture:true guarantees we intercept every wheel event in the
-   * viewport regardless of what child (canvas or overlay) is hovered.
+   * No scroll-lock here. position:sticky handles the pinned-viewport
+   * effect natively. Adding body/html overflow:hidden would make the
+   * body a new scroll container and break sticky (see globals.css note
+   * on overflow-x:clip vs overflow:hidden). page.tsx owns html overflow
+   * for the hero phase; this section owns nothing.
    */
-  useEffect(() => {
-    const el = stickyRef.current;
-    if (!el) return;
-    const onWheel = (e: WheelEvent) => {
-      if (window.scrollY <= 0 && e.deltaY < 0) return;
-      e.preventDefault();
-      window.scrollBy({ top: e.deltaY, left: 0 });
-    };
-    el.addEventListener('wheel', onWheel, { passive: false, capture: true });
-    return () => el.removeEventListener('wheel', onWheel, { capture: true } as EventListenerOptions);
-  }, []);
 
   const inTL       = sp >= PH.tlStart;
   const tlProgress = inTL ? (sp - PH.tlStart) / Math.max(1 - PH.tlStart, 1e-5) : 0;
@@ -688,10 +667,26 @@ export default function PostHeroSection() {
         position: 'relative',
         height: `${TOTAL_VH}vh`,
         background: '#000',
-        overscrollBehavior: 'none',
       }}
     >
-      <div ref={stickyRef} style={{ position: 'sticky', top: 0, width: '100%', height: '100vh', overflow: 'clip', willChange: 'transform' }}>
+      {/* FIX 4 — sticky container uses position:sticky so it stays inside
+          the normal document flow.  The previous `fixed` approach made the
+          container a separate stacking context whose scroll origin didn't
+          match the section, causing getBoundingClientRect math to drift. */}
+      <div
+        ref={stickyRef}
+        style={{
+          position: 'sticky',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100vh',
+          overflow: 'hidden',
+        }}
+      >
+        {/* FIX 5 — the stray <div style={{ height:'100vh' }} /> that was
+            inside this container has been removed.  It was pushing all
+            canvas content 100vh downward, producing the "black gap". */}
 
         <div style={{ position: 'absolute', inset: 0 }}>
           <Canvas
