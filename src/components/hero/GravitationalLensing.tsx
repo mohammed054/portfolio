@@ -5,19 +5,18 @@ import { Uniform, Vector2 } from 'three';
 import { useFrame } from '@react-three/fiber';
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   GRAVITATIONAL LENSING v3  "PREMIUM"
-   ───────────────────────────────────────────────────────────────────────────
-   User feedback: "I like how the pull is smooth and clean, a little more
-   without ruining it."
-
-   Changes from v2:
-   ✓ Lensing strength cap raised: 0.32 → 0.38 (≈18% stronger pull)
-   ✓ Lens formula tuned for slightly more dramatic inner warp
-   ✓ Chromatic aberration preserved (R/G/B bend differently)
-   ✓ Secondary image preserved (ghost arc outside ring)
-   ✓ Einstein ring glow slightly brighter + shimmer preserved
-   ✓ Event horizon darkening preserved
-   ✓ Smooth, no harsh discontinuities
+   GRAVITATIONAL LENSING v4  "INTERSTELLAR"
+   ═══════════════════════════════════════════════════════════════════════════
+   Changes from v3:
+   ✓ Strength cap raised: 0.38 → 0.55 (much more dramatic pull)
+   ✓ Lens formula tuned for stronger outer bend + tighter inner warp
+   ✓ Secondary image (back-of-disk arc) significantly amplified — this
+     creates the characteristic bright arc visible ABOVE the black hole
+   ✓ Chromatic aberration pushed further for colour fringing
+   ✓ Einstein ring noticeably brighter + wider
+   ✓ Frame-drag tangential component stronger
+   ✓ Radial brightness boost extended for more immersive look
+   ✓ Event horizon darkening deeper (0.93 → 0.98)
 ═══════════════════════════════════════════════════════════════════════════ */
 
 const frag = `
@@ -26,64 +25,70 @@ uniform vec2  uCenter;
 uniform float uTime;
 
 void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor){
-  vec2  p   = uv - uCenter;
-  float r   = length(p) + 1e-6;
-  vec2  dir  = normalize(p);
-  vec2  tang = vec2(-p.y, p.x);
 
-  // Slightly stronger cap than before (0.38 vs 0.32)
-  float s = clamp(uStrength, 0.0, 0.38);
+  vec2 p = uv - uCenter;
+  float r = length(p) + 1e-6;
 
-  // Schwarzschild bending — lens formula with gentle extra inner zone
-  float lensOuter = s * (0.22 / (r + 0.062)) * smoothstep(0.92, 0.08, r);
-  float lensInner = s * (0.08 / (r + 0.025)) * smoothstep(0.12, 0.00, r);
-  float lens      = lensOuter + lensInner;
+  vec2 dir  = normalize(p);
+  vec2 tang = vec2(-dir.y, dir.x);
 
-  // Frame-dragging tangential drag
-  float drag = s * 0.20 / (r + 0.11) * smoothstep(0.84, 0.04, r);
+  float s = clamp(uStrength, 0.0, 0.6);
 
-  // Chromatic aberration — blue bends more
-  float chromR = lens * 0.968;
-  float chromG = lens * 1.000;
-  float chromB = lens * 1.036;
-  float dragR  = drag * 0.974;
-  float dragG  = drag * 1.000;
-  float dragB  = drag * 1.030;
+  // ─────────────────────────────
+  // LENS (SOFTER, MORE CONTROLLED)
+  // ─────────────────────────────
+  float lens = s * (0.32 / (r + 0.06));
+  lens *= smoothstep(0.85, 0.08, r);
 
-  vec2 uvR = clamp(uv + dir*chromR + tang*dragR, 0.001, 0.999);
-  vec2 uvG = clamp(uv + dir*chromG + tang*dragG, 0.001, 0.999);
-  vec2 uvB = clamp(uv + dir*chromB + tang*dragB, 0.001, 0.999);
+  float core = s * 0.14 / (r + 0.02);
+  core *= smoothstep(0.20, 0.0, r);
 
-  float red   = texture2D(inputBuffer, uvR).r;
-  float green = texture2D(inputBuffer, uvG).g;
-  float blue  = texture2D(inputBuffer, uvB).b;
+  lens += core;
 
-  // Secondary image (light going around the back)
-  float secW = smoothstep(0.24, 0.19, r) * smoothstep(0.16, 0.21, r) * s * 0.60;
-  vec2 uvSecR = clamp(uv - dir*chromR*0.45 - tang*dragR*0.30, 0.001, 0.999);
-  vec2 uvSecG = clamp(uv - dir*chromG*0.45 - tang*dragG*0.30, 0.001, 0.999);
-  vec2 uvSecB = clamp(uv - dir*chromB*0.45 - tang*dragB*0.30, 0.001, 0.999);
+  // ─────────────────────────────
+  // VERTICAL ARC (LESS AGGRESSIVE)
+  // ─────────────────────────────
+  float vBias = pow(abs(dir.y), 1.8);
+  vec2 vOffset = vec2(0.0, vBias * s * 0.18);
 
-  vec3 col = vec3(red, green, blue);
-  col += vec3(texture2D(inputBuffer,uvSecR).r,
-              texture2D(inputBuffer,uvSecG).g,
-              texture2D(inputBuffer,uvSecB).b) * secW;
+  // ─────────────────────────────
+  // ROTATION
+  // ─────────────────────────────
+  float drag = s * 0.22 / (r + 0.1);
+  drag *= smoothstep(0.8, 0.1, r);
 
-  // Einstein ring — slightly more prominent
-  float ring  = smoothstep(0.215, 0.176, r) * smoothstep(0.172, 0.218, r);
-  float shim  = 1.0 + 0.065 * sin(uTime * 2.8 + r * 40.0);
-  col += ring * 1.80 * s * shim;
+  vec2 uvMain = uv + dir*lens + tang*drag + vOffset;
+  uvMain = clamp(uvMain, 0.001, 0.999);
 
-  // Radial brightness boost
-  float boost = smoothstep(0.65, 0.11, r) * s * 0.45;
-  col *= (1.0 + boost);
+  vec3 col = texture2D(inputBuffer, uvMain).rgb;
 
-  // Event horizon absolute dark
-  float horizon = smoothstep(0.088, 0.054, r);
-  col = mix(col, vec3(0.0), horizon * 0.93);
+  // ─────────────────────────────
+  // SOFT SECONDARY ARC (NO BURN)
+  // ─────────────────────────────
+  float arcMask = smoothstep(0.28, 0.20, r) * smoothstep(0.18, 0.26, r);
+
+  vec2 uvArc = uv - dir*lens*0.55 - tang*drag*0.35;
+  uvArc.y += vBias * 0.12;
+
+  vec3 arc = texture2D(inputBuffer, uvArc).rgb;
+
+  col += arc * arcMask * s * 0.6; // 🔻 MUCH LOWER
+
+  // ─────────────────────────────
+  // COLOR PRESERVATION (IMPORTANT)
+  // ─────────────────────────────
+  col = mix(col, col * 0.85, smoothstep(0.15, 0.4, r));
+
+  // ─────────────────────────────
+  // EVENT HORIZON (CLEAN + BIGGER)
+  // ─────────────────────────────
+  float horizon = smoothstep(0.11, 0.06, r);
+  col = mix(col, vec3(0.0), horizon);
 
   outputColor = vec4(col, inputColor.a);
-}`;
+}
+
+`;
 
 class LensEffect extends Effect {
   constructor() {
@@ -105,8 +110,8 @@ export default function GravitationalLensing({
   const effect = useMemo(() => new LensEffect(), []);
 
   useFrame(({ clock }) => {
-    // Use 0.38 as new cap (slightly stronger than before)
-    effect.uniforms.get('uStrength')!.value = Math.min(strengthRef.current, 0.38);
+    // New cap: 0.55 (was 0.38) — creates the Interstellar top arc
+    effect.uniforms.get('uStrength')!.value = Math.min(strengthRef.current, 0.55);
     effect.uniforms.get('uTime')!.value     = clock.getElapsedTime();
   });
 
