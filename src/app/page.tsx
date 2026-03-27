@@ -24,33 +24,43 @@ export default function Home() {
   const setHeroExited = useSceneStore(s => s.setHeroExited);
   const lastScrollY   = useRef(0);
 
-  const [flashOpacity,    setFlashOpacity]    = useState(0);
-  const [flashTransition, setFlashTransition] = useState(false);
+  /* Track first-ever hero exit to trigger the portal transition exactly once */
+  const didExitRef    = useRef(false);
+  const [portalPhase, setPortalPhase] = useState<'idle' | 'enter' | 'hold' | 'leave'>('idle');
 
-  /* Restore scroll to top on first mount + lock overflow for hero phase */
+  /* Lock scroll during hero phase */
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     document.documentElement.style.overflow = 'hidden';
   }, []);
 
-  /* When hero exits: reset scroll FIRST, then unlock, then fade flash */
+  /* Trigger cinematic portal when heroExited becomes true for the first time */
+  useEffect(() => {
+    if (heroExited && !didExitRef.current) {
+      didExitRef.current = true;
+
+      // Phase 1 — black hold (matches the black-hole darkness)
+      setPortalPhase('enter');
+
+      // Phase 2 — radial reveal expanding outward (portal opening)
+      setTimeout(() => setPortalPhase('hold'), 180);
+
+      // Phase 3 — fade out as asteroid field is revealed
+      setTimeout(() => setPortalPhase('leave'), 820);
+
+      // Done — remove overlay
+      setTimeout(() => setPortalPhase('idle'), 1900);
+    }
+  }, [heroExited]);
+
+  /* When hero exits: unlock scroll */
   useEffect(() => {
     if (heroExited) {
-      // 1. Hard-reset position before any overflow change so the browser
-      //    never sees a non-zero scrollY while html is still hidden.
       window.scrollTo({ top: 0, behavior: 'instant' });
-      document.body.style.overflow = '';           // keep body clean
-      setFlashTransition(false);
-      setFlashOpacity(0.85);
-
-      // 2. Unlock html in the next frame — layout settled, sticky valid.
+      document.body.style.overflow = '';
       requestAnimationFrame(() => {
         document.documentElement.style.overflow = 'auto';
-        requestAnimationFrame(() => {
-          setFlashTransition(true);
-          setFlashOpacity(0);
-        });
       });
     }
   }, [heroExited]);
@@ -62,6 +72,7 @@ export default function Home() {
       if (window.scrollY <= 0 && e.deltaY < 0) {
         e.preventDefault();
         setHeroExited(false);
+        didExitRef.current = false;   // allow portal to re-play on next exit
         document.documentElement.style.overflow = 'hidden';
         window.scrollTo({ top: 0, behavior: 'instant' });
       }
@@ -77,32 +88,60 @@ export default function Home() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  /* ── Portal overlay style — computed per phase ──────────────────── */
+  const portalStyle: React.CSSProperties = (() => {
+    if (portalPhase === 'idle') return { display: 'none' };
+
+    const base: React.CSSProperties = {
+      position:      'fixed',
+      inset:         0,
+      zIndex:        30,
+      pointerEvents: 'none',
+      // Deep space gradient — matches the black hole interior colour
+      background:    'radial-gradient(ellipse 55% 55% at 50% 50%, rgba(6,14,38,1) 0%, rgba(0,0,0,1) 72%)',
+    };
+
+    if (portalPhase === 'enter') {
+      // Starts fully opaque — seamless with black-hole exit frame
+      return { ...base, opacity: 1, transition: 'none' };
+    }
+    if (portalPhase === 'hold') {
+      // Expand a subtle radial "portal iris" while holding opacity
+      return {
+        ...base,
+        opacity: 1,
+        // Clip-path circle expanding from singularity to full-screen
+        clipPath: 'circle(120% at 50% 50%)',
+        transition: 'clip-path 0.64s cubic-bezier(.22,1,.36,1)',
+      };
+    }
+    // 'leave' — fade out + very slight zoom-out revealing the asteroid field
+    return {
+      ...base,
+      opacity: 0,
+      transform: 'scale(1.04)',
+      transition: 'opacity 1.08s cubic-bezier(.4,0,.2,1), transform 1.08s cubic-bezier(.4,0,.2,1)',
+    };
+  })();
+
   return (
     <main>
       {/*
-        ─── KEY FIX ────────────────────────────────────────────────────
-        HeroScene is position:fixed so it takes ZERO space in the
-        document flow. This means:
-          • PostHeroSection owns the document from y = 0
-          • Total page height = TOTAL_VH * vh (no extra 100vh gap)
-          • PostHeroSection's scroll lock lands exactly at the bottom
-          • No dead air gap below the section
-        ────────────────────────────────────────────────────────────────
+        HeroScene: position fixed, always mounted.
+        Handles its own opacity fade via diveOpacity.
       */}
-      <div
-        style={{
-          position:      'fixed',
-          inset:         0,
-          zIndex:        heroExited ? 0 : 10,   // behind post-hero after exit
-          pointerEvents: heroExited ? 'none' : 'auto',
-        }}
-      >
+      <div style={{
+        position:      'fixed',
+        inset:         0,
+        zIndex:        heroExited ? 0 : 10,
+        pointerEvents: heroExited ? 'none' : 'auto',
+      }}>
         <HeroScene />
       </div>
 
       {/*
-        post-hero starts at y = 0 now (no hero block above it in flow).
-        zIndex:20 keeps it above the fixed hero layer.
+        PostHero: always rendered behind hero.
+        When heroExited, rises to primary layer.
       */}
       <div
         id="post-hero"
@@ -110,26 +149,27 @@ export default function Home() {
           position:      'relative',
           zIndex:        heroExited ? 20 : 5,
           background:    '#000',
-          opacity:       heroExited ? 1 : 0,
           pointerEvents: heroExited ? 'auto' : 'none',
-          transition:    heroExited ? 'opacity 0.35s ease 0.05s' : 'none',
         }}
       >
         <PostHeroSection />
       </div>
 
-      {/* Flash bridge */}
-      <div
-        style={{
-          position:      'fixed',
-          inset:         0,
-          zIndex:        30,
-          background:    '#fff',
-          opacity:       flashOpacity,
-          transition:    flashTransition ? 'opacity 0.75s ease' : 'none',
-          pointerEvents: 'none',
-        }}
-      />
+      {/*
+        Cinematic portal overlay — only mounts for ~1.9 s on first hero exit.
+        Creates the "emerging from singularity into asteroid field" moment:
+          1. Brief black hold  (continuity with black-hole dive)
+          2. Radial clip-path expands outward  (portal iris opening)
+          3. Fade-out + slight zoom  (you've arrived in open space)
+      */}
+      <div style={portalStyle} aria-hidden="true" />
+
+      <style>{`
+        @keyframes portalIrisIn {
+          from { clip-path: circle(0% at 50% 50%); }
+          to   { clip-path: circle(120% at 50% 50%); }
+        }
+      `}</style>
     </main>
   );
 }

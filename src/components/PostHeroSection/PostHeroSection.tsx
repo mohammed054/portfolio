@@ -15,7 +15,7 @@ import { timeline } from '@/lib/data';
 ══════════════════════════════════════════════════════════════ */
 
 const N       = timeline.length;
-const N_WALL  = 240;           // wall rocks — denser field
+const N_WALL  = 240;
 const N_ROCK  = N + N_WALL;
 
 const ABOUT_VH    = 760;
@@ -24,10 +24,10 @@ const TOTAL_VH    = ABOUT_VH + (N + 1) * TL_VH_ENTRY;
 const AF          = ABOUT_VH / TOTAL_VH;
 
 /* ── Ring / Tunnel geometry ─────────────────────────────────── */
-const RING_Z   = -14;      // Z-depth where the ring forms (closer)
-const RING_R   = 9.2;      // ring radius (outer edge)
-const T_CLEAR  = 5.8;      // inner void radius
-const T_WALL_R = 14.0;     // max rock radius in tunnel walls
+const RING_Z   = -14;
+const RING_R   = 9.2;
+const T_CLEAR  = 5.8;
+const T_WALL_R = 14.0;
 const T_NEAR_Z = RING_Z;
 const T_FAR_Z  = -90;
 const T_SPAN   = Math.abs(T_FAR_Z - T_NEAR_Z);
@@ -38,18 +38,14 @@ const T_SPAN   = Math.abs(T_FAR_Z - T_NEAR_Z);
 const PH = {
   ringStart:   AF * 0.05,
   ringFull:    AF * 0.34,
-
   approachEnd: AF * 0.44,
-
   enterStart:  AF * 0.44,
   enterMid:    AF * 0.50,
   enterEnd:    AF * 0.59,
-
   textIn:      AF * 0.55,
   textFull:    AF * 0.64,
   dispStart:   AF * 0.76,
   dispEnd:     AF * 0.88,
-
   tlStart:     AF * 0.84,
 } as const;
 
@@ -68,6 +64,14 @@ const springEase = (t: number): number => {
   return (1 - Math.pow(1 - c, 3.4)) + Math.sin(c * Math.PI * 2.6) * 0.048 * Math.pow(1 - c, 1.8);
 };
 
+/* FIX: Smooth cubic ease-in-out — zero overshoot.
+   The old hopEase had a Math.sin overshoot that combined with spring
+   impulses to create the "bouncy zoom-in-out" between rocks. */
+const hopEase = (t: number): number => {
+  const c = clamp(t, 0, 1);
+  return c < 0.5 ? 4 * c * c * c : 1 - Math.pow(-2 * c + 2, 3) / 2;
+};
+
 /* ══════════════════════════════════════════════════════════════
    WALL SLOTS
 ══════════════════════════════════════════════════════════════ */
@@ -75,7 +79,6 @@ interface TunnelSlot { angle: number; radius: number; z: number; }
 
 const wallSlots: TunnelSlot[] = (() => {
   const slots: TunnelSlot[] = [];
-
   for (let i = 0; i < N; i++) {
     const r = (o: number) => sr(i * 79 + o + 200);
     const sideBase = i % 2 === 0 ? 0 : Math.PI;
@@ -83,7 +86,6 @@ const wallSlots: TunnelSlot[] = (() => {
     const depth = T_NEAR_Z - T_SPAN * 0.10 - i * ((T_SPAN * 0.80) / Math.max(N - 1, 1));
     slots.push({ angle, radius: T_CLEAR + 2.4 + r(2) * 2.4, z: depth });
   }
-
   for (let i = 0; i < N_WALL; i++) {
     const r = (o: number) => sr((i + N) * 113 + o);
     const angle  = r(1) * Math.PI * 2;
@@ -94,41 +96,47 @@ const wallSlots: TunnelSlot[] = (() => {
     const z = T_NEAR_Z - 0.5 - r(4) * (T_SPAN - 1);
     slots.push({ angle, radius, z });
   }
-
   return slots;
 })();
 
 /* ══════════════════════════════════════════════════════════════
    TIMELINE CAMERA PATH
+   FIX: Camera now sits on the SAME side as each rock (not opposite),
+   positioned between the tunnel center and the rock surface.
+   Distance to rock: ~2–4 units. Intimate, cinematic.
 ══════════════════════════════════════════════════════════════ */
 const TL_CAM_KEYS: THREE.Vector3[] = [
   new THREE.Vector3(0, 0.3, -22),
   ...timeline.map((_, i) => {
-    const r = (o: number) => sr(i * 79 + o + 500);
+    const r    = (o: number) => sr(i * 79 + o + 500);
     const slot = wallSlots[i];
-    const camAngle = slot.angle + Math.PI;
+    // Camera on same side as rock, slight random angular offset for variety
+    const camAngle = slot.angle + (r(1) - 0.5) * 0.50;
+    // Sit between center (0) and rock (slot.radius) — biased ~60% toward the rock
+    const camDist  = slot.radius * 0.60 + 1.0;
     return new THREE.Vector3(
-      Math.cos(camAngle) * 1.7 + (r(1) - 0.5) * 1.1,
-      Math.sin(camAngle) * 0.9 + (r(2) - 0.5) * 0.7,
-      slot.z + 13,
+      Math.cos(camAngle) * camDist + (r(2) - 0.5) * 0.35,
+      Math.sin(camAngle) * camDist * 0.70 + (r(3) - 0.5) * 0.25,
+      slot.z + 3.5,
     );
   }),
 ];
 
+/* Look directly at rock center — no partial-radius fudge */
 const TL_LOOK_KEYS: THREE.Vector3[] = [
   new THREE.Vector3(0, 0, T_NEAR_Z - 20),
   ...timeline.map((_, i) => {
     const slot = wallSlots[i];
     return new THREE.Vector3(
-      Math.cos(slot.angle) * (slot.radius * 0.65),
-      Math.sin(slot.angle) * (slot.radius * 0.50),
+      Math.cos(slot.angle) * slot.radius,
+      Math.sin(slot.angle) * slot.radius,
       slot.z,
     );
   }),
 ];
 
 /* ══════════════════════════════════════════════════════════════
-   ROCK CONFIGS  — imperfect asteroid belt
+   ROCK CONFIGS
 ══════════════════════════════════════════════════════════════ */
 const ROCK_CFG = Array.from({ length: N_ROCK }, (_, i) => {
   const isTL = i < N;
@@ -141,7 +149,7 @@ const ROCK_CFG = Array.from({ length: N_ROCK }, (_, i) => {
   const scatter = new THREE.Vector3(
     Math.sin(sTheta) * Math.cos(sPhi) * sR,
     Math.sin(sTheta) * Math.sin(sPhi) * sR,
-    5 - r(4) * 26,
+    -12 - r(4) * 24,
   );
 
   let ringPos: THREE.Vector3;
@@ -153,37 +161,25 @@ const ROCK_CFG = Array.from({ length: N_ROCK }, (_, i) => {
     );
   } else {
     const wallIdx = i - N;
-
-    // 22% of rocks are "floaters" — they never properly join the ring
-    // they hover loosely around the scene creating a chaotic field
     const isFloater = r(98) < 0.22;
-
     if (isFloater) {
-      // Floaters: stay scattered at varying depths, forming a halo cloud
-      const fAngle = r(94) * Math.PI * 2;
+      const fAngle  = r(94) * Math.PI * 2;
       const fRadius = T_CLEAR + 3 + r(95) * (RING_R * 1.8);
-      const fZ = RING_Z + (r(97) - 0.5) * 18; // spread widely in Z
+      const fZ      = RING_Z + (r(97) - 0.5) * 18;
       ringPos = new THREE.Vector3(
         Math.cos(fAngle) * fRadius,
         Math.sin(fAngle) * fRadius,
         fZ,
       );
     } else {
-      // Ring rocks: imperfect asteroid belt — heavy angular and radial jitter
-      const baseAngle = (wallIdx / N_WALL) * Math.PI * 2;
-      // Big angular jitter: ±75° breaks the perfect circle completely
+      const baseAngle   = (wallIdx / N_WALL) * Math.PI * 2;
       const angleJitter = (r(94) - 0.5) * 2.6;
-      const angle = baseAngle + angleJitter;
-
-      // Some rocks cluster toward inner edge, some toward outer — bimodal distribution
+      const angle       = baseAngle + angleJitter;
       const innerCluster = r(99) < 0.28;
-      const ringRadius = innerCluster
-        ? T_CLEAR + 0.8 + r(95) * 3.5   // inner cluster
-        : RING_R - 0.5 + (r(95) - 0.5) * 5.5; // outer belt, heavy variance
-
-      // Heavy Z variance — the belt has depth
+      const ringRadius   = innerCluster
+        ? T_CLEAR + 0.8 + r(95) * 3.5
+        : RING_R - 0.5 + (r(95) - 0.5) * 5.5;
       const zJitter = (r(97) - 0.5) * 8;
-
       ringPos = new THREE.Vector3(
         Math.cos(angle) * ringRadius,
         Math.sin(angle) * ringRadius,
@@ -199,23 +195,18 @@ const ROCK_CFG = Array.from({ length: N_ROCK }, (_, i) => {
   );
 
   const disperse = isTL
-    ? new THREE.Vector3(
-        Math.cos(slot.angle) * (slot.radius * 2.0),
-        Math.sin(slot.angle) * (slot.radius * 1.6),
-        slot.z - 10,
-      )
+    ? wall.clone()   // FIX: TL rocks don't disperse — they stay at wall for close-up shots
     : new THREE.Vector3(
         (r(7) - 0.5) * 80,
         (r(8) - 0.5) * 55,
         -(55 + r(9) * 90),
       );
 
-  // Ring stagger: organic wave, not synchronized
-  const wallIdx2 = isTL ? -1 : i - N;
+  const wallIdx2  = isTL ? -1 : i - N;
   const ringAngle = isTL ? 0 : (wallIdx2 / N_WALL) * Math.PI * 2;
   const ringDelay = isTL
     ? r(11) * 0.022
-    : (1 - Math.abs(Math.cos(ringAngle))) * 0.058 + r(11) * 0.038; // more stagger variance
+    : (1 - Math.abs(Math.cos(ringAngle))) * 0.058 + r(11) * 0.038;
 
   const depthT     = clamp(Math.abs(slot.z - T_NEAR_Z) / T_SPAN, 0, 1);
   const depthScale = isTL ? 1.0 : Math.max(0.14, 1 - depthT * 0.78);
@@ -224,9 +215,7 @@ const ROCK_CFG = Array.from({ length: N_ROCK }, (_, i) => {
     isTL, tlIdx: isTL ? i : -1,
     scatter, ringPos, wall, disperse,
     ringDelay,
-    radius: isTL
-      ? 1.15 + r(10) * 0.90
-      : (0.28 + r(10) * 0.72) * depthScale,   // slightly larger rocks
+    radius: isTL ? 1.15 + r(10) * 0.90 : (0.28 + r(10) * 0.72) * depthScale,
     detail: isTL ? 4 : depthScale > 0.55 ? 3 : 2,
     seed:    (i * 41 + 7) | 0,
     fAmp:    0.08 + r(11) * 0.26,
@@ -350,9 +339,12 @@ interface SharedRefs {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   CHUNK SYSTEM
+   CHUNK SYSTEM — asteroid fracture debris
+   FIX: Replaced TNT-explosion physics with slow geological drift.
+   Stone fragments tumble outward at 0.4–1.6 u/s (was 4.5–11.5).
+   No orange fire — cool grey stone with faint rim glow only.
 ══════════════════════════════════════════════════════════════ */
-const CHUNKS_PER_FRAC = 14;
+const CHUNKS_PER_FRAC = 18;
 const CHUNK_POOL      = CHUNKS_PER_FRAC * 6;
 
 interface ChunkState {
@@ -365,12 +357,13 @@ interface ChunkState {
 function ChunkSystem({ chunkEventRef }: { chunkEventRef: React.MutableRefObject<{ idx: number; pos: THREE.Vector3 } | null> }) {
   const mesh  = useRef<THREE.InstancedMesh>(null!);
   const dummy = useMemo(() => new THREE.Object3D(), []);
-  const geo   = useMemo(() => makeRockGeo(0.30, 91, 1), []);
+  // Slightly smaller chunk geo, lower detail
+  const geo   = useMemo(() => makeRockGeo(0.22, 91, 1), []);
   const pool  = useRef<ChunkState[]>(
     Array.from({ length: CHUNK_POOL }, () => ({
       alive: false, pos: new THREE.Vector3(), vel: new THREE.Vector3(),
       rx: 0, ry: 0, rz: 0, avx: 0, avy: 0, avz: 0,
-      scale: 0, birth: 0, life: 1.4,
+      scale: 0, birth: 0, life: 3.2,
     }))
   );
   const cursor = useRef(0);
@@ -383,37 +376,83 @@ function ChunkSystem({ chunkEventRef }: { chunkEventRef: React.MutableRefObject<
       for (let c = 0; c < CHUNKS_PER_FRAC; c++) {
         const idx = (cursor.current++) % CHUNK_POOL;
         const r = (o: number) => sr(ev.idx * 53 + c * 17 + o);
-        const spd = 4.5 + r(1) * 7.0;
-        const theta = r(2) * Math.PI; const phi = r(3) * Math.PI * 2;
+        // Slow geological drift — rocks don't explode, they fracture and drift
+        const spd = 0.38 + r(1) * 1.22;
+        const theta = r(2) * Math.PI;
+        const phi   = r(3) * Math.PI * 2;
         const p = pool.current[idx];
         p.alive = true;
-        p.pos.copy(ev.pos).add(new THREE.Vector3((r(4) - 0.5) * 0.6, (r(5) - 0.5) * 0.6, (r(6) - 0.5) * 0.6));
-        p.vel.set(Math.sin(theta) * Math.cos(phi) * spd, Math.sin(theta) * Math.sin(phi) * spd + 1.5, Math.cos(theta) * spd);
-        p.rx = r(7) * Math.PI * 2; p.ry = r(8) * Math.PI * 2; p.rz = r(9) * Math.PI * 2;
-        p.avx = (r(10) - 0.5) * 6; p.avy = (r(11) - 0.5) * 6; p.avz = (r(12) - 0.5) * 6;
-        p.scale = 0.4 + r(13) * 0.85; p.birth = clock.getElapsedTime(); p.life = 1.1 + r(14) * 0.7;
+        // Tight spawn cluster at the fracture point
+        p.pos.copy(ev.pos).add(new THREE.Vector3(
+          (r(4) - 0.5) * 0.25,
+          (r(5) - 0.5) * 0.25,
+          (r(6) - 0.5) * 0.25,
+        ));
+        p.vel.set(
+          Math.sin(theta) * Math.cos(phi) * spd,
+          Math.sin(theta) * Math.sin(phi) * spd,   // no upward bias
+          Math.cos(theta) * spd,
+        );
+        // Slow tumble — asteroid debris, not shrapnel
+        p.avx = (r(10) - 0.5) * 0.9;
+        p.avy = (r(11) - 0.5) * 0.9;
+        p.avz = (r(12) - 0.5) * 0.9;
+        p.rx = r(7) * Math.PI * 2;
+        p.ry = r(8) * Math.PI * 2;
+        p.rz = r(9) * Math.PI * 2;
+        // Variable sizes — some big slab fragments, some pebbles
+        p.scale = 0.18 + r(13) * 0.70;
+        p.birth = clock.getElapsedTime();
+        // Long life — debris drifts slowly into darkness
+        p.life  = 3.0 + r(14) * 1.8;
       }
     }
+
     let count = 0;
     for (let i = 0; i < CHUNK_POOL; i++) {
-      const p = pool.current[i]; if (!p.alive) continue;
-      const age = clock.getElapsedTime() - p.birth; const life = age / p.life;
+      const p = pool.current[i];
+      if (!p.alive) continue;
+      const age  = clock.getElapsedTime() - p.birth;
+      const life = age / p.life;
       if (life >= 1) { p.alive = false; continue; }
+
       const dt = Math.min(delta, 0.05);
-      p.pos.addScaledVector(p.vel, dt); p.vel.y -= 5.0 * dt; p.vel.multiplyScalar(1 - 0.8 * dt);
-      p.rx += p.avx * dt; p.ry += p.avy * dt; p.rz += p.avz * dt;
-      const fade = life < 0.12 ? life / 0.12 : 1 - Math.pow((life - 0.12) / 0.88, 1.4);
-      const scl  = p.scale * (0.8 + 0.2 * (1 - life)) * fade;
-      dummy.position.copy(p.pos); dummy.rotation.set(p.rx, p.ry, p.rz); dummy.scale.setScalar(scl);
-      dummy.updateMatrix(); mesh.current.setMatrixAt(count++, dummy.matrix);
+      p.pos.addScaledVector(p.vel, dt);
+      // Minimal gravity — asteroid is in space
+      p.vel.y -= 0.28 * dt;
+      // Light drag — coasting through vacuum
+      p.vel.multiplyScalar(1 - 0.18 * dt);
+
+      p.rx += p.avx * dt;
+      p.ry += p.avy * dt;
+      p.rz += p.avz * dt;
+
+      // Slow fade in, long drift, gradual fade out
+      const fade = life < 0.08
+        ? life / 0.08
+        : 1 - Math.pow((life - 0.08) / 0.92, 2.2);
+      const scl = p.scale * (1 - life * 0.12) * fade;
+
+      dummy.position.copy(p.pos);
+      dummy.rotation.set(p.rx, p.ry, p.rz);
+      dummy.scale.setScalar(scl);
+      dummy.updateMatrix();
+      mesh.current.setMatrixAt(count++, dummy.matrix);
     }
-    mesh.current.count = count; mesh.current.instanceMatrix.needsUpdate = true;
+    mesh.current.count = count;
+    mesh.current.instanceMatrix.needsUpdate = true;
   });
 
   return (
     <instancedMesh ref={mesh} args={[geo, undefined, CHUNK_POOL]} frustumCulled={false}>
-      <meshStandardMaterial roughness={0.94} metalness={0.03}
-        emissive={new THREE.Color('#f59e0b')} emissiveIntensity={0.8} color="#9a918a" />
+      {/* FIX: Stone grey — cool blue-grey tint, near-zero emissive. No fire. */}
+      <meshStandardMaterial
+        roughness={0.96}
+        metalness={0.01}
+        emissive={new THREE.Color('#1a2233')}
+        emissiveIntensity={0.12}
+        color="#8c8880"
+      />
     </instancedMesh>
   );
 }
@@ -430,8 +469,8 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
   const _tmpPos    = useMemo(() => new THREE.Vector3(), []);
 
   const _emBase   = useMemo(() => new THREE.Color('#010d1f'), []);
-  const _emGlow   = useMemo(() => new THREE.Color('#f59e0b'), []);
-  const _emCrack  = useMemo(() => new THREE.Color('#ff6b00'), []);
+  const _emGlow   = useMemo(() => new THREE.Color('#c8d8f0'), []);   // cool white glow instead of amber
+  const _emCrack  = useMemo(() => new THREE.Color('#e8edf5'), []);   // bright white crack light
   const _emActive = useMemo(() => new THREE.Color('#0050a8'), []);
   const _emHover  = useMemo(() => new THREE.Color('#1e6abf'), []);
   const _emWall   = useMemo(() => new THREE.Color('#040d22'), []);
@@ -474,7 +513,7 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
     const fy = Math.cos(t * 0.06 + cfg.rotSeed * 2.1) * idle * floatI * 0.8;
 
     const rawRingSnap = clamp(
-      (sp - PH.ringStart - cfg.ringDelay) / Math.max(PH.ringFull - PH.ringStart, 1e-5), 0, 1
+      (sp - PH.ringStart - cfg.ringDelay) / Math.max(PH.ringFull - PH.ringStart, 1e-5), 0, 1,
     );
     const ringSnapP = springEase(rawRingSnap);
 
@@ -486,9 +525,21 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
     by = lrp(by, cfg.wall.y, enterP);
     bz = lrp(bz, cfg.wall.z, enterP);
 
-    bx = lrp(bx, cfg.disperse.x, dispP);
-    by = lrp(by, cfg.disperse.y, dispP);
-    bz = lrp(bz, cfg.disperse.z, dispP);
+    // FIX: Only non-TL (wall) rocks disperse. TL rocks stay at wall positions
+    // so the TL camera can get close to them. disperse === wall for TL rocks
+    // (see ROCK_CFG above) so this is a no-op for TL — wall rocks drift away.
+    if (!cfg.isTL) {
+      bx = lrp(bx, cfg.disperse.x, dispP);
+      by = lrp(by, cfg.disperse.y, dispP);
+      bz = lrp(bz, cfg.disperse.z, dispP);
+    }
+
+    // Subtle Z parallax drift for wall rocks during tunnel fly-through
+    if (!cfg.isTL && enterP > 0) {
+      const tunnelDepth = sm(sp, PH.enterStart, PH.enterEnd);
+      const driftAmt    = tunnelDepth * cfg.depthScale * 2.2;
+      bz += Math.sin(t * 0.20 + cfg.rotSeed * 3.1) * driftAmt;
+    }
 
     _tmpPos.set(bx, by, bz);
     mesh.current.position.lerp(_tmpPos, 0.062);
@@ -511,15 +562,15 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
         const pulse = 1.0 + Math.sin(t * 5.5) * 0.025 * frac.pressure;
         mesh.current.scale.setScalar(lrp(mesh.current.scale.x, baseScale * pulse, 0.09));
         mat.current.emissive.lerp(_emGlow, 0.08);
-        mat.current.emissiveIntensity = lrp(mat.current.emissiveIntensity, frac.pressure * 0.9, 0.08);
+        mat.current.emissiveIntensity = lrp(mat.current.emissiveIntensity, frac.pressure * 0.55, 0.08);
       } else if (frac?.phase === 'vibrating' || frac?.phase === 'cracking') {
-        const vib   = frac.pressure * 0.09;
+        const vib   = frac.pressure * 0.07;
         const crack = frac.pressure * (frac.phase === 'cracking' ? 1.0 : 0.6);
         mesh.current.position.x += (Math.random() - 0.5) * vib;
         mesh.current.position.y += (Math.random() - 0.5) * vib;
-        mesh.current.scale.setScalar(lrp(mesh.current.scale.x, baseScale * (1.0 + crack * 0.14), 0.11));
+        mesh.current.scale.setScalar(lrp(mesh.current.scale.x, baseScale * (1.0 + crack * 0.10), 0.11));
         mat.current.emissive.lerp(frac.phase === 'cracking' ? _emCrack : _emGlow, 0.12);
-        mat.current.emissiveIntensity = lrp(mat.current.emissiveIntensity, crack * 2.5, 0.10);
+        mat.current.emissiveIntensity = lrp(mat.current.emissiveIntensity, crack * 1.6, 0.10);
       } else if (frac?.phase === 'shattered') {
         mesh.current.scale.setScalar(lrp(mesh.current.scale.x, 0, 0.16));
         mat.current.emissiveIntensity = lrp(mat.current.emissiveIntensity, 0, 0.12);
@@ -527,8 +578,8 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
         const pulse = isHover && inTL ? 1.0 + Math.sin(t * 3.5) * 0.032 : 1.0;
         mesh.current.scale.setScalar(lrp(mesh.current.scale.x, baseScale * pulse, 0.07));
         const base = isActive ? 0.72 : isHover ? 0.30 : 0.055;
-        mat.current.emissiveIntensity = lrp(mat.current.emissiveIntensity, base, 0.05);
-        mat.current.emissive.lerp(isActive ? _emActive : isHover ? _emHover : _emBase, 0.06);
+        mat.current.emissiveIntensity = lrp(mat.current.emissiveIntensity, base, 0.035);
+        mat.current.emissive.lerp(isActive ? _emActive : isHover ? _emHover : _emBase, 0.04);
       }
 
       if (frac) refs.fractureRef.current[cfg.tlIdx].worldPos.copy(mesh.current.position);
@@ -545,7 +596,9 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
       if (isSmHov && inAbout) mesh.current.scale.setScalar(lrp(mesh.current.scale.x, 1.14, 0.06));
       else mesh.current.scale.setScalar(lrp(mesh.current.scale.x, 1.0, 0.05));
 
-      mat.current.opacity = lrp(mat.current.opacity, Math.max(0, 1 - xp(dispP, 0.14, 0.86, 1.6)), 0.07);
+      const dispFade  = 1 - sm(sp, PH.dispStart, PH.dispEnd + 0.02);
+      const baseOpacity = Math.max(0, 1 - xp(dispP, 0.14, 0.86, 1.6));
+      mat.current.opacity = lrp(mat.current.opacity, Math.max(0, baseOpacity * dispFade), 0.07);
     }
   });
 
@@ -616,60 +669,109 @@ function FractureDriver({
 }
 
 /* ══════════════════════════════════════════════════════════════
-   RING NEBULA — particle glow only, NO solid geometry
-   Additive sprite-based atmospheric effect around the belt zone
+   RING NEBULA
 ══════════════════════════════════════════════════════════════ */
+function makeNebulaSpriteTexture(): THREE.Texture {
+  const size = 64;
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d')!;
+  const half = size / 2;
+  const grd = ctx.createRadialGradient(half, half, 0, half, half, half);
+  grd.addColorStop(0,   'rgba(80,130,255,1)');
+  grd.addColorStop(0.4, 'rgba(40,80,220,0.6)');
+  grd.addColorStop(1,   'rgba(10,30,120,0)');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, size, size);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
+}
+
 function RingNebula({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) {
-  const ref    = useRef<THREE.InstancedMesh>(null!);
-  const matRef = useRef<THREE.MeshBasicMaterial>(null!);
-  const dummy  = useMemo(() => new THREE.Object3D(), []);
-  const N_NEB  = 280;
+  const matRef = useRef<THREE.PointsMaterial>(null!);
+  const N_NEB  = 320;
 
-  // Particles scattered in a torus-ish volume around ring zone (not a circle)
-  const particles = useMemo(() => Array.from({ length: N_NEB }, (_, i) => {
-    const r = (o: number) => sr(i * 137 + o + 8000);
-    // Scatter in a volume, not a circle — creates haze/nebula look
-    const angle    = r(1) * Math.PI * 2;
-    const radBias  = Math.pow(r(2), 0.6);                        // bias toward outer edge
-    const radius   = T_CLEAR * 0.5 + radBias * (RING_R * 1.4);  // inner void to outer haze
-    const zSpread  = (r(3) - 0.5) * 12;                          // generous Z spread
-    const size     = 0.2 + r(4) * 1.1;
-    return {
-      x: Math.cos(angle) * radius,
-      y: Math.sin(angle) * radius,
-      z: RING_Z + zSpread,
-      size,
-      phaseOffset: r(5) * Math.PI * 2,
-      speed: 0.3 + r(6) * 1.0,
-    };
-  }), []);
+  const { positions } = useMemo(() => {
+    const pos  = new Float32Array(N_NEB * 3);
+    for (let i = 0; i < N_NEB; i++) {
+      const r = (o: number) => sr(i * 137 + o + 8000);
+      const angle   = r(1) * Math.PI * 2;
+      const radBias = Math.pow(r(2), 0.6);
+      const radius  = T_CLEAR * 0.5 + radBias * (RING_R * 1.5);
+      const zSpread = (r(3) - 0.5) * 14;
+      pos[i * 3]     = Math.cos(angle) * radius;
+      pos[i * 3 + 1] = Math.sin(angle) * radius;
+      pos[i * 3 + 2] = RING_Z + zSpread;
+    }
+    return { positions: pos };
+  }, []);
 
-  useFrame(({ clock }) => {
-    if (!ref.current || !matRef.current) return;
+  const geo = useMemo(() => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    return g;
+  }, [positions]);
+
+  const texture = useMemo(() => makeNebulaSpriteTexture(), []);
+
+  useFrame(() => {
+    if (!matRef.current) return;
     const sp  = scrollRef.current;
-    const t   = clock.getElapsedTime();
     const rP  = sm(sp, PH.ringStart + 0.06, PH.ringFull);
     const enP = sm(sp, PH.enterStart, PH.enterMid);
-    // Very subtle — atmospheric haze, not a glowing disc
-    matRef.current.opacity = rP * Math.max(0, 1 - enP * 2.2) * 0.055;
-
-    for (let i = 0; i < N_NEB; i++) {
-      const p     = particles[i];
-      const pulse = 0.55 + Math.sin(t * p.speed + p.phaseOffset) * 0.45;
-      dummy.position.set(p.x, p.y, p.z);
-      dummy.scale.setScalar(p.size * pulse);
-      dummy.updateMatrix();
-      ref.current.setMatrixAt(i, dummy.matrix);
-    }
-    ref.current.instanceMatrix.needsUpdate = true;
+    matRef.current.opacity = rP * Math.max(0, 1 - enP * 2.2) * 0.08;
   });
 
   return (
-    <instancedMesh ref={ref} args={[undefined, undefined, N_NEB]} frustumCulled={false}>
-      <sphereGeometry args={[1, 4, 3]} />
-      <meshBasicMaterial ref={matRef} color="#1a5fc4" transparent opacity={0}
-        blending={THREE.AdditiveBlending} depthWrite={false} />
-    </instancedMesh>
+    <points geometry={geo} frustumCulled={false}>
+      <pointsMaterial
+        ref={matRef} size={3.5} map={texture} color="#1a5fc4"
+        transparent opacity={0} blending={THREE.AdditiveBlending}
+        depthWrite={false} sizeAttenuation alphaTest={0.001}
+      />
+    </points>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SPACE DUST
+══════════════════════════════════════════════════════════════ */
+function SpaceDust({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) {
+  const matRef = useRef<THREE.PointsMaterial>(null!);
+  const N_DUST = 800;
+
+  const geo = useMemo(() => {
+    const pos = new Float32Array(N_DUST * 3);
+    for (let i = 0; i < N_DUST; i++) {
+      const r = (o: number) => sr(i * 97 + o + 5000);
+      const angle  = r(1) * Math.PI * 2;
+      const radius = r(2) * T_WALL_R * 1.2;
+      pos[i * 3]     = Math.cos(angle) * radius;
+      pos[i * 3 + 1] = Math.sin(angle) * radius;
+      pos[i * 3 + 2] = T_NEAR_Z - r(3) * T_SPAN;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    return g;
+  }, []);
+
+  useFrame(() => {
+    if (!matRef.current) return;
+    const sp  = scrollRef.current;
+    const enP = sm(sp, PH.enterStart, PH.enterEnd);
+    const tlP = sm(sp, PH.tlStart, PH.tlStart + 0.08);
+    matRef.current.opacity = enP * 0.18 * (1 - tlP * 0.4);
+  });
+
+  return (
+    <points geometry={geo} frustumCulled={false}>
+      <pointsMaterial
+        ref={matRef} size={0.04} color="#8ab4d4"
+        transparent opacity={0} blending={THREE.AdditiveBlending}
+        depthWrite={false} sizeAttenuation
+      />
+    </points>
   );
 }
 
@@ -691,51 +793,46 @@ function TunnelHaze({ scrollRef }: { scrollRef: React.MutableRefObject<number> }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   WARP STREAKS — enhanced: visible during TL scroll + more dramatic
+   WARP STREAKS — velocity-only
 ══════════════════════════════════════════════════════════════ */
-const WARP_COUNT = 160;
+const WARP_COUNT = 80;
 function WarpStreaks({ scrollRef, scrollVelRef }: {
   scrollRef:    React.MutableRefObject<number>;
   scrollVelRef: React.MutableRefObject<number>;
 }) {
-  const ref   = useRef<THREE.InstancedMesh>(null!);
+  const ref    = useRef<THREE.InstancedMesh>(null!);
   const matRef = useRef<THREE.MeshBasicMaterial>(null!);
-  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const dummy  = useMemo(() => new THREE.Object3D(), []);
 
   useFrame(({ clock }) => {
     if (!ref.current || !matRef.current) return;
-    const sp      = scrollRef.current;
-    const vel     = scrollVelRef.current;
-    const dispP   = sm(sp, PH.dispStart, PH.dispEnd);
-    const disFade = 1 - sm(sp, PH.tlStart, PH.tlStart + 0.12);
-    const inTL    = sp >= PH.tlStart;
+    const sp  = scrollRef.current;
+    const vel = scrollVelRef.current;
+    const velDrive = clamp(vel * 3.5, 0, 1);
 
-    // Velocity-driven streaks during BOTH disperse and TL fast-scroll
-    const velDrive   = clamp(vel * 2.8, 0, 1);
-    const dispDrive  = dispP * disFade;
-    const tlVelDrive = inTL ? velDrive * 0.85 : 0;
-    const drive      = Math.max(dispDrive, tlVelDrive);
+    const inDisperse = sp >= PH.dispStart && sp < PH.tlStart;
+    const inTL       = sp >= PH.tlStart;
 
-    if (drive < 0.006) { ref.current.count = 0; return; }
+    if (!inDisperse && !inTL) { ref.current.count = 0; return; }
+    if (velDrive < 0.12)      { ref.current.count = 0; return; }
 
-    // Opacity based on velocity — fade in quickly, out slowly
-    matRef.current.opacity = clamp(drive * 0.55, 0, 0.42);
+    const drive = velDrive * (inTL ? 0.75 : 0.45);
+    matRef.current.opacity = clamp(drive * 0.28, 0, 0.22);
 
-    const count = Math.floor(WARP_COUNT * Math.min(drive * 1.5, 1));
+    const count = Math.floor(WARP_COUNT * Math.min(drive * 1.2, 1));
     ref.current.count = count;
     const t     = clock.getElapsedTime();
-    const speed = 14 + drive * 70;
+    const speed = 10 + drive * 45;
 
     for (let i = 0; i < count; i++) {
       const s0  = i * 7.317 + 1.4;
       const ang = sr(s0) * Math.PI * 2;
-      const rad = sr(s0 + 1) * T_CLEAR * 1.6;
-      // During TL: streaks move backward (deeper into tunnel)
+      const rad = sr(s0 + 1) * T_CLEAR * 1.4;
       const zOffset = inTL ? -30 : 0;
       const z   = ((sr(s0 + 2) * 90 + t * speed) % 90) - 10 + zOffset;
       dummy.position.set(Math.cos(ang) * rad, Math.sin(ang) * rad, z);
-      const len = 0.06 + drive * 3.8 + velDrive * 1.5;
-      dummy.scale.set(0.006, 0.006, len);
+      const len = 0.05 + drive * 1.8;
+      dummy.scale.set(0.004, 0.004, len);
       dummy.rotation.z = ang;
       dummy.updateMatrix();
       ref.current.setMatrixAt(i, dummy.matrix);
@@ -773,18 +870,20 @@ function PostFX({ fxRef }: { fxRef: React.MutableRefObject<FXState> }) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   SCENE — camera starts close, stays close, shakes hard
+   SCENE
 ══════════════════════════════════════════════════════════════ */
 function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
   const { camera, scene } = useThree();
   const lookTgt     = useRef(new THREE.Vector3(0, 0, -8));
   const lookSmooth  = useRef(new THREE.Vector3(0, 0, -8));
   const camTarget   = useRef(new THREE.Vector3(0, 0, 4));
-  const camRot      = useRef(0);     // roll shake accumulator
+  const camRot      = useRef(0);
   const keyLight    = useRef<THREE.DirectionalLight | null>(null);
   const ringLight   = useRef<THREE.PointLight | null>(null);
   const tunnelLight = useRef<THREE.PointLight | null>(null);
   const camLight    = useRef<THREE.PointLight | null>(null);
+
+  const camVel = useRef(new THREE.Vector3());
 
   useEffect(() => {
     scene.fog = new THREE.FogExp2('#020409', 0.006);
@@ -805,17 +904,16 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
 
     const entryBell = Math.sin(clamp(enterP, 0, 1) * Math.PI);
 
-    // ── FOV: starts wide (more immersive at close range), widens through entry ──
     const baseFov = sp < PH.enterStart
       ? lrp(60, 64, ringP * 0.5 + approachP * 0.5)
-      : lrp(64, 82, Math.pow(enterP, 1.4));        // dramatic entry widening
-    const tlFov  = lrp(baseFov, 62, tlP);
-    // Velocity FOV kick — feels like acceleration
-    const velFov = clamp(vel * 18, 0, 10);
+      : lrp(64, 82, Math.pow(enterP, 1.4));
+    const tlFov = lrp(baseFov, 62, tlP);
+
+    // No velocity-driven FOV boost in TL — prevents zoom-in-out jitter
+    const velFov = inTL ? 0 : clamp(vel * 18, 0, 10);
     cam.fov = lrp(cam.fov, tlFov + velFov, 0.08);
     cam.updateProjectionMatrix();
 
-    // ── Post-FX targets ──────────────────────────────────
     refs.fxRef.current.bloom =
       sp < PH.ringStart  ? 0.22
       : sp < PH.ringFull  ? lrp(0.22, 0.42, ringP)
@@ -825,14 +923,12 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
     refs.fxRef.current.chroma =
       entryBell * 1.4 +
       sm(sp, PH.dispStart, PH.dispEnd) * 0.6 +
-      clamp(vel * 3.5, 0, 1.2);    // chroma aberration on fast scroll!
+      clamp(vel * 3.5, 0, 1.2);
 
-    // ── Camera micro-drift ───────────────────────────────
     const dA = sp < PH.ringStart ? 0.0015 : sp < PH.enterEnd ? 0.003 : 0.0012;
     camera.position.x += Math.sin(t * 0.17 + 1.1) * dA;
     camera.position.y += Math.cos(t * 0.13 + 0.9) * dA;
 
-    // ── CAMERA SHAKE — velocity-driven, feels physical ───
     const shakeAmt = clamp(vel * 0.065, 0, 0.12);
     if (shakeAmt > 0.003) {
       const s1 = Math.sin(t * 47.3 + 0.7);
@@ -840,7 +936,6 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       const s3 = Math.sin(t * 61.7 + 2.1);
       camera.position.x += s1 * shakeAmt;
       camera.position.y += s2 * shakeAmt * 0.8;
-      // Roll shake — cameras twist slightly under force
       camRot.current = lrp(camRot.current, s3 * shakeAmt * 0.018, 0.25);
       camera.rotation.z = camRot.current;
     } else {
@@ -848,12 +943,7 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       camera.rotation.z = camRot.current;
     }
 
-    /* ──────────────────────────────────────────────────────
-       CAMERA PHASES
-    ─────────────────────────────────────────────────────── */
     if (sp < PH.enterStart) {
-      // ACT 1-3: Camera starts CLOSE — ring fills the frame
-      // Z=4 at start → Z=-11 at approach end (ring at -14, only 3 units away!)
       const camZ = lrp(4, -11, approachP);
       const camY = lrp(0, 0.2, ringP * 0.6);
       camTarget.current.set(0, camY, camZ);
@@ -867,7 +957,6 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       );
 
     } else if (sp < PH.tlStart) {
-      // ACT 4-5: Punch through the ring — close range = violent
       const camZ = lrp(-11, -28, enterP);
       const camY = lrp(0.2, 0, enterP);
       camTarget.current.set(0, camY, camZ);
@@ -881,27 +970,40 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       );
 
     } else {
-      // ACT 6: Timeline — velocity-based snap between rocks
-      const tlRaw = (sp - PH.tlStart) / Math.max(1 - PH.tlStart, 1e-5);
-      const segs  = TL_CAM_KEYS.length - 1;
-      const tl    = Math.min(tlRaw * segs, segs - 1e-4);
-      const seg   = Math.floor(tl);
-      const fRaw  = tl - seg;
+      /* ── TIMELINE CAMERA — float close to each rock ──────────────────
+         FIX #1: Ultra-soft spring (k=0.038, damp=0.91) — zero bounce.
+         FIX #2: Removed segment-change impulse (was the main bounce source).
+         FIX #3: Constant look-at lerp — no velocity dependency.
+         FIX #4: hopEase is now smooth cubic, no overshoot.
+      ────────────────────────────────────────────────────────────────── */
+      const tlRaw  = (sp - PH.tlStart) / Math.max(1 - PH.tlStart, 1e-5);
+      const segs   = TL_CAM_KEYS.length - 1;
+      const tl     = Math.min(tlRaw * segs, segs - 1e-4);
+      const seg    = Math.floor(tl);
+      const fEased = hopEase(tl - seg);
 
-      // Ease the segment fraction for snappy-then-hold feel
-      const fEased = sm(fRaw, 0, 1);
-
-      camTarget.current.lerpVectors(TL_CAM_KEYS[seg], TL_CAM_KEYS[Math.min(seg + 1, segs)], fEased);
-
-      // Faster camera lerp when scrolling fast = snappier transitions
-      const snapSpeed = lrp(0.022, 0.055, clamp(vel * 8, 0, 1));
-      camera.position.lerp(camTarget.current, snapSpeed);
-
-      const li = new THREE.Vector3().lerpVectors(
-        TL_LOOK_KEYS[seg], TL_LOOK_KEYS[Math.min(seg + 1, segs)], fEased,
+      const tgtPos = new THREE.Vector3().lerpVectors(
+        TL_CAM_KEYS[seg],
+        TL_CAM_KEYS[Math.min(seg + 1, segs)],
+        fEased,
       );
-      lookTgt.current.lerp(li, lrp(0.036, 0.075, clamp(vel * 8, 0, 1)));
-      refs.activeRef.current = Math.max(0, Math.min(Math.round(tl), segs) - 1);
+
+      // Soft spring — floats between positions like zero-gravity
+      const displacement = tgtPos.clone().sub(camera.position);
+      camVel.current.addScaledVector(displacement, 0.038);
+      camVel.current.multiplyScalar(0.91);
+      camera.position.add(camVel.current);
+
+      // Smooth look-at target — constant lerp rate, no velocity jitter
+      const li = new THREE.Vector3().lerpVectors(
+        TL_LOOK_KEYS[seg],
+        TL_LOOK_KEYS[Math.min(seg + 1, segs)],
+        fEased,
+      );
+      lookTgt.current.lerp(li, 0.032);
+
+      const rockIdx = clamp(Math.round(tl) - 1, 0, N - 1);
+      refs.activeRef.current = rockIdx;
 
       if (camLight.current) {
         const ahead = lookTgt.current.clone().sub(camera.position).normalize().multiplyScalar(14);
@@ -912,7 +1014,6 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
     lookSmooth.current.lerp(lookTgt.current, 0.034);
     camera.lookAt(lookSmooth.current);
 
-    /* ── Lighting ─────────────────────────────────────── */
     if (keyLight.current) {
       const flicker = 1 + Math.sin(t * 0.19) * 0.018 + Math.sin(t * 0.83) * 0.008;
       keyLight.current.intensity = lrp(1.6, 2.4, tlP) * flicker;
@@ -952,8 +1053,8 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       <pointLight ref={tunnelLight} position={[0, 0, -24]} intensity={0} color="#1d5ab8" distance={80} decay={2} />
 
       <RockTexProvider>
-        {/* Atmospheric nebula glow — NO solid geometry */}
         <RingNebula scrollRef={refs.scrollRef} />
+        <SpaceDust  scrollRef={refs.scrollRef} />
         <TunnelHaze scrollRef={refs.scrollRef} />
         <WarpStreaks scrollRef={refs.scrollRef} scrollVelRef={refs.scrollVelRef} />
         {ROCK_CFG.map((cfg, i) => (
@@ -1075,7 +1176,6 @@ function AboutOverlay({
         willChange: 'transform, filter',
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(18px,2.8vh,36px)' }}>
-
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, ...rev(el0) }}>
             <div style={{
               fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.42em',
@@ -1280,11 +1380,11 @@ function HoloPanelOverlay({ entry, visible, onClose }: {
           boxShadow: '0 0 80px rgba(0,0,0,.60), 0 0 40px rgba(125,211,252,.06), inset 0 1px 0 rgba(255,255,255,.05)',
           overflow: 'hidden',
         }}>
-          <div style={{ height: '1px', background: 'linear-gradient(to right,transparent,rgba(245,158,11,.60),transparent)' }} />
+          <div style={{ height: '1px', background: 'linear-gradient(to right,transparent,rgba(125,211,252,.50),transparent)' }} />
           <div style={{ padding: 'clamp(28px,4vw,48px)' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
               <div>
-                <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.34em', textTransform: 'uppercase', color: '#f59e0b', display: 'block', marginBottom: '6px' }}>{(entry as any)?.year ?? '—'}</span>
+                <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.34em', textTransform: 'uppercase', color: '#7dd3fc', display: 'block', marginBottom: '6px' }}>{(entry as any)?.year ?? '—'}</span>
                 <h2 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 'clamp(20px,3vw,30px)', color: '#e8f0f8', lineHeight: 1.14, margin: 0, textShadow: '0 0 30px rgba(125,211,252,.20)' }}>{entry?.title ?? ''}</h2>
                 {'subtitle' in (entry ?? {}) && (entry as any).subtitle && (
                   <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.24em', textTransform: 'uppercase', color: 'rgba(125,211,252,.46)', margin: '6px 0 0' }}>{(entry as any).subtitle}</p>
@@ -1304,7 +1404,7 @@ function HoloPanelOverlay({ entry, visible, onClose }: {
               ))}
             </div>
           </div>
-          <div style={{ height: '1px', background: 'linear-gradient(to right,transparent,rgba(245,158,11,.25),transparent)' }} />
+          <div style={{ height: '1px', background: 'linear-gradient(to right,transparent,rgba(125,211,252,.20),transparent)' }} />
         </div>
         <p style={{ textAlign: 'center', fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.28em', textTransform: 'uppercase', color: 'rgba(125,211,252,.20)', marginTop: '14px', opacity: mounted ? 1 : 0, transition: 'opacity .5s ease .5s' }}>click outside to close</p>
       </div>
@@ -1339,9 +1439,9 @@ function TLPanel({ entry, visible }: { entry: (typeof timeline)[0] | null; visib
         {'description' in entry && (entry as any).description && (
           <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 'clamp(12px,1.4vw,14px)', lineHeight: 1.72, color: 'rgba(172,202,234,.58)', margin: 0 }}>{(entry as any).description}</p>
         )}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px', padding: '8px 14px', background: 'rgba(245,158,11,.05)', border: '1px solid rgba(245,158,11,.14)', borderRadius: 4 }}>
-          <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#f59e0b', boxShadow: '0 0 8px rgba(245,158,11,.80)', animation: 'dotPulse 1.8s ease-in-out infinite' }} />
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.26em', textTransform: 'uppercase', color: 'rgba(245,158,11,.62)' }}>click the rock · fracture to reveal</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px', padding: '8px 14px', background: 'rgba(125,211,252,.04)', border: '1px solid rgba(125,211,252,.11)', borderRadius: 4 }}>
+          <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#7dd3fc', boxShadow: '0 0 8px rgba(125,211,252,.60)', animation: 'dotPulse 1.8s ease-in-out infinite' }} />
+          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.26em', textTransform: 'uppercase', color: 'rgba(125,211,252,.42)' }}>click the rock · fracture to reveal</span>
         </div>
       </>)}
     </div>
@@ -1363,8 +1463,8 @@ function TLDots({ active, total, shattered, visible }: {
       {Array.from({ length: total }, (_, i) => (
         <div key={i} style={{
           width: i === active ? '20px' : '5px', height: '5px', borderRadius: '3px',
-          background: shattered[i] ? '#f59e0b' : i === active ? '#7dd3fc' : 'rgba(125,211,252,.16)',
-          boxShadow: shattered[i] ? '0 0 8px rgba(245,158,11,.60)' : i === active ? '0 0 9px rgba(125,211,252,.52)' : 'none',
+          background: shattered[i] ? '#7dd3fc' : i === active ? '#7dd3fc' : 'rgba(125,211,252,.16)',
+          boxShadow: shattered[i] ? '0 0 8px rgba(125,211,252,.50)' : i === active ? '0 0 9px rgba(125,211,252,.52)' : 'none',
           transition: 'all .45s cubic-bezier(.16,1,.3,1)',
         }} />
       ))}
@@ -1458,7 +1558,7 @@ export default function PostHeroSection() {
       const p = Math.max(0, Math.min(1, -el.getBoundingClientRect().top / total));
 
       const rawVel = Math.abs(p - lastSpRef.current) * 80;
-      scrollVelRef.current = lrp(scrollVelRef.current, rawVel, 0.35); // smooth velocity
+      scrollVelRef.current = lrp(scrollVelRef.current, rawVel, 0.40);
       lastSpRef.current = p;
       scrollRef.current = p;
       setSp(p);
@@ -1477,14 +1577,13 @@ export default function PostHeroSection() {
         const tlP  = (p - PH.tlStart) / Math.max(1 - PH.tlStart, 1e-5);
         const segs = TL_CAM_KEYS.length - 1;
         const tl   = Math.min(tlP * segs, segs - 1e-4);
-        const rock = Math.max(0, Math.min(Math.round(tl), segs) - 1);
+        const rock = clamp(Math.round(tl) - 1, 0, N - 1);
         if (rock !== activeRef.current) {
           activeRef.current = rock; setActive(rock); setInfoKey(k => k + 1);
         }
       }
 
-      // Velocity decay
-      setTimeout(() => { scrollVelRef.current *= 0.72; }, 60);
+      setTimeout(() => { scrollVelRef.current *= 0.60; }, 40);
     };
     window.addEventListener('scroll', fn, { passive: true });
     fn();
@@ -1566,14 +1665,28 @@ export default function PostHeroSection() {
           </div>
         )}
 
+        {/*
+          FIX: Moved "sealed memories" from dead-center screen to a subtle
+          position just below the TL header bar — unobtrusive, not dominant.
+        */}
         {inTL && isOverview && (
           <div style={{
-            position: 'absolute', top: '50%', left: '50%',
-            transform: 'translate(-50%,-50%)', zIndex: 10, textAlign: 'center', pointerEvents: 'none',
-            animation: 'fadeUp .6s cubic-bezier(.16,1,.3,1) .1s both',
+            position: 'absolute',
+            top:       'clamp(54px,9vh,78px)',
+            left:      '50%',
+            transform: 'translateX(-50%)',
+            zIndex:    10,
+            textAlign: 'center',
+            pointerEvents: 'none',
+            animation: 'fadeUp .6s cubic-bezier(.16,1,.3,1) .15s both',
           }}>
-            <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.34em', textTransform: 'uppercase', color: 'rgba(125,211,252,.24)', marginBottom: '14px' }}>— {N} sealed memories —</p>
-            <div style={{ width: '1px', height: '36px', background: 'linear-gradient(to bottom, rgba(125,211,252,.38), transparent)', margin: '0 auto', animation: 'linePulse 2s ease-in-out infinite' }} />
+            <span style={{
+              fontFamily: "'JetBrains Mono',monospace",
+              fontSize:   '8px',
+              letterSpacing: '.36em',
+              textTransform: 'uppercase',
+              color: 'rgba(125,211,252,.16)',
+            }}>— {N} sealed memories —</span>
           </div>
         )}
 
@@ -1584,6 +1697,7 @@ export default function PostHeroSection() {
 
         <ScrollIndicator visible={showScroll} />
 
+        {/* Progress bar */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'rgba(255,255,255,.022)', zIndex: 10 }}>
           <div style={{
             height: '100%', width: `${sp * 100}%`,

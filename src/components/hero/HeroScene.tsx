@@ -1,15 +1,13 @@
 'use client';
 /**
- * HeroScene v9 — tuned bloom for log-polar disk
+ * HeroScene v10 — fully scroll-driven, no click interaction
  *
- * Disk max intensity: 0.88 (hot spots only)
- * Most disk surface: 0.10–0.45 (turbulent bands)
- * Dark gaps: 0.0
- *
- * Bloom threshold 0.68 → photon rings + hot blobs glow, disk texture preserved
- * toneMappingExposure 0.82 → saturated gold without clipping darks
+ * MH reveal is automatic at APPROACH_END + 0.01 scroll progress.
+ * Returning from post-hero resumes at pre-reveal (LOCKED state, black hole
+ * up close, no name shown) — user scrolls again to re-trigger reveal.
+ * Progress bar at bottom for continuity with PostHeroSection.
  */
-import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
@@ -54,80 +52,104 @@ export default function HeroScene() {
   const setHeroExited = useSceneStore(s => s.setHeroExited);
   const set = (p: Phase) => { phaseRef.current = p; setPhase(p); };
 
-  // Resume at end of hero when returning from post-hero
+  /* ── Return from post-hero: resume at pre-reveal (no MH name) ── */
   const prevExitedRef = useRef(heroExited);
   useEffect(() => {
     const prev = prevExitedRef.current;
     prevExitedRef.current = heroExited;
 
-    // Returning from post-hero → resume at the revealed state (not reset)
     if (prev && !heroExited) {
-      const resume = DIVE_START + 0.08;
+      // Land just before the auto-expand threshold so MH doesn't appear
+      // until the user intentionally scrolls down again
+      const resume = APPROACH_END - 0.02;
       scrollRef.current = resume;
       targetRef.current = resume;
       velRef.current    = 0;
-      hasExpandedRef.current = true;
-      phaseRef.current  = 'REVEALED';
-      setPhase('REVEALED');
+      hasExpandedRef.current = false;
+      phaseRef.current  = 'LOCKED';
+      setPhase('LOCKED');
       setProgress(resume);
-      const dp = THREE.MathUtils.clamp((resume - DIVE_START) / (DIVE_END - DIVE_START), 0, 1);
-      setDiveProgress(dp);
+      setDiveProgress(0);
       setHeroHidden(false);
-      return;
     }
   }, [heroExited]);
 
+  /* ── Phase transitions — purely scroll-driven ── */
   useEffect(() => {
     const p  = progress;
     const ph = phaseRef.current;
     if (ph === 'EXITED') return;
-    if (hasExpandedRef.current && (ph === 'EXPANDING' || ph === 'REVEALED')) {
-      if (p >= DIVE_END - 0.02 && ph === 'REVEALED') {
-        set('EXITED');
-        document.documentElement.style.overflow = 'auto';
-        document.documentElement.style.height   = 'auto';
-        document.body.style.overflow  = 'auto';
-        document.body.style.overflowX = 'hidden';
-        setTimeout(() => {
-          setHeroExited(true);
-          window.scrollTo({ top: 0, behavior: 'instant' });
-          setHeroHidden(true);
-        }, 300);
-      }
+
+    // ── Exit to post-hero ────────────────────────────────────────
+    if (ph === 'REVEALED' && p >= DIVE_END - 0.02) {
+      set('EXITED');
+      document.documentElement.style.overflow = 'auto';
+      document.documentElement.style.height   = 'auto';
+      document.body.style.overflow  = 'auto';
+      document.body.style.overflowX = 'hidden';
+      setTimeout(() => {
+        setHeroExited(true);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        setHeroHidden(true);
+      }, 300);
       return;
     }
+
+    // ── Auto-expand at APPROACH_END — no click needed ────────────
+    if (!hasExpandedRef.current && p > APPROACH_END + 0.01 &&
+        (ph === 'LOCKED' || ph === 'HORIZON' || ph === 'APPROACH')) {
+      hasExpandedRef.current = true;
+      set('EXPANDING');
+      // Timer drives the name-reveal animation; scroll already past threshold
+      setTimeout(() => {
+        if (phaseRef.current === 'EXPANDING') set('REVEALED');
+      }, 1400);
+      return;
+    }
+
+    // ── Skip normal transitions during expansion / reveal ────────
+    if (ph === 'EXPANDING' || ph === 'REVEALED') return;
+
+    // ── Normal forward / backward transitions ───────────────────
     if (p > 0.04  && ph === 'SPACE')    set('APPROACH');
     if (p > 0.45  && ph === 'APPROACH') set('HORIZON');
     if (p > APPROACH_END && (ph === 'HORIZON' || ph === 'APPROACH')) set('LOCKED');
-    if (!hasExpandedRef.current) {
-      if (p < 0.03  && ph === 'APPROACH') set('SPACE');
-      if (p < 0.40  && ph === 'HORIZON')  set('APPROACH');
-      if (p < APPROACH_END - 0.06 && ph === 'LOCKED') set('HORIZON');
-    }
+
+    if (p < 0.03  && ph === 'APPROACH') set('SPACE');
+    if (p < 0.40  && ph === 'HORIZON')  set('APPROACH');
+    if (p < APPROACH_END - 0.06 && ph === 'LOCKED') set('HORIZON');
   }, [progress, setHeroExited]);
 
+  /* ── Wheel handler — fully scroll-driven ── */
   useEffect(() => {
     const onWheel = (e: WheelEvent) => {
       const ph = phaseRef.current;
       if (ph === 'EXITED') return;
       e.preventDefault();
-      if (ph === 'LOCKED' || ph === 'EXPANDING') {
-        if (e.deltaY < 0 && !hasExpandedRef.current)
-          targetRef.current = Math.max(0, targetRef.current + e.deltaY * SCROLL_SPEED);
-        return;
-      }
+
       if (ph === 'REVEALED') {
+        // Full range once revealed, drives the dive
         targetRef.current = THREE.MathUtils.clamp(
           targetRef.current + e.deltaY * SCROLL_SPEED * 0.9, 0, DIVE_END);
         return;
       }
+
+      if (ph === 'EXPANDING') {
+        // During expansion animation only allow backward scroll (to cancel / re-approach)
+        if (e.deltaY < 0)
+          targetRef.current = Math.max(0, targetRef.current + e.deltaY * SCROLL_SPEED);
+        return;
+      }
+
+      // SPACE / APPROACH / HORIZON / LOCKED — scroll up to just past threshold
       targetRef.current = THREE.MathUtils.clamp(
-        targetRef.current + e.deltaY * SCROLL_SPEED, 0, APPROACH_END + 0.01);
+        targetRef.current + e.deltaY * SCROLL_SPEED, 0, APPROACH_END + 0.03);
     };
     window.addEventListener('wheel', onWheel, { passive: false });
     return () => window.removeEventListener('wheel', onWheel);
   }, []);
 
+  /* ── Animation loop ── */
   useEffect(() => {
     let raf: number;
     const tick = () => {
@@ -139,7 +161,7 @@ export default function HeroScene() {
       lensingRef.current  += (THREE.MathUtils.smootherstep(sA,0.10,0.60)*0.28 - lensingRef.current)*0.06;
       lightRayRef.current += (THREE.MathUtils.smootherstep(sA,0.18,0.68)*0.90 - lightRayRef.current)*0.05;
       insideMixR.current  += (THREE.MathUtils.smootherstep(sA,0.65,0.85)      - insideMixR.current)*0.05;
-      const dp = THREE.MathUtils.clamp((s-DIVE_START)/(DIVE_END-DIVE_START),0,1);
+      const dp = THREE.MathUtils.clamp((s - DIVE_START) / (DIVE_END - DIVE_START), 0, 1);
       setDiveProgress(dp);
       setProgress(s);
       raf = requestAnimationFrame(tick);
@@ -148,44 +170,37 @@ export default function HeroScene() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  const handleMHClick = useCallback(() => {
-    if (phaseRef.current !== 'LOCKED') return;
-    hasExpandedRef.current = true;
-    set('EXPANDING');
-    setTimeout(() => set('REVEALED'), 1700);
-  }, []);
-
   const ap     = THREE.MathUtils.clamp(progress, 0, 1);
   const outMix = 1 - THREE.MathUtils.smootherstep(ap, 0.65, 0.85);
-  const starOp = outMix * (1 - THREE.MathUtils.smootherstep(ap, 0.70, 0.90)*0.5) + 0.05;
+  const starOp = outMix * (1 - THREE.MathUtils.smootherstep(ap, 0.70, 0.90) * 0.5) + 0.05;
+  const bloom  = 0.20 + ap * 0.25 * outMix + diveProgress * 0.42;
 
-  // Bloom: disk surface 0.10–0.45, threshold 0.68 → only hot spots/rings bloom
-  const bloom = 0.20 + ap * 0.25 * outMix + diveProgress * 0.42;
-
+  // Hero fades itself out as the user dives in, revealing PostHero below
   const diveOpacity = diveProgress > 0.45
-    ? Math.max(0, 1-((diveProgress-0.45)/0.55)) : 1;
+    ? Math.max(0, 1 - ((diveProgress - 0.45) / 0.55)) : 1;
 
-  const showBadge = phase === 'LOCKED';
   const showName  = phase === 'EXPANDING' || phase === 'REVEALED';
-  const nameFade  = showName ? Math.max(0,1-Math.max(0,(diveProgress-0.30)/0.25)) : 0;
+  const nameFade  = showName
+    ? Math.max(0, 1 - Math.max(0, (diveProgress - 0.30) / 0.25)) : 0;
   const showSub   = phase === 'REVEALED' && diveProgress > 0.05;
+
+  // Progress 0→1 across the full hero journey (DIVE_END = 1.5)
+  const progressPct = (progress / DIVE_END) * 100;
 
   return (
     <div className="hero-wrap" style={{
-      position:'fixed', inset:0, zIndex:10, background:'#000',
-      opacity: heroHidden ? 0 : diveOpacity,
-      transition: heroHidden ? 'none' : 'none',
-      pointerEvents: (heroHidden || phase==='EXITED') ? 'none' : 'auto',
-      // Keep canvas mounted — never return null — so state is preserved when
-      // the user scrolls back up from post-hero (no blackhole "reload").
+      position: 'fixed', inset: 0, zIndex: 10, background: '#000',
+      opacity:       heroHidden ? 0 : diveOpacity,
+      transition:    'none',
+      pointerEvents: (heroHidden || phase === 'EXITED') ? 'none' : 'auto',
     }}>
       <Canvas
-        camera={{ position:[0,7.5,30], fov:57, near:0.05, far:650 }}
-        dpr={[1,2]}
+        camera={{ position: [0, 7.5, 30], fov: 57, near: 0.05, far: 650 }}
+        dpr={[1, 2]}
         gl={{
-          antialias: true,
-          powerPreference: 'high-performance',
-          toneMapping: THREE.ACESFilmicToneMapping,
+          antialias:         true,
+          powerPreference:   'high-performance',
+          toneMapping:       THREE.ACESFilmicToneMapping,
           toneMappingExposure: 0.82,
         }}
       >
@@ -197,31 +212,17 @@ export default function HeroScene() {
         <LightRays strengthRef={lightRayRef} />
         <EffectComposer>
           <GravitationalLensing strengthRef={lensingRef} />
-          <Bloom
-            intensity={bloom}
-            luminanceThreshold={0.68}
-            luminanceSmoothing={0.18}
-          />
+          <Bloom intensity={bloom} luminanceThreshold={0.68} luminanceSmoothing={0.18} />
           <Vignette eskil={false} offset={0.22} darkness={0.85} />
         </EffectComposer>
       </Canvas>
 
       <div className="hero-radial-scrim" />
 
-      {showBadge && (
-        <div className="mh-badge" onClick={handleMHClick}>
-          <div className="mh-badge-inner">
-            <span className="mh-badge-letter">M</span>
-            <div className="mh-badge-sep" />
-            <span className="mh-badge-letter">H</span>
-          </div>
-          <p className="mh-hint">— click to reveal —</p>
-        </div>
-      )}
-
+      {/* MH name — appears automatically on scroll, no click needed */}
       {showName && (
         <div
-          className={`mh-name${phase==='EXPANDING'?' mh-name-expanding':' mh-name-revealed'}`}
+          className={`mh-name${phase === 'EXPANDING' ? ' mh-name-expanding' : ' mh-name-revealed'}`}
           style={{ opacity: nameFade }}
         >
           <div className="mh-name-text">
@@ -237,13 +238,18 @@ export default function HeroScene() {
         </div>
       )}
 
-      <div className={`hero-sub${showSub?' hs-visible':''}`}>
+      <div className={`hero-sub${showSub ? ' hs-visible' : ''}`}>
         <div className="hero-sub-card">
           <p className="hs-role">Software Engineer</p>
           <p className="hs-tag">"I only design what's necessary, not what's flashy."</p>
           <div className="hs-cta">
-            <button className="btn-primary"
-              onClick={()=>{ if(phaseRef.current==='REVEALED') targetRef.current=DIVE_START+0.05; }}>
+            <button
+              className="btn-primary"
+              onClick={() => {
+                if (phaseRef.current === 'REVEALED')
+                  targetRef.current = DIVE_START + 0.05;
+              }}
+            >
               Explore Work
             </button>
             <button className="btn-secondary">Contact</button>
@@ -254,16 +260,35 @@ export default function HeroScene() {
         </div>
       </div>
 
-      {phase==='SPACE' && (
+      {phase === 'SPACE' && (
         <div className="scroll-hint visible">
           <div className="sh-line" /><span className="sh-text">scroll to enter</span>
         </div>
       )}
-      {(phase==='APPROACH'||phase==='HORIZON') && (
+      {(phase === 'APPROACH' || phase === 'HORIZON') && (
         <div className="void-label">
-          {progress<0.42?'APPROACHING SINGULARITY':progress<0.65?'EVENT HORIZON':'CROSSING THRESHOLD'}
+          {progress < 0.42
+            ? 'APPROACHING SINGULARITY'
+            : progress < 0.65
+              ? 'EVENT HORIZON'
+              : 'CROSSING THRESHOLD'}
         </div>
       )}
+
+      {/* ── Progress bar — same style as PostHeroSection ── */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        height: '1px', background: 'rgba(255,255,255,.022)', zIndex: 10,
+        pointerEvents: 'none',
+      }}>
+        <div style={{
+          height: '100%',
+          width: `${progressPct}%`,
+          background: 'linear-gradient(to right, rgba(14,165,233,.40), rgba(125,211,252,.78))',
+          boxShadow: '0 0 8px rgba(125,211,252,.28)',
+          transition: 'width .18s ease',
+        }} />
+      </div>
     </div>
   );
 }
