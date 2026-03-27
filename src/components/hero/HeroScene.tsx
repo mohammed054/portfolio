@@ -19,6 +19,7 @@ import CameraController     from './CameraController';
 import LightRays            from './LightRays';
 import GravitationalLensing from './GravitationalLensing';
 import { useSceneStore }    from '@/store/scene';
+import { HERO_PROGRESS_PORTION } from '@/lib/scroll';
 
 type Phase = 'SPACE' | 'APPROACH' | 'HORIZON' | 'LOCKED' | 'EXPANDING' | 'REVEALED' | 'EXITED';
 
@@ -79,6 +80,14 @@ export default function HeroScene() {
     const p  = progress;
     const ph = phaseRef.current;
     if (ph === 'EXITED') return;
+
+    // Allow the MH name to fade out when scrolling back up
+    if ((ph === 'REVEALED' || ph === 'EXPANDING') && p < APPROACH_END - 0.04) {
+      hasExpandedRef.current = false;
+      if (p < 0.40) set('APPROACH');
+      else set('HORIZON');
+      return;
+    }
 
     // ── Exit to post-hero ────────────────────────────────────────
     if (ph === 'REVEALED' && p >= DIVE_END - 0.02) {
@@ -185,7 +194,8 @@ export default function HeroScene() {
   const showSub   = phase === 'REVEALED' && diveProgress > 0.05;
 
   // Progress 0→1 across the full hero journey (DIVE_END = 1.5)
-  const progressPct = (progress / DIVE_END) * 100;
+  const heroProgress = THREE.MathUtils.clamp(progress / DIVE_END, 0, 1);
+  const progressPct  = heroProgress * HERO_PROGRESS_PORTION * 100;
 
   return (
     <div className="hero-wrap" style={{

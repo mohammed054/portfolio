@@ -9,6 +9,8 @@ import { EffectComposer, Bloom, ChromaticAberration, Vignette } from '@react-thr
 import * as THREE from 'three';
 import Starfield from '@/components/hero/Starfield';
 import { timeline } from '@/lib/data';
+import { useSceneStore } from '@/store/scene';
+import { HERO_PROGRESS_PORTION } from '@/lib/scroll';
 
 /* ══════════════════════════════════════════════════════════════
    CONSTANTS
@@ -42,12 +44,15 @@ const PH = {
   enterStart:  AF * 0.44,
   enterMid:    AF * 0.50,
   enterEnd:    AF * 0.59,
-  textIn:      AF * 0.55,
-  textFull:    AF * 0.64,
+  textIn:      AF * 0.59,
+  textFull:    AF * 0.68,
   dispStart:   AF * 0.76,
   dispEnd:     AF * 0.88,
   tlStart:     AF * 0.84,
 } as const;
+
+const SKIP_RING         = true;
+const INTRO_DURATION_MS = 2400;
 
 /* ══════════════════════════════════════════════════════════════
    HELPERS
@@ -112,12 +117,12 @@ const TL_CAM_KEYS: THREE.Vector3[] = [
     const slot = wallSlots[i];
     // Camera on same side as rock, slight random angular offset for variety
     const camAngle = slot.angle + (r(1) - 0.5) * 0.50;
-    // Sit between center (0) and rock (slot.radius) — biased ~60% toward the rock
-    const camDist  = slot.radius * 0.60 + 1.0;
+    // Sit between center (0) and rock (slot.radius) — closer for intimacy
+    const camDist  = slot.radius * 0.68 + 0.6;
     return new THREE.Vector3(
       Math.cos(camAngle) * camDist + (r(2) - 0.5) * 0.35,
-      Math.sin(camAngle) * camDist * 0.70 + (r(3) - 0.5) * 0.25,
-      slot.z + 3.5,
+      Math.sin(camAngle) * camDist * 0.62 + (r(3) - 0.5) * 0.22,
+      slot.z + 2.2,
     );
   }),
 ];
@@ -208,13 +213,16 @@ const ROCK_CFG = Array.from({ length: N_ROCK }, (_, i) => {
     ? r(11) * 0.022
     : (1 - Math.abs(Math.cos(ringAngle))) * 0.058 + r(11) * 0.038;
 
+  const ringPosFinal   = SKIP_RING ? wall.clone() : ringPos;
+  const ringDelayFinal = SKIP_RING ? 0 : ringDelay;
+
   const depthT     = clamp(Math.abs(slot.z - T_NEAR_Z) / T_SPAN, 0, 1);
   const depthScale = isTL ? 1.0 : Math.max(0.14, 1 - depthT * 0.78);
 
   return {
     isTL, tlIdx: isTL ? i : -1,
-    scatter, ringPos, wall, disperse,
-    ringDelay,
+    scatter, ringPos: ringPosFinal, wall, disperse,
+    ringDelay: ringDelayFinal,
     radius: isTL ? 1.15 + r(10) * 0.90 : (0.28 + r(10) * 0.72) * depthScale,
     detail: isTL ? 4 : depthScale > 0.55 ? 3 : 2,
     seed:    (i * 41 + 7) | 0,
@@ -489,7 +497,7 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
     mat.current.needsUpdate  = true;
   }, [textures.map]);
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
     if (!mesh.current || !mat.current) return;
     const t  = clock.getElapsedTime();
     const sp = refs.scrollRef.current;
@@ -532,6 +540,16 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
       bx = lrp(bx, cfg.disperse.x, dispP);
       by = lrp(by, cfg.disperse.y, dispP);
       bz = lrp(bz, cfg.disperse.z, dispP);
+    }
+
+    // Cinematic "hole opening" — widen the tunnel as we enter
+    const holeScale = lrp(0.68, 1.0, enterP);
+    bx *= holeScale;
+    by *= holeScale;
+
+    if (!cfg.isTL && enterP > 0) {
+      const flow = (1 - cfg.depthScale) * enterP * 6.5;
+      bz += flow;
     }
 
     // Subtle Z parallax drift for wall rocks during tunnel fly-through
@@ -761,7 +779,7 @@ function SpaceDust({ scrollRef }: { scrollRef: React.MutableRefObject<number> })
     const sp  = scrollRef.current;
     const enP = sm(sp, PH.enterStart, PH.enterEnd);
     const tlP = sm(sp, PH.tlStart, PH.tlStart + 0.08);
-    matRef.current.opacity = enP * 0.18 * (1 - tlP * 0.4);
+    matRef.current.opacity = enP * 0.26 * (1 - tlP * 0.4);
   });
 
   return (
@@ -863,8 +881,13 @@ function PostFX({ fxRef }: { fxRef: React.MutableRefObject<FXState> }) {
   return (
     <EffectComposer>
       <Bloom ref={bloomRef} intensity={0.22} luminanceThreshold={0.48} luminanceSmoothing={0.36} mipmapBlur />
-      <ChromaticAberration ref={chromaRef} offset={new THREE.Vector2(0, 0)} radialModulation={0} modulationOffset={0} />
-      <Vignette eskil={false} offset={0.28} darkness={0.62} />
+      <ChromaticAberration 
+        ref={chromaRef} 
+        offset={new THREE.Vector2(0, 0)} 
+        radialModulation={false}   // ✅ MUST be boolean
+        modulationOffset={0} 
+       />      
+       <Vignette eskil={false} offset={0.28} darkness={0.62} />
     </EffectComposer>
   );
 }
@@ -883,16 +906,16 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
   const tunnelLight = useRef<THREE.PointLight | null>(null);
   const camLight    = useRef<THREE.PointLight | null>(null);
 
-  const camVel = useRef(new THREE.Vector3());
+  const tlSmooth = useRef(0);
+  const tlInRef  = useRef(false);
 
   useEffect(() => {
     scene.fog = new THREE.FogExp2('#020409', 0.006);
     return () => { scene.fog = null; };
   }, [scene]);
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
     const sp  = refs.scrollRef.current;
-    const vel = refs.scrollVelRef.current;
     const t   = clock.getElapsedTime();
     const cam = camera as THREE.PerspectiveCamera;
 
@@ -901,13 +924,16 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
     const enterP    = sm(sp, PH.enterStart, PH.enterEnd);
     const tlP       = sm(sp, PH.tlStart, 1);
     const inTL      = sp >= PH.tlStart;
+    refs.scrollVelRef.current = lrp(refs.scrollVelRef.current, 0, inTL ? 0.08 : 0.05);
+    const vel = refs.scrollVelRef.current;
+    if (!inTL && tlInRef.current) tlInRef.current = false;
 
     const entryBell = Math.sin(clamp(enterP, 0, 1) * Math.PI);
 
     const baseFov = sp < PH.enterStart
       ? lrp(60, 64, ringP * 0.5 + approachP * 0.5)
       : lrp(64, 82, Math.pow(enterP, 1.4));
-    const tlFov = lrp(baseFov, 62, tlP);
+    const tlFov = lrp(baseFov, 56, tlP);
 
     // No velocity-driven FOV boost in TL — prevents zoom-in-out jitter
     const velFov = inTL ? 0 : clamp(vel * 18, 0, 10);
@@ -925,31 +951,36 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       sm(sp, PH.dispStart, PH.dispEnd) * 0.6 +
       clamp(vel * 3.5, 0, 1.2);
 
-    const dA = sp < PH.ringStart ? 0.0015 : sp < PH.enterEnd ? 0.003 : 0.0012;
-    camera.position.x += Math.sin(t * 0.17 + 1.1) * dA;
-    camera.position.y += Math.cos(t * 0.13 + 0.9) * dA;
+    const dA = inTL ? 0 : (sp < PH.ringStart ? 0.0015 : sp < PH.enterEnd ? 0.003 : 0.0012);
+    if (!inTL) {
+      camera.position.x += Math.sin(t * 0.17 + 1.1) * dA;
+      camera.position.y += Math.cos(t * 0.13 + 0.9) * dA;
 
-    const shakeAmt = clamp(vel * 0.065, 0, 0.12);
-    if (shakeAmt > 0.003) {
-      const s1 = Math.sin(t * 47.3 + 0.7);
-      const s2 = Math.cos(t * 53.1 + 1.3);
-      const s3 = Math.sin(t * 61.7 + 2.1);
-      camera.position.x += s1 * shakeAmt;
-      camera.position.y += s2 * shakeAmt * 0.8;
-      camRot.current = lrp(camRot.current, s3 * shakeAmt * 0.018, 0.25);
-      camera.rotation.z = camRot.current;
+      const shakeAmt = clamp(vel * 0.065, 0, 0.12);
+      if (shakeAmt > 0.003) {
+        const s1 = Math.sin(t * 47.3 + 0.7);
+        const s2 = Math.cos(t * 53.1 + 1.3);
+        const s3 = Math.sin(t * 61.7 + 2.1);
+        camera.position.x += s1 * shakeAmt;
+        camera.position.y += s2 * shakeAmt * 0.8;
+        camRot.current = lrp(camRot.current, s3 * shakeAmt * 0.018, 0.25);
+        camera.rotation.z = camRot.current;
+      } else {
+        camRot.current = lrp(camRot.current, 0, 0.1);
+        camera.rotation.z = camRot.current;
+      }
     } else {
       camRot.current = lrp(camRot.current, 0, 0.1);
       camera.rotation.z = camRot.current;
     }
 
     if (sp < PH.enterStart) {
-      const camZ = lrp(4, -11, approachP);
+      const camZ = lrp(7.5, -11, approachP);
       const camY = lrp(0, 0.2, ringP * 0.6);
       camTarget.current.set(0, camY, camZ);
       camera.position.lerp(camTarget.current, 0.022);
 
-      const lookZ = lrp(-4, RING_Z - 12, ringP);
+      const lookZ = lrp(-8, RING_Z - 12, ringP);
       lookTgt.current.set(
         Math.sin(t * 0.055) * 0.5 * (1 - ringP * 0.85),
         Math.cos(t * 0.045) * 0.35 * (1 - ringP * 0.85),
@@ -970,15 +1001,15 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       );
 
     } else {
-      /* ── TIMELINE CAMERA — float close to each rock ──────────────────
-         FIX #1: Ultra-soft spring (k=0.038, damp=0.91) — zero bounce.
-         FIX #2: Removed segment-change impulse (was the main bounce source).
-         FIX #3: Constant look-at lerp — no velocity dependency.
-         FIX #4: hopEase is now smooth cubic, no overshoot.
-      ────────────────────────────────────────────────────────────────── */
+      /* TIMELINE CAMERA - controlled cinematic hops */
       const tlRaw  = (sp - PH.tlStart) / Math.max(1 - PH.tlStart, 1e-5);
       const segs   = TL_CAM_KEYS.length - 1;
-      const tl     = Math.min(tlRaw * segs, segs - 1e-4);
+      const rawTL  = Math.min(tlRaw * segs, segs - 1e-4);
+      const snap   = clamp(1 - vel * 1.4, 0, 1);
+      const tlTarget = lrp(rawTL, Math.round(rawTL), snap * 0.45);
+      if (!tlInRef.current) { tlSmooth.current = tlTarget; tlInRef.current = true; }
+      tlSmooth.current = lrp(tlSmooth.current, tlTarget, 0.12);
+      const tl     = clamp(tlSmooth.current, 0, segs - 1e-4);
       const seg    = Math.floor(tl);
       const fEased = hopEase(tl - seg);
 
@@ -988,19 +1019,15 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
         fEased,
       );
 
-      // Soft spring — floats between positions like zero-gravity
-      const displacement = tgtPos.clone().sub(camera.position);
-      camVel.current.addScaledVector(displacement, 0.038);
-      camVel.current.multiplyScalar(0.91);
-      camera.position.add(camVel.current);
+      const damp = 1 - Math.exp(-delta * 6);
+      camera.position.lerp(tgtPos, damp);
 
-      // Smooth look-at target — constant lerp rate, no velocity jitter
       const li = new THREE.Vector3().lerpVectors(
         TL_LOOK_KEYS[seg],
         TL_LOOK_KEYS[Math.min(seg + 1, segs)],
         fEased,
       );
-      lookTgt.current.lerp(li, 0.032);
+      lookTgt.current.lerp(li, damp * 0.9);
 
       const rockIdx = clamp(Math.round(tl) - 1, 0, N - 1);
       refs.activeRef.current = rockIdx;
@@ -1053,7 +1080,6 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       <pointLight ref={tunnelLight} position={[0, 0, -24]} intensity={0} color="#1d5ab8" distance={80} decay={2} />
 
       <RockTexProvider>
-        <RingNebula scrollRef={refs.scrollRef} />
         <SpaceDust  scrollRef={refs.scrollRef} />
         <TunnelHaze scrollRef={refs.scrollRef} />
         <WarpStreaks scrollRef={refs.scrollRef} scrollVelRef={refs.scrollVelRef} />
@@ -1184,16 +1210,15 @@ function AboutOverlay({
               background: 'rgba(125,211,252,.04)',
             }}>Software Engineer</div>
             <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, rgba(125,211,252,.22), transparent)' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{
-                width: 6, height: 6, borderRadius: '50%', background: '#22c55e',
-                boxShadow: '0 0 10px rgba(34,197,94,.85)',
-                animation: 'dotPulse 2.4s ease-in-out infinite', flexShrink: 0,
-              }} />
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
               <span style={{
                 fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.22em',
-                textTransform: 'uppercase', color: 'rgba(34,197,94,.58)',
-              }}>Available</span>
+                textTransform: 'uppercase', color: 'rgba(125,211,252,.40)',
+              }}>Dubai, UAE</span>
+              <span style={{
+                fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.22em',
+                textTransform: 'uppercase', color: 'rgba(125,211,252,.26)',
+              }}>GMT+4</span>
             </div>
           </div>
 
@@ -1241,11 +1266,14 @@ function AboutOverlay({
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, ...rev(el8) }}>
                 <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.38em', textTransform: 'uppercase', color: 'rgba(125,211,252,.26)' }}>— Stack</span>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                  {TECH.map((tech, i) => (
-                    <span key={i} style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.14em', color: 'rgba(125,211,252,.52)', padding: '4px 10px', border: '1px solid rgba(125,211,252,.13)', borderRadius: 2, background: 'rgba(125,211,252,.035)' }}>{tech}</span>
-                  ))}
-                </div>
+                <p style={{
+                  fontFamily: "'JetBrains Mono',monospace",
+                  fontSize: '9px',
+                  letterSpacing: '.22em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(125,211,252,.46)',
+                  margin: 0,
+                }}>{TECH.join(' · ')}</p>
               </div>
             </div>
 
@@ -1269,12 +1297,20 @@ function AboutOverlay({
               ))}
 
               <div style={{ ...rev(el9), marginTop: 8 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', border: '1px solid rgba(125,211,252,.09)', borderRadius: 4, background: 'rgba(125,211,252,.025)' }}>
-                  <span style={{ fontSize: 14 }}>📍</span>
-                  <div>
-                    <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.24em', textTransform: 'uppercase', color: 'rgba(125,211,252,.38)', margin: 0 }}>Dubai, UAE · GMT+4</p>
-                    <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '11px', color: 'rgba(188,214,242,.32)', margin: '2px 0 0' }}>Open to remote & relocation</p>
-                  </div>
+                <div style={{
+                  display: 'flex', flexDirection: 'column', gap: 6,
+                  padding: '12px 0',
+                  borderTop: '1px solid rgba(125,211,252,.08)',
+                  borderBottom: '1px solid rgba(125,211,252,.08)',
+                }}>
+                  <span style={{
+                    fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.24em',
+                    textTransform: 'uppercase', color: 'rgba(125,211,252,.36)',
+                  }}>Open to remote & relocation</span>
+                  <span style={{
+                    fontFamily: "'DM Sans',sans-serif", fontSize: '12px',
+                    color: 'rgba(188,214,242,.44)',
+                  }}>Based in Dubai, UAE · GMT+4</span>
                 </div>
               </div>
             </div>
@@ -1524,6 +1560,11 @@ export default function PostHeroSection() {
   const fxRef         = useRef<FXState>({ bloom: 0.20, chroma: 0 });
   const starOpRef     = useRef(0.35);
   const chunkEventRef = useRef<{ idx: number; pos: THREE.Vector3 } | null>(null);
+  const introActiveRef = useRef(false);
+  const introPlayedRef = useRef(false);
+  const introRafRef    = useRef<number | null>(null);
+
+  const heroExited = useSceneStore(s => s.heroExited);
 
   const fractureRef = useRef<FractureState[]>(
     Array.from({ length: N }, () => ({
@@ -1532,6 +1573,7 @@ export default function PostHeroSection() {
   );
 
   const [sp,          setSp]          = useState(0);
+  const [introActive, setIntroActive] = useState(false);
   const [starOp,      setStarOp]      = useState(0.35);
   const [active,      setActive]      = useState(0);
   const [infoKey,     setInfoKey]     = useState(0);
@@ -1539,6 +1581,7 @@ export default function PostHeroSection() {
   const [shattered,   setShattered]   = useState<boolean[]>(Array(N).fill(false));
   const [holoEntry,   setHoloEntry]   = useState<(typeof timeline)[0] | null>(null);
   const [holoVisible, setHoloVisible] = useState(false);
+  const [holoIdx,     setHoloIdx]     = useState<number | null>(null);
 
   const refs: SharedRefs = useMemo(() => ({
     scrollRef, scrollVelRef, activeRef, hoverRef, hoverSmRef,
@@ -1548,54 +1591,129 @@ export default function PostHeroSection() {
   const handleShatter = useCallback((idx: number) => {
     setShattered(prev => { const n = [...prev]; n[idx] = true; return n; });
     setHoloEntry(timeline[idx] ?? null);
+    setHoloIdx(idx);
     setHoloVisible(true);
   }, []);
+
+  const resetFracture = useCallback((idx: number | null) => {
+    if (idx === null) return;
+    const frac = fractureRef.current[idx];
+    if (!frac) return;
+    fractureRef.current[idx] = { ...frac, phase: 'sealed', pressure: 0, shatterTime: 0 };
+  }, []);
+
+  const updateFromProgress = useCallback((p: number, rawVel: number) => {
+    const vel = Math.abs(rawVel);
+    scrollVelRef.current = lrp(scrollVelRef.current, vel, 0.35);
+    lastSpRef.current = p;
+    scrollRef.current = p;
+    setSp(p);
+
+    const rise = sm(p, 0, PH.ringStart * 0.9);
+    const dim  = sm(p, PH.ringStart, PH.textIn);
+    const back = sm(p, PH.dispStart, PH.tlStart + 0.08);
+    let nso = lrp(0.35, 1.0, rise);
+    nso = lrp(nso, 0.10, dim);
+    nso = lrp(nso, 0.95, back);
+    if (Math.abs(nso - starOpRef.current) > 0.016) { starOpRef.current = nso; setStarOp(nso); }
+
+    setTextVisible(p > PH.textIn && p < PH.dispStart + 0.06);
+
+    if (p >= PH.tlStart) {
+      const tlP  = (p - PH.tlStart) / Math.max(1 - PH.tlStart, 1e-5);
+      const segs = TL_CAM_KEYS.length - 1;
+      const tl   = Math.min(tlP * segs, segs - 1e-4);
+      const rock = clamp(Math.round(tl) - 1, 0, N - 1);
+      if (rock !== activeRef.current) {
+        activeRef.current = rock; setActive(rock); setInfoKey(k => k + 1);
+      }
+    }
+  }, [activeRef, setActive, setInfoKey, setSp, setStarOp, setTextVisible, scrollVelRef]);
 
   useEffect(() => {
     const fn = () => {
       const el = outerRef.current; if (!el) return;
       const total = el.offsetHeight - window.innerHeight; if (total <= 0) return;
       const p = Math.max(0, Math.min(1, -el.getBoundingClientRect().top / total));
+      if (introActiveRef.current) return;
 
-      const rawVel = Math.abs(p - lastSpRef.current) * 80;
-      scrollVelRef.current = lrp(scrollVelRef.current, rawVel, 0.40);
-      lastSpRef.current = p;
-      scrollRef.current = p;
-      setSp(p);
-
-      const rise = sm(p, 0, PH.ringStart * 0.9);
-      const dim  = sm(p, PH.ringStart, PH.textIn);
-      const back = sm(p, PH.dispStart, PH.tlStart + 0.08);
-      let nso = lrp(0.35, 1.0, rise);
-      nso = lrp(nso, 0.10, dim);
-      nso = lrp(nso, 0.95, back);
-      if (Math.abs(nso - starOpRef.current) > 0.016) { starOpRef.current = nso; setStarOp(nso); }
-
-      setTextVisible(p > PH.textIn && p < PH.dispStart + 0.06);
-
-      if (p >= PH.tlStart) {
-        const tlP  = (p - PH.tlStart) / Math.max(1 - PH.tlStart, 1e-5);
-        const segs = TL_CAM_KEYS.length - 1;
-        const tl   = Math.min(tlP * segs, segs - 1e-4);
-        const rock = clamp(Math.round(tl) - 1, 0, N - 1);
-        if (rock !== activeRef.current) {
-          activeRef.current = rock; setActive(rock); setInfoKey(k => k + 1);
-        }
-      }
-
-      setTimeout(() => { scrollVelRef.current *= 0.60; }, 40);
+      const rawVel = Math.abs(p - lastSpRef.current) * 60;
+      updateFromProgress(p, rawVel);
     };
     window.addEventListener('scroll', fn, { passive: true });
     fn();
     return () => window.removeEventListener('scroll', fn);
+  }, [updateFromProgress]);
+
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      if (!introActiveRef.current) return;
+      e.preventDefault();
+    };
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return () => window.removeEventListener('wheel', onWheel);
   }, []);
+
+  useEffect(() => {
+    if (!heroExited) {
+      introPlayedRef.current = false;
+      introActiveRef.current = false;
+      if (introRafRef.current) cancelAnimationFrame(introRafRef.current);
+      setIntroActive(false);
+      scrollVelRef.current = 0;
+      updateFromProgress(0, 0);
+      return;
+    }
+
+    if (introPlayedRef.current) return;
+    introPlayedRef.current = true;
+    introActiveRef.current = true;
+    setIntroActive(true);
+
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
+    const start = 0;
+    const end   = Math.min(PH.textIn + 0.02, PH.dispStart - 0.02);
+    const ease  = (t: number) => t < 0.5
+      ? 4 * t * t * t
+      : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const t = clamp((now - t0) / INTRO_DURATION_MS, 0, 1);
+      const eased = ease(t);
+      const spVal = lrp(start, end, eased);
+      const rawVel = Math.abs(spVal - lastSpRef.current) * 60;
+      updateFromProgress(spVal, rawVel);
+
+      if (t < 1) {
+        introRafRef.current = requestAnimationFrame(tick);
+      } else {
+        introActiveRef.current = false;
+        setIntroActive(false);
+        scrollVelRef.current = 0;
+        const el = outerRef.current;
+        if (el) {
+          const total = el.offsetHeight - window.innerHeight;
+          const y = total * spVal;
+          window.scrollTo({ top: y, behavior: 'instant' });
+        }
+        document.documentElement.style.overflow = 'auto';
+        document.body.style.overflow = '';
+      }
+    };
+    introRafRef.current = requestAnimationFrame(tick);
+  }, [heroExited, updateFromProgress]);
 
   const inTL        = sp >= PH.tlStart;
   const tlProgress  = inTL ? (sp - PH.tlStart) / Math.max(1 - PH.tlStart, 1e-5) : 0;
   const isOverview  = inTL && tlProgress * (TL_CAM_KEYS.length - 1) < 0.5;
-  const phaseLabel  = !inTL ? getPhaseLabel(sp) : '';
-  const showScroll  = sp < PH.ringStart * 0.6;
-  const inRingPhase = sp >= PH.ringStart && sp < PH.enterEnd;
+  const phaseLabel  = !introActive && !inTL && sp < PH.textIn ? getPhaseLabel(sp) : '';
+  const showScroll  = !introActive && sp < PH.ringStart * 0.6;
+  const inRingPhase = !SKIP_RING && sp >= PH.ringStart && sp < PH.enterEnd;
+  const globalProgress = HERO_PROGRESS_PORTION + sp * (1 - HERO_PROGRESS_PORTION);
 
   return (
     <section ref={outerRef} id="about"
@@ -1700,7 +1818,7 @@ export default function PostHeroSection() {
         {/* Progress bar */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: 'rgba(255,255,255,.022)', zIndex: 10 }}>
           <div style={{
-            height: '100%', width: `${sp * 100}%`,
+            height: '100%', width: `${globalProgress * 100}%`,
             background: 'linear-gradient(to right, rgba(14,165,233,.40), rgba(125,211,252,.78))',
             boxShadow: '0 0 8px rgba(125,211,252,.28)',
             transition: 'width .18s ease',
@@ -1709,7 +1827,16 @@ export default function PostHeroSection() {
       </div>
 
       <CustomCursor hoverRef={hoverRef} hoverSmRef={hoverSmRef} scrollRef={scrollRef} />
-      <HoloPanelOverlay entry={holoEntry} visible={holoVisible} onClose={() => setHoloVisible(false)} />
+      <HoloPanelOverlay
+        entry={holoEntry}
+        visible={holoVisible}
+        onClose={() => {
+          setHoloVisible(false);
+          resetFracture(holoIdx);
+          setHoloIdx(null);
+          setHoloEntry(null);
+        }}
+      />
 
       <style>{`
         @keyframes dotPulse {
