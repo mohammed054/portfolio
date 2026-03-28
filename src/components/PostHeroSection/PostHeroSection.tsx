@@ -69,9 +69,6 @@ const springEase = (t: number): number => {
   return (1 - Math.pow(1 - c, 3.4)) + Math.sin(c * Math.PI * 2.6) * 0.048 * Math.pow(1 - c, 1.8);
 };
 
-/* FIX: Smooth cubic ease-in-out — zero overshoot.
-   The old hopEase had a Math.sin overshoot that combined with spring
-   impulses to create the "bouncy zoom-in-out" between rocks. */
 const hopEase = (t: number): number => {
   const c = clamp(t, 0, 1);
   return c < 0.5 ? 4 * c * c * c : 1 - Math.pow(-2 * c + 2, 3) / 2;
@@ -106,18 +103,20 @@ const wallSlots: TunnelSlot[] = (() => {
 
 /* ══════════════════════════════════════════════════════════════
    TIMELINE CAMERA PATH
-   FIX: Camera now sits on the SAME side as each rock (not opposite),
-   positioned between the tunnel center and the rock surface.
-   Distance to rock: ~2–4 units. Intimate, cinematic.
+   FIX 1: Overview camera pulled back to z=-38 so it sits clearly
+   in front of (positive-Z side of) the first rock's z position,
+   ensuring the first rock is always ahead of the camera.
+   FIX 2: Look keys now point slightly past each rock's wall position
+   (extrapolated along the cam→rock vector) so the camera begins
+   rotating toward the next target well before it arrives.
 ══════════════════════════════════════════════════════════════ */
 const TL_CAM_KEYS: THREE.Vector3[] = [
-  new THREE.Vector3(0, 0.3, -22),
+  // FIX 1: was z=-22, now z=-38 — sits behind ALL rocks in the tunnel
+  new THREE.Vector3(0, 0.3, -38),
   ...timeline.map((_, i) => {
     const r    = (o: number) => sr(i * 79 + o + 500);
     const slot = wallSlots[i];
-    // Camera on same side as rock, slight random angular offset for variety
     const camAngle = slot.angle + (r(1) - 0.5) * 0.50;
-    // Sit between center (0) and rock (slot.radius) — closer for intimacy
     const camDist  = slot.radius * 0.68 + 0.6;
     return new THREE.Vector3(
       Math.cos(camAngle) * camDist + (r(2) - 0.5) * 0.35,
@@ -127,14 +126,19 @@ const TL_CAM_KEYS: THREE.Vector3[] = [
   }),
 ];
 
-/* Look directly at rock center — no partial-radius fudge */
+/* FIX 2: Look targets are pushed slightly *past* the rock surface
+   (factor > 1) so the camera rotation leads the movement rather
+   than lagging behind it. Factor 1.18 gives ~18% overshoot on
+   the look vector — enough to start rotating early without feeling
+   wild. */
 const TL_LOOK_KEYS: THREE.Vector3[] = [
   new THREE.Vector3(0, 0, T_NEAR_Z - 20),
   ...timeline.map((_, i) => {
     const slot = wallSlots[i];
+    const LOOK_LEAD = 1.18; // push look target past the rock surface
     return new THREE.Vector3(
-      Math.cos(slot.angle) * slot.radius,
-      Math.sin(slot.angle) * slot.radius,
+      Math.cos(slot.angle) * slot.radius * LOOK_LEAD,
+      Math.sin(slot.angle) * slot.radius * LOOK_LEAD,
       slot.z,
     );
   }),
@@ -200,7 +204,7 @@ const ROCK_CFG = Array.from({ length: N_ROCK }, (_, i) => {
   );
 
   const disperse = isTL
-    ? wall.clone()   // FIX: TL rocks don't disperse — they stay at wall for close-up shots
+    ? wall.clone()
     : new THREE.Vector3(
         (r(7) - 0.5) * 80,
         (r(8) - 0.5) * 55,
@@ -347,10 +351,7 @@ interface SharedRefs {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   CHUNK SYSTEM — asteroid fracture debris
-   FIX: Replaced TNT-explosion physics with slow geological drift.
-   Stone fragments tumble outward at 0.4–1.6 u/s (was 4.5–11.5).
-   No orange fire — cool grey stone with faint rim glow only.
+   CHUNK SYSTEM
 ══════════════════════════════════════════════════════════════ */
 const CHUNKS_PER_FRAC = 18;
 const CHUNK_POOL      = CHUNKS_PER_FRAC * 6;
@@ -365,7 +366,6 @@ interface ChunkState {
 function ChunkSystem({ chunkEventRef }: { chunkEventRef: React.MutableRefObject<{ idx: number; pos: THREE.Vector3 } | null> }) {
   const mesh  = useRef<THREE.InstancedMesh>(null!);
   const dummy = useMemo(() => new THREE.Object3D(), []);
-  // Slightly smaller chunk geo, lower detail
   const geo   = useMemo(() => makeRockGeo(0.22, 91, 1), []);
   const pool  = useRef<ChunkState[]>(
     Array.from({ length: CHUNK_POOL }, () => ({
@@ -384,13 +384,11 @@ function ChunkSystem({ chunkEventRef }: { chunkEventRef: React.MutableRefObject<
       for (let c = 0; c < CHUNKS_PER_FRAC; c++) {
         const idx = (cursor.current++) % CHUNK_POOL;
         const r = (o: number) => sr(ev.idx * 53 + c * 17 + o);
-        // Slow geological drift — rocks don't explode, they fracture and drift
         const spd = 0.38 + r(1) * 1.22;
         const theta = r(2) * Math.PI;
         const phi   = r(3) * Math.PI * 2;
         const p = pool.current[idx];
         p.alive = true;
-        // Tight spawn cluster at the fracture point
         p.pos.copy(ev.pos).add(new THREE.Vector3(
           (r(4) - 0.5) * 0.25,
           (r(5) - 0.5) * 0.25,
@@ -398,20 +396,17 @@ function ChunkSystem({ chunkEventRef }: { chunkEventRef: React.MutableRefObject<
         ));
         p.vel.set(
           Math.sin(theta) * Math.cos(phi) * spd,
-          Math.sin(theta) * Math.sin(phi) * spd,   // no upward bias
+          Math.sin(theta) * Math.sin(phi) * spd,
           Math.cos(theta) * spd,
         );
-        // Slow tumble — asteroid debris, not shrapnel
         p.avx = (r(10) - 0.5) * 0.9;
         p.avy = (r(11) - 0.5) * 0.9;
         p.avz = (r(12) - 0.5) * 0.9;
         p.rx = r(7) * Math.PI * 2;
         p.ry = r(8) * Math.PI * 2;
         p.rz = r(9) * Math.PI * 2;
-        // Variable sizes — some big slab fragments, some pebbles
         p.scale = 0.18 + r(13) * 0.70;
         p.birth = clock.getElapsedTime();
-        // Long life — debris drifts slowly into darkness
         p.life  = 3.0 + r(14) * 1.8;
       }
     }
@@ -426,16 +421,13 @@ function ChunkSystem({ chunkEventRef }: { chunkEventRef: React.MutableRefObject<
 
       const dt = Math.min(delta, 0.05);
       p.pos.addScaledVector(p.vel, dt);
-      // Minimal gravity — asteroid is in space
       p.vel.y -= 0.28 * dt;
-      // Light drag — coasting through vacuum
       p.vel.multiplyScalar(1 - 0.18 * dt);
 
       p.rx += p.avx * dt;
       p.ry += p.avy * dt;
       p.rz += p.avz * dt;
 
-      // Slow fade in, long drift, gradual fade out
       const fade = life < 0.08
         ? life / 0.08
         : 1 - Math.pow((life - 0.08) / 0.92, 2.2);
@@ -453,7 +445,6 @@ function ChunkSystem({ chunkEventRef }: { chunkEventRef: React.MutableRefObject<
 
   return (
     <instancedMesh ref={mesh} args={[geo, undefined, CHUNK_POOL]} frustumCulled={false}>
-      {/* FIX: Stone grey — cool blue-grey tint, near-zero emissive. No fire. */}
       <meshStandardMaterial
         roughness={0.96}
         metalness={0.01}
@@ -477,8 +468,8 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
   const _tmpPos    = useMemo(() => new THREE.Vector3(), []);
 
   const _emBase   = useMemo(() => new THREE.Color('#010d1f'), []);
-  const _emGlow   = useMemo(() => new THREE.Color('#c8d8f0'), []);   // cool white glow instead of amber
-  const _emCrack  = useMemo(() => new THREE.Color('#e8edf5'), []);   // bright white crack light
+  const _emGlow   = useMemo(() => new THREE.Color('#c8d8f0'), []);
+  const _emCrack  = useMemo(() => new THREE.Color('#e8edf5'), []);
   const _emActive = useMemo(() => new THREE.Color('#0050a8'), []);
   const _emHover  = useMemo(() => new THREE.Color('#1e6abf'), []);
   const _emWall   = useMemo(() => new THREE.Color('#040d22'), []);
@@ -533,16 +524,12 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
     by = lrp(by, cfg.wall.y, enterP);
     bz = lrp(bz, cfg.wall.z, enterP);
 
-    // FIX: Only non-TL (wall) rocks disperse. TL rocks stay at wall positions
-    // so the TL camera can get close to them. disperse === wall for TL rocks
-    // (see ROCK_CFG above) so this is a no-op for TL — wall rocks drift away.
     if (!cfg.isTL) {
       bx = lrp(bx, cfg.disperse.x, dispP);
       by = lrp(by, cfg.disperse.y, dispP);
       bz = lrp(bz, cfg.disperse.z, dispP);
     }
 
-    // Cinematic "hole opening" — widen the tunnel as we enter
     const holeScale = lrp(0.68, 1.0, enterP);
     bx *= holeScale;
     by *= holeScale;
@@ -552,7 +539,6 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
       bz += flow;
     }
 
-    // Subtle Z parallax drift for wall rocks during tunnel fly-through
     if (!cfg.isTL && enterP > 0) {
       const tunnelDepth = sm(sp, PH.enterStart, PH.enterEnd);
       const driftAmt    = tunnelDepth * cfg.depthScale * 2.2;
@@ -811,7 +797,7 @@ function TunnelHaze({ scrollRef }: { scrollRef: React.MutableRefObject<number> }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   WARP STREAKS — velocity-only
+   WARP STREAKS
 ══════════════════════════════════════════════════════════════ */
 const WARP_COUNT = 80;
 function WarpStreaks({ scrollRef, scrollVelRef }: {
@@ -881,13 +867,13 @@ function PostFX({ fxRef }: { fxRef: React.MutableRefObject<FXState> }) {
   return (
     <EffectComposer>
       <Bloom ref={bloomRef} intensity={0.22} luminanceThreshold={0.48} luminanceSmoothing={0.36} mipmapBlur />
-      <ChromaticAberration 
-        ref={chromaRef} 
-        offset={new THREE.Vector2(0, 0)} 
-        radialModulation={false}   // ✅ MUST be boolean
-        modulationOffset={0} 
-       />      
-       <Vignette eskil={false} offset={0.28} darkness={0.62} />
+      <ChromaticAberration
+        ref={chromaRef}
+        offset={new THREE.Vector2(0, 0)}
+        radialModulation={false}
+        modulationOffset={0}
+      />
+      <Vignette eskil={false} offset={0.28} darkness={0.62} />
     </EffectComposer>
   );
 }
@@ -935,7 +921,6 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       : lrp(64, 82, Math.pow(enterP, 1.4));
     const tlFov = lrp(baseFov, 56, tlP);
 
-    // No velocity-driven FOV boost in TL — prevents zoom-in-out jitter
     const velFov = inTL ? 0 : clamp(vel * 18, 0, 10);
     cam.fov = lrp(cam.fov, tlFov + velFov, 0.08);
     cam.updateProjectionMatrix();
@@ -1001,7 +986,14 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       );
 
     } else {
-      /* TIMELINE CAMERA - controlled cinematic hops */
+      /* ── TIMELINE CAMERA ──────────────────────────────────────
+         FIX 2: Look target is interpolated one full segment ahead
+         of the camera position segment. This means the camera is
+         already rotating toward the next rock while it's still
+         traveling to the current one, rather than snapping once
+         it arrives. The look lerp is tightened (0.9 → 0.14·delta*9)
+         so it tracks ahead smoothly rather than lagging.
+      ────────────────────────────────────────────────────────── */
       const tlRaw  = (sp - PH.tlStart) / Math.max(1 - PH.tlStart, 1e-5);
       const segs   = TL_CAM_KEYS.length - 1;
       const rawTL  = Math.min(tlRaw * segs, segs - 1e-4);
@@ -1013,6 +1005,7 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       const seg    = Math.floor(tl);
       const fEased = hopEase(tl - seg);
 
+      // Camera position: interpolate between current and next key
       const tgtPos = new THREE.Vector3().lerpVectors(
         TL_CAM_KEYS[seg],
         TL_CAM_KEYS[Math.min(seg + 1, segs)],
@@ -1022,12 +1015,17 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       const damp = 1 - Math.exp(-delta * 6);
       camera.position.lerp(tgtPos, damp);
 
+      // FIX 2: Look target runs one segment ahead — camera faces
+      // the *next* rock before it arrives there.
+      const lookSeg    = Math.min(seg + 1, segs);    // one ahead
+      const lookSegEnd = Math.min(lookSeg + 1, segs);
       const li = new THREE.Vector3().lerpVectors(
-        TL_LOOK_KEYS[seg],
-        TL_LOOK_KEYS[Math.min(seg + 1, segs)],
+        TL_LOOK_KEYS[lookSeg],
+        TL_LOOK_KEYS[lookSegEnd],
         fEased,
       );
-      lookTgt.current.lerp(li, damp * 0.9);
+      // Tighter look tracking so the anticipation is snappy
+      lookTgt.current.lerp(li, damp * 0.85);
 
       const rockIdx = clamp(Math.round(tl) - 1, 0, N - 1);
       refs.activeRef.current = rockIdx;
@@ -1387,14 +1385,28 @@ function CustomCursor({ hoverRef, hoverSmRef, scrollRef }: {
 
 /* ══════════════════════════════════════════════════════════════
    HOLOGRAPHIC PANEL
+   FIX 3: Keyboard Escape now closes the panel. Added × button
+   alongside the existing ESC button for pointer users.
 ══════════════════════════════════════════════════════════════ */
 function HoloPanelOverlay({ entry, visible, onClose }: {
   entry: (typeof timeline)[0] | null; visible: boolean; onClose: () => void;
 }) {
   const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     if (visible) setTimeout(() => setMounted(true), 80); else setMounted(false);
   }, [visible]);
+
+  // FIX 3: Wire up the Escape key
+  useEffect(() => {
+    if (!visible) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [visible, onClose]);
+
   if (!visible && !mounted) return null;
 
   return (
@@ -1426,8 +1438,31 @@ function HoloPanelOverlay({ entry, visible, onClose }: {
                   <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.24em', textTransform: 'uppercase', color: 'rgba(125,211,252,.46)', margin: '6px 0 0' }}>{(entry as any).subtitle}</p>
                 )}
               </div>
-              <button onClick={onClose} style={{ background: 'rgba(125,211,252,.08)', border: '1px solid rgba(125,211,252,.15)', borderRadius: '4px', color: 'rgba(125,211,252,.52)', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '.18em', padding: '6px 12px', cursor: 'pointer', flexShrink: 0, marginLeft: '16px' }}>ESC</button>
+
+              {/* FIX 3: Button row — ESC label + × icon, both functional */}
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0, marginLeft: '16px' }}>
+                <button
+                  onClick={onClose}
+                  style={{
+                    background: 'rgba(125,211,252,.08)', border: '1px solid rgba(125,211,252,.15)',
+                    borderRadius: '4px', color: 'rgba(125,211,252,.52)',
+                    fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '.18em',
+                    padding: '6px 12px', cursor: 'pointer',
+                  }}
+                >ESC</button>
+                <button
+                  onClick={onClose}
+                  aria-label="Close"
+                  style={{
+                    background: 'rgba(125,211,252,.08)', border: '1px solid rgba(125,211,252,.15)',
+                    borderRadius: '4px', color: 'rgba(125,211,252,.70)',
+                    fontFamily: "'JetBrains Mono',monospace", fontSize: '14px', lineHeight: 1,
+                    padding: '5px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                >×</button>
+              </div>
             </div>
+
             {'description' in (entry ?? {}) && (entry as any).description && (
               <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 'clamp(13px,1.4vw,15px)', lineHeight: 1.72, color: 'rgba(188,214,242,.62)', margin: '0 0 24px' }}>{(entry as any).description}</p>
             )}
@@ -1442,7 +1477,7 @@ function HoloPanelOverlay({ entry, visible, onClose }: {
           </div>
           <div style={{ height: '1px', background: 'linear-gradient(to right,transparent,rgba(125,211,252,.20),transparent)' }} />
         </div>
-        <p style={{ textAlign: 'center', fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.28em', textTransform: 'uppercase', color: 'rgba(125,211,252,.20)', marginTop: '14px', opacity: mounted ? 1 : 0, transition: 'opacity .5s ease .5s' }}>click outside to close</p>
+        <p style={{ textAlign: 'center', fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.28em', textTransform: 'uppercase', color: 'rgba(125,211,252,.20)', marginTop: '14px', opacity: mounted ? 1 : 0, transition: 'opacity .5s ease .5s' }}>click outside · esc · × to close</p>
       </div>
     </div>
   );
@@ -1601,6 +1636,13 @@ export default function PostHeroSection() {
     if (!frac) return;
     fractureRef.current[idx] = { ...frac, phase: 'sealed', pressure: 0, shatterTime: 0 };
   }, []);
+
+  const handleHoloClose = useCallback(() => {
+    setHoloVisible(false);
+    resetFracture(holoIdx);
+    setHoloIdx(null);
+    setHoloEntry(null);
+  }, [holoIdx, resetFracture]);
 
   const updateFromProgress = useCallback((p: number, rawVel: number) => {
     const vel = Math.abs(rawVel);
@@ -1783,10 +1825,6 @@ export default function PostHeroSection() {
           </div>
         )}
 
-        {/*
-          FIX: Moved "sealed memories" from dead-center screen to a subtle
-          position just below the TL header bar — unobtrusive, not dominant.
-        */}
         {inTL && isOverview && (
           <div style={{
             position: 'absolute',
@@ -1830,12 +1868,7 @@ export default function PostHeroSection() {
       <HoloPanelOverlay
         entry={holoEntry}
         visible={holoVisible}
-        onClose={() => {
-          setHoloVisible(false);
-          resetFracture(holoIdx);
-          setHoloIdx(null);
-          setHoloEntry(null);
-        }}
+        onClose={handleHoloClose}
       />
 
       <style>{`
