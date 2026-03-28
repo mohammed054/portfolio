@@ -2,19 +2,32 @@
 import dynamic from 'next/dynamic';
 import { useEffect } from 'react';
 import PostHeroSection from '@/components/PostHeroSection/PostHeroSection';
+import Navigation from '@/components/ui/Navigation';
+import Loader from '@/components/ui/Loader';
 import { useSceneStore } from '@/store/scene';
 
 const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
   ssr: false,
   loading: () => (
-    <div style={{
-      width: '100vw', height: '100vh', background: '#000',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-    }}>
-      <div style={{
-        width: 4, height: 4, borderRadius: '50%', background: '#00C8FF',
-        boxShadow: '0 0 80px 40px rgba(0,180,255,0.35)',
-      }} />
+    <div
+      style={{
+        width: '100vw',
+        height: '100vh',
+        background: '#000',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <div
+        style={{
+          width: 5,
+          height: 5,
+          borderRadius: '50%',
+          background: '#00C8FF',
+          boxShadow: '0 0 80px 40px rgba(0,180,255,0.32)',
+        }}
+      />
     </div>
   ),
 });
@@ -41,7 +54,7 @@ export default function Home() {
     }
   }, [heroExited]);
 
-  /* Wheel-up at page top - go back to hero */
+  /* Wheel-up at page top — go back to hero */
   useEffect(() => {
     if (!heroExited) return;
     const onWheel = (e: WheelEvent) => {
@@ -58,16 +71,24 @@ export default function Home() {
 
   return (
     <main>
+      {/* Premium loader — shown on first load */}
+      {/* <Loader /> */}
+
+      {/* Navigation — floats above everything once hero exits */}
+      <Navigation />
+
       {/*
         HeroScene: position fixed, always mounted.
         Handles its own opacity fade via diveOpacity.
       */}
-      <div style={{
-        position:      'fixed',
-        inset:         0,
-        zIndex:        heroExited ? 0 : 10,
-        pointerEvents: heroExited ? 'none' : 'auto',
-      }}>
+      <div
+        style={{
+          position:      'fixed',
+          inset:         0,
+          zIndex:        heroExited ? 0 : 10,
+          pointerEvents: heroExited ? 'none' : 'auto',
+        }}
+      >
         <HeroScene />
       </div>
 

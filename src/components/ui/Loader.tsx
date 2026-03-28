@@ -1,86 +1,53 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useSceneStore } from '@/store/scene';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Loader() {
-  const { isLoaded, setLoaded, setLoadProgress } = useSceneStore();
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress]   = useState(0);
+  const [exiting, setExiting]     = useState(false);
+  const [hidden,   setHidden]     = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    // Simulate asset loading progression
     let p = 0;
-    const interval = setInterval(() => {
-      p += Math.random() * 18 + 4;
+
+    intervalRef.current = setInterval(() => {
+      p += Math.random() * 16 + 6;
       if (p >= 100) {
         p = 100;
-        clearInterval(interval);
+        if (intervalRef.current) clearInterval(intervalRef.current);
         setTimeout(() => {
-          setLoaded(true);
-        }, 500);
+          setExiting(true);
+          setTimeout(() => setHidden(true), 850);
+        }, 380);
       }
       setProgress(Math.min(p, 100));
-      setLoadProgress(Math.min(p, 100) / 100);
-    }, 120);
+    }, 100);
 
-    return () => clearInterval(interval);
-  }, [setLoaded, setLoadProgress]);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  if (hidden) return null;
 
   return (
-    <AnimatePresence>
-      {!isLoaded && (
-        <motion.div
-          className="loader-screen"
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.05 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {/* Logo mark */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center gap-8"
-          >
-            {/* MH monogram */}
-            <div className="relative">
-              <span
-                className="font-display text-6xl font-bold gradient-text"
-                style={{ letterSpacing: '0.2em' }}
-              >
-                MH
-              </span>
-              {/* Glow ring */}
-              <motion.div
-                className="absolute inset-0 rounded-full"
-                style={{
-                  background: 'radial-gradient(circle, rgba(122,60,255,0.2) 0%, transparent 70%)',
-                }}
-                animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              />
-            </div>
+    <div className={`loader-root${exiting ? ' loader-exit' : ''}`} aria-live="polite" role="status">
+      {/* MH logotype */}
+      <div className="loader-logo" aria-label="MH">MH</div>
 
-            {/* Progress bar */}
-            <div className="w-48 h-px bg-border-subtle relative overflow-hidden">
-              <motion.div
-                className="absolute inset-y-0 left-0"
-                style={{
-                  background: 'linear-gradient(90deg, #7A3CFF, #00D0FF)',
-                  width: `${progress}%`,
-                }}
-                transition={{ duration: 0.1 }}
-              />
-            </div>
+      {/* Progress track */}
+      <div className="loader-bar-wrap" aria-hidden="true">
+        <div
+          className="loader-bar-fill"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
 
-            {/* Progress number */}
-            <span className="font-mono text-xs text-text-muted tracking-widest">
-              {Math.round(progress).toString().padStart(3, '0')}
-            </span>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+      {/* Numeric counter */}
+      <span className="loader-count" aria-label={`Loading ${Math.round(progress)}%`}>
+        {String(Math.round(progress)).padStart(3, '0')}
+      </span>
+    </div>
   );
 }
