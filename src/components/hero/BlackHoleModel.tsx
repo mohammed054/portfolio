@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 /* ═══════════════════════════════════════════════════════════════════════════
-  BLACK HOLE — v13 "RICH PLASMA"
+  BLACK HOLE — v13 "RICH PLASMA" (BlackHoleModel.tsx)
   ═══════════════════════════════════════════════════════════════════════════
   Goals:
   ✓ VIVID COLORS — blazing orange, deep red, molten amber, copper, rust

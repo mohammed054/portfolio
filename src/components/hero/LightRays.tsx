@@ -3,21 +3,7 @@ import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   LIGHT RAYS v4  "INTERSTELLAR MATCH"
-   ───────────────────────────────────────────────────────────────────────────
-   ✓ NOT a sun — dark cinematic palette, Reinhard tone-mapping, low intensity
-   ✓ NO SEAM — rotation matrix only, never atan(), no polar wrapping
-   ✓ Elliptical disk (tilted perspective, ~25° view angle)
-   ✓ Lensing arc — back-disk bends OVER the top of the BH, not around
-   ✓ Back-disk occlusion — hidden behind event horizon
-   ✓ Doppler asymmetry — approaching side brighter
-   ✓ Zoom target is the dark sphere, disk wraps around it
-   ✓ Colors: warm-white inner → amber → deep orange → dark rust → black
-═══════════════════════════════════════════════════════════════════════════ */
-
 const FRAG = `
-uniform float uTime;
 uniform float uStrength;
 varying vec2 vUv;
 
@@ -25,60 +11,71 @@ void main() {
   vec2 uv = vUv - 0.5;
   float r = length(uv);
 
-  // Match event horizon
+  // Event horizon cutoff
   float hR = 0.056;
   if (r < hR) {
     gl_FragColor = vec4(0.0);
     return;
   }
 
-  // ─────────────────────────────────────────────
-  // TRUE LENSING ARC (NOT A RING)
-  // ─────────────────────────────────────────────
+  // ─────────────────────────────
+  // LENSING ARC (optimized)
+  // ─────────────────────────────
 
-  // Slight vertical bias (this breaks the "perfect circle")
-  vec2 warpedUV = uv;
-  warpedUV.y *= 0.6;
+  vec2 w = uv;
+  w.y *= 0.62; // slight ellipse
 
-  float rWarp = length(warpedUV);
+  float rw = length(w);
+  float d  = (rw - 0.075) * 120.0;
 
-  float arc = exp(-pow((rWarp - 0.075) * 120.0, 2.0));
+  float arc = exp(-(d * d));
 
-  // ONLY top side → prevents donut
-  arc *= smoothstep(0.0, 0.03, uv.y);
+  // top-only (clean cutoff)
+  arc *= smoothstep(0.0, 0.025, uv.y);
 
-  // Fade sideways so it's not a full arc
-  arc *= smoothstep(0.35, 0.05, abs(uv.x));
+  // horizontal taper (less spread)
+  arc *= smoothstep(0.32, 0.06, abs(uv.x));
 
-  // Fade away from center
-  arc *= smoothstep(0.20, 0.06, r);
+  // radial containment
+  arc *= smoothstep(0.18, 0.065, r);
 
-  // ─────────────────────────────────────────────
-  // EXTREMELY SUBTLE SCATTERING (almost invisible)
-  // ─────────────────────────────────────────────
-  float glow = smoothstep(0.12, 0.32, r) *
-               smoothstep(0.50, 0.22, r);
+  // sharpen slightly
+  arc = pow(arc, 1.15);
 
-  // Slight asymmetry (Doppler hint)
-  glow *= 0.92 + 0.08 * (-uv.x / max(r, 0.001));
+  // ─────────────────────────────
+  // SUBTLE SCATTER
+  // ─────────────────────────────
 
-  glow *= 0.08; // VERY LOW
+  float glow = smoothstep(0.14, 0.30, r) *
+               smoothstep(0.48, 0.24, r);
 
-  // ─────────────────────────────────────────────
-  // COLOR — toned down heavily
-  // ─────────────────────────────────────────────
-  vec3 arcColor  = vec3(1.0, 0.72, 0.38);
-  vec3 glowColor = vec3(0.45, 0.6, 0.9);
+  float invR = 1.0 / max(r, 0.001);
 
-  vec3 col = arcColor * arc * 0.6 +
-             glowColor * glow * 0.25;
+  // stable doppler bias
+  float doppler = clamp(-uv.x * invR * 0.5 + 0.5, 0.0, 1.0);
 
-  float intensity = (arc + glow) * uStrength * 0.7;
+  glow *= mix(0.88, 1.05, doppler);
+  glow *= 0.06; // lower than before
 
-  // Soft tone map
-  col = col / (col + vec3(1.2));
+  // ─────────────────────────────
+  // COLOR
+  // ─────────────────────────────
 
-  gl_FragColor = vec4(col, intensity * 0.5);
+  vec3 arcColor  = vec3(1.0, 0.70, 0.36);
+  vec3 glowColor = vec3(0.42, 0.55, 0.85);
+
+  vec3 col = arcColor * arc * 0.55 +
+             glowColor * glow * 0.22;
+
+  float intensity = (arc + glow) * uStrength;
+
+  // Reinhard tone mapping (tighter)
+  col = col / (col + vec3(1.0));
+
+  // cleaner alpha falloff (prevents bloom stacking)
+  float alpha = intensity * 0.45;
+
+  gl_FragColor = vec4(col, alpha);
 }
 `;
 
@@ -88,27 +85,25 @@ void main(){
   vUv = uv;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
-`;      
+`;
 
 export default function LightRays({ strengthRef }: { strengthRef: React.MutableRefObject<number> }) {
   const matRef = useRef<THREE.ShaderMaterial>(null!);
 
   const sm = useMemo(() => new THREE.ShaderMaterial({
     uniforms: {
-      uTime:     { value: 0 },
       uStrength: { value: 0 },
     },
-    vertexShader:   VERT,
+    vertexShader: VERT,
     fragmentShader: FRAG,
     transparent: true,
-    blending:    THREE.AdditiveBlending,
-    depthWrite:  false,
-    side:        THREE.DoubleSide,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    side: THREE.DoubleSide,
   }), []);
 
-  useFrame(({ clock }) => {
+  useFrame(() => {
     if (!matRef.current) return;
-    matRef.current.uniforms.uTime.value     = clock.getElapsedTime();
     matRef.current.uniforms.uStrength.value = strengthRef.current;
   });
 
