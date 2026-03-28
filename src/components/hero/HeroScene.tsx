@@ -184,9 +184,10 @@ export default function HeroScene() {
   const starOp = outMix * (1 - THREE.MathUtils.smootherstep(ap, 0.70, 0.90) * 0.5) + 0.05;
   const bloom  = 0.20 + ap * 0.25 * outMix + diveProgress * 0.42;
 
-  // Hero fades itself out as the user dives in, revealing PostHero below
-  const diveOpacity = diveProgress > 0.45
-    ? Math.max(0, 1 - ((diveProgress - 0.45) / 0.55)) : 1;
+  // Hero fades out as user dives — starts early so PostHero rocks show through
+  // This creates the illusion of diving INTO the black hole and emerging in the asteroid field
+  const diveOpacity = diveProgress > 0.28
+    ? Math.max(0, 1 - ((diveProgress - 0.28) / 0.52)) : 1;
 
   const showName  = phase === 'EXPANDING' || phase === 'REVEALED';
   const nameFade  = showName

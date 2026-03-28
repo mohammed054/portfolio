@@ -15,7 +15,6 @@ import { HERO_PROGRESS_PORTION } from '@/lib/scroll';
 /* ══════════════════════════════════════════════════════════════
    CONSTANTS
 ══════════════════════════════════════════════════════════════ */
-
 const N       = timeline.length;
 const N_WALL  = 240;
 const N_ROCK  = N + N_WALL;
@@ -25,7 +24,6 @@ const TL_VH_ENTRY = 160;
 const TOTAL_VH    = ABOUT_VH + (N + 1) * TL_VH_ENTRY;
 const AF          = ABOUT_VH / TOTAL_VH;
 
-/* ── Ring / Tunnel geometry ─────────────────────────────────── */
 const RING_Z   = -14;
 const RING_R   = 9.2;
 const T_CLEAR  = 5.8;
@@ -102,17 +100,12 @@ const wallSlots: TunnelSlot[] = (() => {
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   TIMELINE CAMERA PATH
-   FIX 1: Overview camera pulled back to z=-38 so it sits clearly
-   in front of (positive-Z side of) the first rock's z position,
-   ensuring the first rock is always ahead of the camera.
-   FIX 2: Look keys now point slightly past each rock's wall position
-   (extrapolated along the cam→rock vector) so the camera begins
-   rotating toward the next target well before it arrives.
+   TIMELINE CAMERA PATH — REBUILT FROM SCRATCH
+   Camera starts already facing first rock (key[0] looks toward key[1]).
+   Quaternion-based smooth rotation — no abrupt lookAt snapping.
 ══════════════════════════════════════════════════════════════ */
 const TL_CAM_KEYS: THREE.Vector3[] = [
-  // FIX 1: was z=-22, now z=-38 — sits behind ALL rocks in the tunnel
-  new THREE.Vector3(0, 0.3, -38),
+  new THREE.Vector3(0, 0.3, -36),
   ...timeline.map((_, i) => {
     const r    = (o: number) => sr(i * 79 + o + 500);
     const slot = wallSlots[i];
@@ -126,19 +119,22 @@ const TL_CAM_KEYS: THREE.Vector3[] = [
   }),
 ];
 
-/* FIX 2: Look targets are pushed slightly *past* the rock surface
-   (factor > 1) so the camera rotation leads the movement rather
-   than lagging behind it. Factor 1.18 gives ~18% overshoot on
-   the look vector — enough to start rotating early without feeling
-   wild. */
+/* Look targets: first key looks directly at first rock's wall position */
 const TL_LOOK_KEYS: THREE.Vector3[] = [
-  new THREE.Vector3(0, 0, T_NEAR_Z - 20),
+  /* Key 0 looks at the FIRST rock's wall position so camera starts facing it */
+  (() => {
+    const slot = wallSlots[0];
+    return new THREE.Vector3(
+      Math.cos(slot.angle) * slot.radius,
+      Math.sin(slot.angle) * slot.radius,
+      slot.z,
+    );
+  })(),
   ...timeline.map((_, i) => {
     const slot = wallSlots[i];
-    const LOOK_LEAD = 1.18; // push look target past the rock surface
     return new THREE.Vector3(
-      Math.cos(slot.angle) * slot.radius * LOOK_LEAD,
-      Math.sin(slot.angle) * slot.radius * LOOK_LEAD,
+      Math.cos(slot.angle) * slot.radius * 1.12,
+      Math.sin(slot.angle) * slot.radius * 1.12,
       slot.z,
     );
   }),
@@ -323,6 +319,7 @@ function RockTexProvider({ children }: { children: React.ReactNode }) {
      '/textures/rock/rock_face_03_nor_gl_1k.png',
      '/textures/rock/rock_face_03_rough_1k.png',
     ].forEach((p, i) => L.load(p, t => { maps[i] = t; finish(); }));
+    /* No cleanup needed — TextureLoader handles its own XHR */
   }, []);
   return <TexCtx.Provider value={tex}>{children}</TexCtx.Provider>;
 }
@@ -351,7 +348,7 @@ interface SharedRefs {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   CHUNK SYSTEM
+   CHUNK SYSTEM — CAPPED POOL, NO LEAKS
 ══════════════════════════════════════════════════════════════ */
 const CHUNKS_PER_FRAC = 18;
 const CHUNK_POOL      = CHUNKS_PER_FRAC * 6;
@@ -390,21 +387,15 @@ function ChunkSystem({ chunkEventRef }: { chunkEventRef: React.MutableRefObject<
         const p = pool.current[idx];
         p.alive = true;
         p.pos.copy(ev.pos).add(new THREE.Vector3(
-          (r(4) - 0.5) * 0.25,
-          (r(5) - 0.5) * 0.25,
-          (r(6) - 0.5) * 0.25,
+          (r(4) - 0.5) * 0.25, (r(5) - 0.5) * 0.25, (r(6) - 0.5) * 0.25,
         ));
         p.vel.set(
           Math.sin(theta) * Math.cos(phi) * spd,
           Math.sin(theta) * Math.sin(phi) * spd,
           Math.cos(theta) * spd,
         );
-        p.avx = (r(10) - 0.5) * 0.9;
-        p.avy = (r(11) - 0.5) * 0.9;
-        p.avz = (r(12) - 0.5) * 0.9;
-        p.rx = r(7) * Math.PI * 2;
-        p.ry = r(8) * Math.PI * 2;
-        p.rz = r(9) * Math.PI * 2;
+        p.avx = (r(10) - 0.5) * 0.9; p.avy = (r(11) - 0.5) * 0.9; p.avz = (r(12) - 0.5) * 0.9;
+        p.rx = r(7) * Math.PI * 2; p.ry = r(8) * Math.PI * 2; p.rz = r(9) * Math.PI * 2;
         p.scale = 0.18 + r(13) * 0.70;
         p.birth = clock.getElapsedTime();
         p.life  = 3.0 + r(14) * 1.8;
@@ -418,21 +409,13 @@ function ChunkSystem({ chunkEventRef }: { chunkEventRef: React.MutableRefObject<
       const age  = clock.getElapsedTime() - p.birth;
       const life = age / p.life;
       if (life >= 1) { p.alive = false; continue; }
-
       const dt = Math.min(delta, 0.05);
       p.pos.addScaledVector(p.vel, dt);
       p.vel.y -= 0.28 * dt;
       p.vel.multiplyScalar(1 - 0.18 * dt);
-
-      p.rx += p.avx * dt;
-      p.ry += p.avy * dt;
-      p.rz += p.avz * dt;
-
-      const fade = life < 0.08
-        ? life / 0.08
-        : 1 - Math.pow((life - 0.08) / 0.92, 2.2);
+      p.rx += p.avx * dt; p.ry += p.avy * dt; p.rz += p.avz * dt;
+      const fade = life < 0.08 ? life / 0.08 : 1 - Math.pow((life - 0.08) / 0.92, 2.2);
       const scl = p.scale * (1 - life * 0.12) * fade;
-
       dummy.position.copy(p.pos);
       dummy.rotation.set(p.rx, p.ry, p.rz);
       dummy.scale.setScalar(scl);
@@ -446,10 +429,8 @@ function ChunkSystem({ chunkEventRef }: { chunkEventRef: React.MutableRefObject<
   return (
     <instancedMesh ref={mesh} args={[geo, undefined, CHUNK_POOL]} frustumCulled={false}>
       <meshStandardMaterial
-        roughness={0.96}
-        metalness={0.01}
-        emissive={new THREE.Color('#1a2233')}
-        emissiveIntensity={0.12}
+        roughness={0.96} metalness={0.01}
+        emissive={new THREE.Color('#1a2233')} emissiveIntensity={0.12}
         color="#8c8880"
       />
     </instancedMesh>
@@ -494,7 +475,6 @@ function RockMesh({ cfg, refs, rockIdx }: { cfg: typeof ROCK_CFG[0]; refs: Share
     const sp = refs.scrollRef.current;
 
     const ringP     = sm(sp, PH.ringStart, PH.ringFull);
-    const approachP = sm(sp, PH.ringFull, PH.approachEnd);
     const enterP    = sm(sp, PH.enterStart, PH.enterEnd);
     const dispP     = sm(sp, PH.dispStart, PH.dispEnd);
     const chaosAmt  = 1 - ringP;
@@ -780,7 +760,7 @@ function SpaceDust({ scrollRef }: { scrollRef: React.MutableRefObject<number> })
 }
 
 /* ══════════════════════════════════════════════════════════════
-   TUNNEL DEPTH ATMOSPHERE
+   TUNNEL HAZE
 ══════════════════════════════════════════════════════════════ */
 function TunnelHaze({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) {
   const ref = useRef<THREE.PointLight>(null!);
@@ -879,12 +859,14 @@ function PostFX({ fxRef }: { fxRef: React.MutableRefObject<FXState> }) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   SCENE
+   SCENE — REBUILT CAMERA SYSTEM
+   Quaternion-based smooth rotation, no lookAt snapping.
+   Camera starts facing the first timeline object.
 ══════════════════════════════════════════════════════════════ */
 function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
   const { camera, scene } = useThree();
-  const lookTgt     = useRef(new THREE.Vector3(0, 0, -8));
-  const lookSmooth  = useRef(new THREE.Vector3(0, 0, -8));
+
+  /* Camera state */
   const camTarget   = useRef(new THREE.Vector3(0, 0, 4));
   const camRot      = useRef(0);
   const keyLight    = useRef<THREE.DirectionalLight | null>(null);
@@ -892,13 +874,24 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
   const tunnelLight = useRef<THREE.PointLight | null>(null);
   const camLight    = useRef<THREE.PointLight | null>(null);
 
-  const tlSmooth = useRef(0);
-  const tlInRef  = useRef(false);
+  /* Quaternion-based smooth rotation refs */
+  const currentQuat = useRef(new THREE.Quaternion());
+  const targetQuat  = useRef(new THREE.Quaternion());
+  const _lookMat    = useRef(new THREE.Matrix4());
+  const _lookPos    = useRef(new THREE.Vector3());
+
+  const tlSmooth    = useRef(0);
+  const tlInRef     = useRef(false);
+  const tlInitRef   = useRef(false); /* true once camera has been placed at TL entry */
 
   useEffect(() => {
     scene.fog = new THREE.FogExp2('#020409', 0.006);
+    /* Initialize camera quaternion from default orientation */
+    camera.updateMatrixWorld();
+    currentQuat.current.copy(camera.quaternion);
+    targetQuat.current.copy(camera.quaternion);
     return () => { scene.fog = null; };
-  }, [scene]);
+  }, [scene, camera]);
 
   useFrame(({ clock }, delta) => {
     const sp  = refs.scrollRef.current;
@@ -912,19 +905,24 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
     const inTL      = sp >= PH.tlStart;
     refs.scrollVelRef.current = lrp(refs.scrollVelRef.current, 0, inTL ? 0.08 : 0.05);
     const vel = refs.scrollVelRef.current;
-    if (!inTL && tlInRef.current) tlInRef.current = false;
+
+    if (!inTL && tlInRef.current) {
+      tlInRef.current = false;
+      tlInitRef.current = false;
+    }
 
     const entryBell = Math.sin(clamp(enterP, 0, 1) * Math.PI);
 
+    /* FOV */
     const baseFov = sp < PH.enterStart
       ? lrp(60, 64, ringP * 0.5 + approachP * 0.5)
       : lrp(64, 82, Math.pow(enterP, 1.4));
     const tlFov = lrp(baseFov, 56, tlP);
-
     const velFov = inTL ? 0 : clamp(vel * 18, 0, 10);
     cam.fov = lrp(cam.fov, tlFov + velFov, 0.08);
     cam.updateProjectionMatrix();
 
+    /* Post-FX targets */
     refs.fxRef.current.bloom =
       sp < PH.ringStart  ? 0.22
       : sp < PH.ringFull  ? lrp(0.22, 0.42, ringP)
@@ -936,6 +934,7 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
       sm(sp, PH.dispStart, PH.dispEnd) * 0.6 +
       clamp(vel * 3.5, 0, 1.2);
 
+    /* Camera drift / shake (non-TL) */
     const dA = inTL ? 0 : (sp < PH.ringStart ? 0.0015 : sp < PH.enterEnd ? 0.003 : 0.0012);
     if (!inTL) {
       camera.position.x += Math.sin(t * 0.17 + 1.1) * dA;
@@ -949,115 +948,146 @@ function Scene({ refs, starOp }: { refs: SharedRefs; starOp: number }) {
         camera.position.x += s1 * shakeAmt;
         camera.position.y += s2 * shakeAmt * 0.8;
         camRot.current = lrp(camRot.current, s3 * shakeAmt * 0.018, 0.25);
-        camera.rotation.z = camRot.current;
       } else {
         camRot.current = lrp(camRot.current, 0, 0.1);
-        camera.rotation.z = camRot.current;
       }
+      camera.rotation.z = camRot.current;
     } else {
       camRot.current = lrp(camRot.current, 0, 0.1);
       camera.rotation.z = camRot.current;
     }
 
-    if (sp < PH.enterStart) {
-      const camZ = lrp(7.5, -11, approachP);
-      const camY = lrp(0, 0.2, ringP * 0.6);
-      camTarget.current.set(0, camY, camZ);
-      camera.position.lerp(camTarget.current, 0.022);
+    /* ── POSITION + LOOK TARGET ───────────────────────────────── */
+    let desiredPos  = new THREE.Vector3();
+    let desiredLook = new THREE.Vector3();
 
-      const lookZ = lrp(-8, RING_Z - 12, ringP);
-      lookTgt.current.set(
+    if (sp < PH.enterStart) {
+      desiredPos.set(0, lrp(0, 0.2, ringP * 0.6), lrp(7.5, -11, approachP));
+      desiredLook.set(
         Math.sin(t * 0.055) * 0.5 * (1 - ringP * 0.85),
         Math.cos(t * 0.045) * 0.35 * (1 - ringP * 0.85),
-        lookZ,
+        lrp(-8, RING_Z - 12, ringP),
       );
+      camTarget.current.copy(desiredPos);
+      camera.position.lerp(camTarget.current, 0.022);
 
     } else if (sp < PH.tlStart) {
-      const camZ = lrp(-11, -28, enterP);
-      const camY = lrp(0.2, 0, enterP);
-      camTarget.current.set(0, camY, camZ);
-      camera.position.lerp(camTarget.current, 0.030);
-
-      const lookZ = lrp(RING_Z - 8, T_FAR_Z * 0.55, enterP);
-      lookTgt.current.set(
+      desiredPos.set(0, lrp(0.2, 0, enterP), lrp(-11, -28, enterP));
+      desiredLook.set(
         Math.sin(t * 0.09) * 0.5 * (1 - enterP * 0.75),
         Math.cos(t * 0.07) * 0.35 * (1 - enterP * 0.75),
-        lookZ,
+        lrp(RING_Z - 8, T_FAR_Z * 0.55, enterP),
       );
+      camTarget.current.copy(desiredPos);
+      camera.position.lerp(camTarget.current, 0.030);
 
     } else {
-      /* ── TIMELINE CAMERA ──────────────────────────────────────
-         FIX 2: Look target is interpolated one full segment ahead
-         of the camera position segment. This means the camera is
-         already rotating toward the next rock while it's still
-         traveling to the current one, rather than snapping once
-         it arrives. The look lerp is tightened (0.9 → 0.14·delta*9)
-         so it tracks ahead smoothly rather than lagging.
-      ────────────────────────────────────────────────────────── */
+      /* ══════════════════════════════════════════════════════
+         TIMELINE CAMERA — REBUILT
+         • Quaternion slerp — no lookAt snapping
+         • Starts already facing first rock (tlInitRef)
+         • Smooth spline-like path via hopEase
+      ════════════════════════════════════════════════════════ */
       const tlRaw  = (sp - PH.tlStart) / Math.max(1 - PH.tlStart, 1e-5);
       const segs   = TL_CAM_KEYS.length - 1;
       const rawTL  = Math.min(tlRaw * segs, segs - 1e-4);
       const snap   = clamp(1 - vel * 1.4, 0, 1);
-      const tlTarget = lrp(rawTL, Math.round(rawTL), snap * 0.45);
-      if (!tlInRef.current) { tlSmooth.current = tlTarget; tlInRef.current = true; }
-      tlSmooth.current = lrp(tlSmooth.current, tlTarget, 0.12);
-      const tl     = clamp(tlSmooth.current, 0, segs - 1e-4);
-      const seg    = Math.floor(tl);
+      const tlTarget2 = lrp(rawTL, Math.round(rawTL), snap * 0.45);
+
+      /* On first TL entry: teleport smooth tracker to current value
+         so no interpolation lag from wrong starting state */
+      if (!tlInRef.current) {
+        tlInRef.current = true;
+        tlSmooth.current = tlTarget2;
+      }
+      tlSmooth.current = lrp(tlSmooth.current, tlTarget2, 0.10);
+      const tl  = clamp(tlSmooth.current, 0, segs - 1e-4);
+      const seg = Math.floor(tl);
       const fEased = hopEase(tl - seg);
 
-      // Camera position: interpolate between current and next key
+      /* Position along spline */
       const tgtPos = new THREE.Vector3().lerpVectors(
         TL_CAM_KEYS[seg],
         TL_CAM_KEYS[Math.min(seg + 1, segs)],
         fEased,
       );
 
-      const damp = 1 - Math.exp(-delta * 6);
-      camera.position.lerp(tgtPos, damp);
+      /* Smooth position damp */
+      const posDamp = 1 - Math.exp(-delta * 5.5);
+      camera.position.lerp(tgtPos, posDamp);
 
-      // FIX 2: Look target runs one segment ahead — camera faces
-      // the *next* rock before it arrives there.
-      const lookSeg    = Math.min(seg + 1, segs);    // one ahead
-      const lookSegEnd = Math.min(lookSeg + 1, segs);
+      /* Look target — interpolate between current and next look key */
       const li = new THREE.Vector3().lerpVectors(
-        TL_LOOK_KEYS[lookSeg],
-        TL_LOOK_KEYS[lookSegEnd],
+        TL_LOOK_KEYS[seg],
+        TL_LOOK_KEYS[Math.min(seg + 1, segs)],
         fEased,
       );
-      // Tighter look tracking so the anticipation is snappy
-      lookTgt.current.lerp(li, damp * 0.85);
 
+      /* QUATERNION-BASED ROTATION — no snapping
+         Build target quaternion from a lookAt matrix, then slerp */
+      const lookDir = new THREE.Vector3().subVectors(li, camera.position).normalize();
+      if (lookDir.lengthSq() > 0.0001) {
+        _lookPos.current.copy(camera.position).add(lookDir);
+        _lookMat.current.lookAt(camera.position, _lookPos.current, camera.up);
+        targetQuat.current.setFromRotationMatrix(_lookMat.current);
+
+        /* On TL init: snap current quat to target so camera starts correct */
+        if (!tlInitRef.current) {
+          tlInitRef.current = true;
+          currentQuat.current.copy(targetQuat.current);
+        }
+
+        /* Smooth slerp — tighter tracking than lookAt lerp */
+        const rotDamp = 1 - Math.exp(-delta * 4.2);
+        currentQuat.current.slerp(targetQuat.current, rotDamp);
+        camera.quaternion.copy(currentQuat.current);
+        /* Cancel the euler-based lookAt that Three.js does on updateProjectionMatrix */
+        camera.rotation.setFromQuaternion(camera.quaternion);
+      }
+
+      /* Update active rock index */
       const rockIdx = clamp(Math.round(tl) - 1, 0, N - 1);
       refs.activeRef.current = rockIdx;
 
       if (camLight.current) {
-        const ahead = lookTgt.current.clone().sub(camera.position).normalize().multiplyScalar(14);
+        const ahead = li.clone().sub(camera.position).normalize().multiplyScalar(14);
         camLight.current.position.copy(camera.position).add(ahead);
       }
+
+      /* Skip normal look-smooth for TL — we do it ourselves above */
+      desiredLook.copy(li);
+
+      /* Light update */
+      if (keyLight.current) {
+        const flicker = 1 + Math.sin(t * 0.19) * 0.018 + Math.sin(t * 0.83) * 0.008;
+        keyLight.current.intensity = lrp(1.6, 2.4, tlP) * flicker;
+      }
+      if (ringLight.current)   ringLight.current.intensity = 0;
+      if (tunnelLight.current) tunnelLight.current.intensity = enterP * 4.5 * (0.8 + Math.sin(t * 0.9) * 0.10);
+      if (scene.fog instanceof THREE.FogExp2) scene.fog.density = 0.016;
+      return; /* Skip the shared lookSmooth below for TL */
     }
 
-    lookSmooth.current.lerp(lookTgt.current, 0.034);
-    camera.lookAt(lookSmooth.current);
+    /* ── Non-TL lookAt (smooth but using euler, fine for approach) ── */
+    if (!inTL) {
+      camera.lookAt(desiredLook);
+    }
 
     if (keyLight.current) {
       const flicker = 1 + Math.sin(t * 0.19) * 0.018 + Math.sin(t * 0.83) * 0.008;
       keyLight.current.intensity = lrp(1.6, 2.4, tlP) * flicker;
     }
-
     if (ringLight.current) {
       const intensity = ringP * (1 - enterP * 1.4) * 7.0 * (0.7 + Math.sin(t * 1.4) * 0.12);
       ringLight.current.intensity = Math.max(0, intensity);
     }
-
     if (tunnelLight.current) {
       tunnelLight.current.intensity = enterP * 4.5 * (0.8 + Math.sin(t * 0.9) * 0.10);
     }
-
     if (scene.fog instanceof THREE.FogExp2) {
       const target = sp < PH.ringStart ? 0.005
         : sp < PH.enterStart ? lrp(0.005, 0.007, ringP)
         : sp < PH.enterEnd   ? lrp(0.007, 0.014, enterP)
-        : sp >= PH.tlStart   ? 0.016
         : 0.011;
       scene.fog.density = lrp(scene.fog.density, target, 0.036);
     }
@@ -1139,7 +1169,7 @@ function CountUp({ to, suffix, active, delay }: { to: number; suffix: string; ac
 }
 
 /* ══════════════════════════════════════════════════════════════
-   ABOUT OVERLAY
+   ABOUT OVERLAY — RESPONSIVE
 ══════════════════════════════════════════════════════════════ */
 function AboutOverlay({
   visible, scrollProgress, velRef,
@@ -1194,44 +1224,39 @@ function AboutOverlay({
       <div style={{
         position: 'relative', zIndex: 2,
         width: '100%', maxWidth: '1240px',
-        padding: '0 clamp(28px,6vw,88px)',
+        padding: '0 clamp(16px,5vw,88px)',
         transform: `scale(${scale}) translateY(${translateY}px)`,
         filter: `blur(${blur}px)`,
         willChange: 'transform, filter',
       }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(18px,2.8vh,36px)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, ...rev(el0) }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(14px,2.4vh,36px)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', ...rev(el0) }}>
             <div style={{
-              fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.42em',
+              fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(7px,1.2vw,9px)', letterSpacing: '.42em',
               textTransform: 'uppercase', color: '#7dd3fc',
               padding: '5px 14px', border: '1px solid rgba(125,211,252,.22)', borderRadius: 2,
-              background: 'rgba(125,211,252,.04)',
+              background: 'rgba(125,211,252,.04)', whiteSpace: 'nowrap',
             }}>Software Engineer</div>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, rgba(125,211,252,.22), transparent)' }} />
+            <div style={{ flex: 1, minWidth: 40, height: 1, background: 'linear-gradient(to right, rgba(125,211,252,.22), transparent)' }} />
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
-              <span style={{
-                fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.22em',
-                textTransform: 'uppercase', color: 'rgba(125,211,252,.40)',
-              }}>Dubai, UAE</span>
-              <span style={{
-                fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.22em',
-                textTransform: 'uppercase', color: 'rgba(125,211,252,.26)',
-              }}>GMT+4</span>
+              <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(7px,1.2vw,9px)', letterSpacing: '.22em', textTransform: 'uppercase', color: 'rgba(125,211,252,.40)' }}>Dubai, UAE</span>
+              <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(7px,1.2vw,9px)', letterSpacing: '.22em', textTransform: 'uppercase', color: 'rgba(125,211,252,.26)' }}>GMT+4</span>
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(32px,6vw,88px)', alignItems: 'start' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(18px,2.6vh,30px)' }}>
+          {/* Responsive grid — stacks on mobile */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 'clamp(24px,4vw,88px)', alignItems: 'start' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(14px,2vh,30px)' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                 <h2 style={{
                   fontFamily: "'Syne',sans-serif", fontWeight: 800,
-                  fontSize: 'clamp(42px,6.5vw,88px)', lineHeight: .92,
+                  fontSize: 'clamp(32px,5.5vw,88px)', lineHeight: .92,
                   letterSpacing: '-0.03em', margin: 0, color: '#e8f0f8',
                   textShadow: '0 0 80px rgba(125,211,252,.10)', ...rev(el1),
                 }}>{l0}</h2>
                 <h2 style={{
                   fontFamily: "'Syne',sans-serif", fontWeight: 800,
-                  fontSize: 'clamp(42px,6.5vw,88px)', lineHeight: .92,
+                  fontSize: 'clamp(32px,5.5vw,88px)', lineHeight: .92,
                   letterSpacing: '-0.03em', margin: 0,
                   background: 'linear-gradient(135deg, #7dd3fc 0%, #38bdf8 40%, #e8f0f8 70%)',
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
@@ -1242,7 +1267,7 @@ function AboutOverlay({
               <div style={rev(el2, '.10s')}>
                 <p style={{
                   fontFamily: "'DM Sans',sans-serif", fontWeight: 400,
-                  fontSize: 'clamp(14px,1.6vw,18px)', lineHeight: 1.55,
+                  fontSize: 'clamp(13px,1.4vw,18px)', lineHeight: 1.55,
                   color: 'rgba(188,214,242,.50)', margin: 0, maxWidth: 440,
                 }}>
                   I design <em style={{ color: 'rgba(125,211,252,.78)', fontStyle: 'normal', fontWeight: 500 }}>controlled experiences</em> — where every interaction is deliberate and every pixel earns its place.
@@ -1257,25 +1282,18 @@ function AboutOverlay({
                 ].map(({ text, active, col }, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, ...rev(active) }}>
                     <div style={{ width: 2, height: 14, borderRadius: 1, background: col, boxShadow: `0 0 8px ${col}55`, flexShrink: 0 }} />
-                    <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(11px,1.2vw,13px)', letterSpacing: '.05em', color: 'rgba(188,214,242,.60)' }}>{text}</span>
+                    <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(10px,1.1vw,13px)', letterSpacing: '.05em', color: 'rgba(188,214,242,.60)' }}>{text}</span>
                   </div>
                 ))}
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, ...rev(el8) }}>
-                <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.38em', textTransform: 'uppercase', color: 'rgba(125,211,252,.26)' }}>— Stack</span>
-                <p style={{
-                  fontFamily: "'JetBrains Mono',monospace",
-                  fontSize: '9px',
-                  letterSpacing: '.22em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(125,211,252,.46)',
-                  margin: 0,
-                }}>{TECH.join(' · ')}</p>
+                <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(7px,1vw,8px)', letterSpacing: '.38em', textTransform: 'uppercase', color: 'rgba(125,211,252,.26)' }}>— Stack</span>
+                <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(7px,1vw,9px)', letterSpacing: '.22em', textTransform: 'uppercase', color: 'rgba(125,211,252,.46)', margin: 0 }}>{TECH.join(' · ')}</p>
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(22px,3.5vh,44px)', ...rev(el7) }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(16px,2.8vh,44px)', ...rev(el7) }}>
               {[
                 { to: 5,  s: '+', lbl: 'Years of craft',   bar: 0.72, delay: 200 },
                 { to: 40, s: '+', lbl: 'Products shipped',  bar: 0.88, delay: 360 },
@@ -1283,10 +1301,10 @@ function AboutOverlay({
               ].map(({ to, s, lbl, bar, delay }, i) => (
                 <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-                    <span style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 'clamp(44px,6vw,72px)', color: '#e8f0f8', lineHeight: 1, textShadow: '0 0 50px rgba(125,211,252,.14)' }}>
+                    <span style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 'clamp(32px,5vw,72px)', color: '#e8f0f8', lineHeight: 1, textShadow: '0 0 50px rgba(125,211,252,.14)' }}>
                       <CountUp to={to} suffix={s} active={el7} delay={delay} />
                     </span>
-                    <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.26em', textTransform: 'uppercase', color: 'rgba(100,160,210,.36)' }}>{lbl}</span>
+                    <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(7px,1vw,9px)', letterSpacing: '.26em', textTransform: 'uppercase', color: 'rgba(100,160,210,.36)' }}>{lbl}</span>
                   </div>
                   <div style={{ height: 1, background: 'rgba(125,211,252,.07)', borderRadius: 1 }}>
                     <div style={{ height: '100%', borderRadius: 1, background: 'linear-gradient(to right, rgba(125,211,252,.40), rgba(56,189,248,.62))', boxShadow: '0 0 10px rgba(125,211,252,.25)', width: el7 ? `${bar * 100}%` : '0%', transition: `width 1.2s cubic-bezier(.16,1,.3,1) ${delay * 0.001 + 0.3}s` }} />
@@ -1301,14 +1319,8 @@ function AboutOverlay({
                   borderTop: '1px solid rgba(125,211,252,.08)',
                   borderBottom: '1px solid rgba(125,211,252,.08)',
                 }}>
-                  <span style={{
-                    fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.24em',
-                    textTransform: 'uppercase', color: 'rgba(125,211,252,.36)',
-                  }}>Open to remote & relocation</span>
-                  <span style={{
-                    fontFamily: "'DM Sans',sans-serif", fontSize: '12px',
-                    color: 'rgba(188,214,242,.44)',
-                  }}>Based in Dubai, UAE · GMT+4</span>
+                  <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(7px,1vw,9px)', letterSpacing: '.24em', textTransform: 'uppercase', color: 'rgba(125,211,252,.36)' }}>Open to remote & relocation</span>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 'clamp(11px,1.2vw,12px)', color: 'rgba(188,214,242,.44)' }}>Based in Dubai, UAE · GMT+4</span>
                 </div>
               </div>
             </div>
@@ -1385,8 +1397,6 @@ function CustomCursor({ hoverRef, hoverSmRef, scrollRef }: {
 
 /* ══════════════════════════════════════════════════════════════
    HOLOGRAPHIC PANEL
-   FIX 3: Keyboard Escape now closes the panel. Added × button
-   alongside the existing ESC button for pointer users.
 ══════════════════════════════════════════════════════════════ */
 function HoloPanelOverlay({ entry, visible, onClose }: {
   entry: (typeof timeline)[0] | null; visible: boolean; onClose: () => void;
@@ -1397,12 +1407,9 @@ function HoloPanelOverlay({ entry, visible, onClose }: {
     if (visible) setTimeout(() => setMounted(true), 80); else setMounted(false);
   }, [visible]);
 
-  // FIX 3: Wire up the Escape key
   useEffect(() => {
     if (!visible) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [visible, onClose]);
@@ -1429,42 +1436,22 @@ function HoloPanelOverlay({ entry, visible, onClose }: {
           overflow: 'hidden',
         }}>
           <div style={{ height: '1px', background: 'linear-gradient(to right,transparent,rgba(125,211,252,.50),transparent)' }} />
-          <div style={{ padding: 'clamp(28px,4vw,48px)' }}>
+          <div style={{ padding: 'clamp(20px,4vw,48px)' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
               <div>
                 <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.34em', textTransform: 'uppercase', color: '#7dd3fc', display: 'block', marginBottom: '6px' }}>{(entry as any)?.year ?? '—'}</span>
-                <h2 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 'clamp(20px,3vw,30px)', color: '#e8f0f8', lineHeight: 1.14, margin: 0, textShadow: '0 0 30px rgba(125,211,252,.20)' }}>{entry?.title ?? ''}</h2>
+                <h2 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 'clamp(18px,3vw,30px)', color: '#e8f0f8', lineHeight: 1.14, margin: 0, textShadow: '0 0 30px rgba(125,211,252,.20)' }}>{entry?.title ?? ''}</h2>
                 {'subtitle' in (entry ?? {}) && (entry as any).subtitle && (
                   <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.24em', textTransform: 'uppercase', color: 'rgba(125,211,252,.46)', margin: '6px 0 0' }}>{(entry as any).subtitle}</p>
                 )}
               </div>
-
-              {/* FIX 3: Button row — ESC label + × icon, both functional */}
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0, marginLeft: '16px' }}>
-                <button
-                  onClick={onClose}
-                  style={{
-                    background: 'rgba(125,211,252,.08)', border: '1px solid rgba(125,211,252,.15)',
-                    borderRadius: '4px', color: 'rgba(125,211,252,.52)',
-                    fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '.18em',
-                    padding: '6px 12px', cursor: 'pointer',
-                  }}
-                >ESC</button>
-                <button
-                  onClick={onClose}
-                  aria-label="Close"
-                  style={{
-                    background: 'rgba(125,211,252,.08)', border: '1px solid rgba(125,211,252,.15)',
-                    borderRadius: '4px', color: 'rgba(125,211,252,.70)',
-                    fontFamily: "'JetBrains Mono',monospace", fontSize: '14px', lineHeight: 1,
-                    padding: '5px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}
-                >×</button>
+                <button onClick={onClose} style={{ background: 'rgba(125,211,252,.08)', border: '1px solid rgba(125,211,252,.15)', borderRadius: '4px', color: 'rgba(125,211,252,.52)', fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '.18em', padding: '6px 12px', cursor: 'pointer' }}>ESC</button>
+                <button onClick={onClose} aria-label="Close" style={{ background: 'rgba(125,211,252,.08)', border: '1px solid rgba(125,211,252,.15)', borderRadius: '4px', color: 'rgba(125,211,252,.70)', fontFamily: "'JetBrains Mono',monospace", fontSize: '14px', lineHeight: 1, padding: '5px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
               </div>
             </div>
-
             {'description' in (entry ?? {}) && (entry as any).description && (
-              <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 'clamp(13px,1.4vw,15px)', lineHeight: 1.72, color: 'rgba(188,214,242,.62)', margin: '0 0 24px' }}>{(entry as any).description}</p>
+              <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 'clamp(12px,1.4vw,15px)', lineHeight: 1.72, color: 'rgba(188,214,242,.62)', margin: '0 0 24px' }}>{(entry as any).description}</p>
             )}
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', borderTop: '1px solid rgba(125,211,252,.08)', paddingTop: '20px' }}>
               {['System', 'Precision', 'Output'].map((label, i) => (
@@ -1484,13 +1471,13 @@ function HoloPanelOverlay({ entry, visible, onClose }: {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   TIMELINE PANEL
+   TIMELINE PANEL — RESPONSIVE
 ══════════════════════════════════════════════════════════════ */
 function TLPanel({ entry, visible }: { entry: (typeof timeline)[0] | null; visible: boolean }) {
   return (
     <div style={{
-      position: 'absolute', left: 'clamp(24px,5vw,60px)', bottom: 'clamp(60px,10vh,100px)',
-      zIndex: 20, maxWidth: '390px',
+      position: 'absolute', left: 'clamp(16px,4vw,60px)', bottom: 'clamp(50px,8vh,100px)',
+      zIndex: 20, maxWidth: 'min(390px, calc(100vw - 32px))',
       opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(18px)',
       transition: 'opacity .55s cubic-bezier(.16,1,.3,1), transform .55s cubic-bezier(.16,1,.3,1)',
       pointerEvents: 'none',
@@ -1502,17 +1489,17 @@ function TLPanel({ entry, visible }: { entry: (typeof timeline)[0] | null; visib
           borderRadius: '6px', border: '1px solid rgba(125,211,252,.11)',
           boxShadow: '0 0 50px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04)', zIndex: -1,
         }} />
-        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '.32em', textTransform: 'uppercase', color: '#7dd3fc', display: 'block', marginBottom: '8px' }}>{(entry as any).year ?? ''}</span>
-        <h3 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 'clamp(20px,2.8vw,32px)', color: '#e8f0f8', lineHeight: 1.12, margin: '0 0 6px', textShadow: '0 0 30px rgba(125,211,252,.18)' }}>{entry.title}</h3>
+        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(8px,1.5vw,10px)', letterSpacing: '.32em', textTransform: 'uppercase', color: '#7dd3fc', display: 'block', marginBottom: '8px' }}>{(entry as any).year ?? ''}</span>
+        <h3 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 'clamp(18px,2.5vw,32px)', color: '#e8f0f8', lineHeight: 1.12, margin: '0 0 6px', textShadow: '0 0 30px rgba(125,211,252,.18)' }}>{entry.title}</h3>
         {'subtitle' in entry && (entry as any).subtitle && (
           <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '9px', letterSpacing: '.24em', textTransform: 'uppercase', color: 'rgba(125,211,252,.42)', margin: '0 0 12px' }}>{(entry as any).subtitle}</p>
         )}
         {'description' in entry && (entry as any).description && (
-          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 'clamp(12px,1.4vw,14px)', lineHeight: 1.72, color: 'rgba(172,202,234,.58)', margin: 0 }}>{(entry as any).description}</p>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 'clamp(11px,1.3vw,14px)', lineHeight: 1.72, color: 'rgba(172,202,234,.58)', margin: 0 }}>{(entry as any).description}</p>
         )}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px', padding: '8px 14px', background: 'rgba(125,211,252,.04)', border: '1px solid rgba(125,211,252,.11)', borderRadius: 4 }}>
-          <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#7dd3fc', boxShadow: '0 0 8px rgba(125,211,252,.60)', animation: 'dotPulse 1.8s ease-in-out infinite' }} />
-          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.26em', textTransform: 'uppercase', color: 'rgba(125,211,252,.42)' }}>click the rock · fracture to reveal</span>
+          <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#7dd3fc', boxShadow: '0 0 8px rgba(125,211,252,.60)', animation: 'dotPulse 1.8s ease-in-out infinite', flexShrink: 0 }} />
+          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(6px,1vw,8px)', letterSpacing: '.26em', textTransform: 'uppercase', color: 'rgba(125,211,252,.42)' }}>click the rock · fracture to reveal</span>
         </div>
       </>)}
     </div>
@@ -1528,7 +1515,7 @@ function TLDots({ active, total, shattered, visible }: {
   if (!visible) return null;
   return (
     <div style={{
-      position: 'absolute', bottom: 'clamp(22px,4vh,42px)', left: '50%',
+      position: 'absolute', bottom: 'clamp(16px,3vh,42px)', left: '50%',
       transform: 'translateX(-50%)', zIndex: 20, display: 'flex', gap: '10px', alignItems: 'center',
     }}>
       {Array.from({ length: total }, (_, i) => (
@@ -1539,6 +1526,25 @@ function TLDots({ active, total, shattered, visible }: {
           transition: 'all .45s cubic-bezier(.16,1,.3,1)',
         }} />
       ))}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SCROLL INDICATOR
+══════════════════════════════════════════════════════════════ */
+function ScrollIndicator({ visible }: { visible: boolean }) {
+  return (
+    <div style={{
+      position: 'absolute', bottom: 'clamp(20px,4vh,52px)', left: '50%',
+      transform: 'translateX(-50%)', zIndex: 10, textAlign: 'center',
+      opacity: visible ? 1 : 0, transition: 'opacity .8s ease',
+      pointerEvents: 'none',
+    }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+        <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.38em', textTransform: 'uppercase', color: 'rgba(125,211,252,.20)' }}>scroll</span>
+        <div style={{ width: 1, height: 40, background: 'linear-gradient(to bottom, rgba(125,211,252,.28), transparent)', animation: 'linePulse 2s ease-in-out infinite' }} />
+      </div>
     </div>
   );
 }
@@ -1560,25 +1566,17 @@ function getPhaseLabel(sp: number): string {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   SCROLL INDICATOR
+   MOBILE DPR HOOK
 ══════════════════════════════════════════════════════════════ */
-function ScrollIndicator({ visible }: { visible: boolean }) {
-  return (
-    <div style={{
-      position: 'absolute', bottom: 'clamp(28px,5vh,52px)', left: '50%',
-      transform: 'translateX(-50%)', zIndex: 10, textAlign: 'center',
-      opacity: visible ? 1 : 0, transition: 'opacity .8s ease',
-      pointerEvents: 'none',
-    }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-        <span style={{
-          fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.38em',
-          textTransform: 'uppercase', color: 'rgba(125,211,252,.20)',
-        }}>scroll</span>
-        <div style={{ width: 1, height: 40, background: 'linear-gradient(to bottom, rgba(125,211,252,.28), transparent)', animation: 'linePulse 2s ease-in-out infinite' }} />
-      </div>
-    </div>
-  );
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check, { passive: true });
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return mobile;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1600,6 +1598,7 @@ export default function PostHeroSection() {
   const introRafRef    = useRef<number | null>(null);
 
   const heroExited = useSceneStore(s => s.heroExited);
+  const isMobile   = useIsMobile();
 
   const fractureRef = useRef<FractureState[]>(
     Array.from({ length: N }, () => ({
@@ -1618,7 +1617,7 @@ export default function PostHeroSection() {
   const [holoVisible, setHoloVisible] = useState(false);
   const [holoIdx,     setHoloIdx]     = useState<number | null>(null);
 
-  const refs: SharedRefs = useMemo(() => ({
+  const refs = useMemo((): SharedRefs => ({
     scrollRef, scrollVelRef, activeRef, hoverRef, hoverSmRef,
     fxRef, fractureRef, chunkEventRef,
   }), []);
@@ -1670,7 +1669,7 @@ export default function PostHeroSection() {
         activeRef.current = rock; setActive(rock); setInfoKey(k => k + 1);
       }
     }
-  }, [activeRef, setActive, setInfoKey, setSp, setStarOp, setTextVisible, scrollVelRef]);
+  }, []);
 
   useEffect(() => {
     const fn = () => {
@@ -1678,7 +1677,6 @@ export default function PostHeroSection() {
       const total = el.offsetHeight - window.innerHeight; if (total <= 0) return;
       const p = Math.max(0, Math.min(1, -el.getBoundingClientRect().top / total));
       if (introActiveRef.current) return;
-
       const rawVel = Math.abs(p - lastSpRef.current) * 60;
       updateFromProgress(p, rawVel);
     };
@@ -1747,6 +1745,10 @@ export default function PostHeroSection() {
       }
     };
     introRafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (introRafRef.current) cancelAnimationFrame(introRafRef.current);
+    };
   }, [heroExited, updateFromProgress]);
 
   const inTL        = sp >= PH.tlStart;
@@ -1757,6 +1759,9 @@ export default function PostHeroSection() {
   const inRingPhase = !SKIP_RING && sp >= PH.ringStart && sp < PH.enterEnd;
   const globalProgress = HERO_PROGRESS_PORTION + sp * (1 - HERO_PROGRESS_PORTION);
 
+  /* Mobile: reduce DPR and particle complexity */
+  const canvasDpr: [number, number] = isMobile ? [1, 1.5] : [1, 2];
+
   return (
     <section ref={outerRef} id="about"
       style={{ position: 'relative', height: `${TOTAL_VH}vh`, background: '#020409', cursor: 'none' }}>
@@ -1765,9 +1770,9 @@ export default function PostHeroSection() {
         <div style={{ position: 'absolute', inset: 0 }}>
           <Canvas
             camera={{ position: [0, 0, 4], fov: 60, near: 0.1, far: 600 }}
-            dpr={[1, 2]}
+            dpr={canvasDpr}
             gl={{
-              antialias: true,
+              antialias: !isMobile,
               powerPreference: 'high-performance',
               toneMapping: THREE.ACESFilmicToneMapping,
               toneMappingExposure: 0.86,
@@ -1792,7 +1797,7 @@ export default function PostHeroSection() {
 
         {phaseLabel && (
           <div key={phaseLabel} style={{
-            position: 'absolute', top: 'clamp(18px,3vh,34px)', left: '50%',
+            position: 'absolute', top: 'clamp(14px,2.5vh,34px)', left: '50%',
             transform: 'translateX(-50%)', zIndex: 10, pointerEvents: 'none', whiteSpace: 'nowrap',
             fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.38em',
             textTransform: 'uppercase', color: 'rgba(125,211,252,.22)',
@@ -1800,35 +1805,22 @@ export default function PostHeroSection() {
           }}>{phaseLabel}</div>
         )}
 
-        {inRingPhase && sp < PH.enterStart && (
-          <div style={{
-            position: 'absolute', bottom: 'clamp(22px,4vh,44px)', right: 'clamp(20px,4vw,48px)',
-            zIndex: 10, pointerEvents: 'none',
-            animation: 'fadeUp .6s cubic-bezier(.16,1,.3,1) both',
-          }}>
-            <span style={{
-              fontFamily: "'JetBrains Mono',monospace", fontSize: '8px', letterSpacing: '.28em',
-              textTransform: 'uppercase', color: 'rgba(125,211,252,.18)',
-            }}>— {N_WALL} rocks —</span>
-          </div>
-        )}
-
         {inTL && (
           <div style={{
-            position: 'absolute', top: 'clamp(18px,3.5vh,36px)', left: 0, right: 0,
+            position: 'absolute', top: 'clamp(14px,3vh,36px)', left: 0, right: 0,
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '0 clamp(20px,5vw,60px)', zIndex: 10,
+            padding: '0 clamp(16px,4vw,60px)', zIndex: 10,
             animation: 'fadeUp .6s cubic-bezier(.16,1,.3,1) both',
           }}>
-            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '.30em', textTransform: 'uppercase', color: 'rgba(125,211,252,.32)' }}>— Timeline</span>
-            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: '10px', letterSpacing: '.22em', textTransform: 'uppercase', color: 'rgba(125,211,252,.18)' }}>{isOverview ? 'scroll to explore' : `${active + 1} / ${N}`}</span>
+            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(8px,1.5vw,10px)', letterSpacing: '.30em', textTransform: 'uppercase', color: 'rgba(125,211,252,.32)' }}>— Timeline</span>
+            <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 'clamp(8px,1.5vw,10px)', letterSpacing: '.22em', textTransform: 'uppercase', color: 'rgba(125,211,252,.18)' }}>{isOverview ? 'scroll to explore' : `${active + 1} / ${N}`}</span>
           </div>
         )}
 
         {inTL && isOverview && (
           <div style={{
             position: 'absolute',
-            top:       'clamp(54px,9vh,78px)',
+            top:       'clamp(44px,8vh,78px)',
             left:      '50%',
             transform: 'translateX(-50%)',
             zIndex:    10,
@@ -1882,6 +1874,9 @@ export default function PostHeroSection() {
         }
         @keyframes linePulse {
           0%,100%{opacity:.38;} 50%{opacity:1;}
+        }
+        @media (max-width: 767px) {
+          canvas { image-rendering: auto; }
         }
       `}</style>
     </section>

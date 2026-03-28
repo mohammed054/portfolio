@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSceneStore } from '@/store/scene';
 
+/* Available button REMOVED per spec */
 const NAV_ITEMS = [
   { id: 'about',   label: 'About' },
   { id: 'work',    label: 'Work' },
@@ -13,14 +14,10 @@ export default function Navigation() {
   const heroExited = useSceneStore(s => s.heroExited);
   const [scrolled, setScrolled] = useState(false);
   const [active,   setActive]   = useState('');
-  const rafRef = useRef<number>(0);
 
-  /* Show on scroll / hero exit */
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 40);
-
-      /* Active section detection */
       for (const item of NAV_ITEMS) {
         const el = document.getElementById(item.id);
         if (!el) continue;
@@ -40,15 +37,12 @@ export default function Navigation() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const isVisible = heroExited;
-
   return (
     <nav
-      className={`nav-root${isVisible ? ' nav-visible' : ''}${scrolled ? ' nav-scrolled' : ''}`}
+      className={`nav-root${heroExited ? ' nav-visible' : ''}${scrolled ? ' nav-scrolled' : ''}`}
       role="navigation"
       aria-label="Primary navigation"
     >
-      {/* Logo */}
       <button
         className="nav-logo"
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -57,7 +51,6 @@ export default function Navigation() {
         MH
       </button>
 
-      {/* Nav links */}
       <ul className="nav-links" role="list">
         {NAV_ITEMS.map(item => (
           <li key={item.id}>
@@ -71,16 +64,6 @@ export default function Navigation() {
           </li>
         ))}
       </ul>
-
-      {/* Availability CTA */}
-      <a
-        href="mailto:hello@mohammedhassoun.dev"
-        className="nav-cta"
-        aria-label="Contact Mohammed Hassoun"
-      >
-        <span className="nav-avail-dot" aria-hidden="true" />
-        Available
-      </a>
     </nav>
   );
 }

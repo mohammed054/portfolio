@@ -1,9 +1,8 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import PostHeroSection from '@/components/PostHeroSection/PostHeroSection';
 import Navigation from '@/components/ui/Navigation';
-import Loader from '@/components/ui/Loader';
 import { useSceneStore } from '@/store/scene';
 
 const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
@@ -71,15 +70,12 @@ export default function Home() {
 
   return (
     <main>
-      {/* Premium loader — shown on first load */}
-      {/* <Loader /> */}
-
-      {/* Navigation — floats above everything once hero exits */}
       <Navigation />
 
       {/*
         HeroScene: position fixed, always mounted.
         Handles its own opacity fade via diveOpacity.
+        z-index drops to 0 after exit so PostHero shows above.
       */}
       <div
         style={{
@@ -95,6 +91,9 @@ export default function Home() {
       {/*
         PostHero: always rendered behind hero.
         When heroExited, rises to primary layer.
+        The intro animation in PostHeroSection handles the
+        "zooming in from far away into the asteroid field"
+        cinematic effect — no fade needed.
       */}
       <div
         id="post-hero"
