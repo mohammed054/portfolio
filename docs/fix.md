@@ -1,2 +1,0 @@
-timeline FIRST rock (first timeline) starts BEHIND the camera so the camera has to move back and right. 
-the camera is NOT facing the next rock when scrolling to the next one. it does NOT face until it reaches  it and it makes a strong rotation towards it. on any timeline, it says ESC to exit but pressing it does nothing. if it also has X it would be great.
