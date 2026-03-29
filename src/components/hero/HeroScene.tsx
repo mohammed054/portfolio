@@ -7,7 +7,7 @@
  * up close, no name shown) — user scrolls again to re-trigger reveal.
  * Progress bar at bottom for continuity with PostHeroSection.
  */
-import { useRef, useState, useEffect, useMemo } from 'react';
+import { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
@@ -92,14 +92,21 @@ export default function HeroScene() {
     // ── Exit to post-hero ────────────────────────────────────────
     if (ph === 'REVEALED' && p >= DIVE_END - 0.02) {
       set('EXITED');
-      document.documentElement.style.overflow = 'auto';
-      document.documentElement.style.height   = 'auto';
-      document.body.style.overflow  = 'auto';
-      document.body.style.overflowX = 'hidden';
+      // Keep scroll locked while we hand off to PostHeroSection
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+      // Keep overflow locked until PostHero has locked its own scroll
       setTimeout(() => {
         setHeroExited(true);
         window.scrollTo({ top: 0, behavior: 'instant' });
         setHeroHidden(true);
+        // Unlock a frame AFTER PostHero has locked its own scroll
+        requestAnimationFrame(() => {
+          document.documentElement.style.overflow = 'auto';
+          document.documentElement.style.height   = 'auto';
+          document.body.style.overflow  = 'auto';
+          document.body.style.overflowX = 'hidden';
+        });
       }, 300);
       return;
     }
@@ -182,7 +189,7 @@ export default function HeroScene() {
   const ap     = THREE.MathUtils.clamp(progress, 0, 1);
   const outMix = 1 - THREE.MathUtils.smootherstep(ap, 0.65, 0.85);
   const starOp = outMix * (1 - THREE.MathUtils.smootherstep(ap, 0.70, 0.90) * 0.5) + 0.05;
-  const bloom  = 0.20 + ap * 0.25 * outMix + diveProgress * 0.42;
+  const bloom  = 0.38 + ap * 0.30 * outMix + diveProgress * 0.42;
 
   // Hero fades out as user dives — starts early so PostHero rocks show through
   // This creates the illusion of diving INTO the black hole and emerging in the asteroid field
@@ -198,6 +205,21 @@ export default function HeroScene() {
   const heroProgress = THREE.MathUtils.clamp(progress / DIVE_END, 0, 1);
   const progressPct  = heroProgress * HERO_PROGRESS_PORTION * 100;
 
+  // Responsive camera: wider FOV + zoomed out on narrow viewports
+  const [camCfg, setCamCfg] = useState({ fov: 57, z: 30, y: 7.5 });
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w < 480)       setCamCfg({ fov: 90, z: 52, y: 10 });
+      else if (w < 768)  setCamCfg({ fov: 75, z: 42, y: 9  });
+      else if (w < 1024) setCamCfg({ fov: 65, z: 35, y: 8  });
+      else               setCamCfg({ fov: 57, z: 30, y: 7.5 });
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
   return (
     <div className="hero-wrap" style={{
       position: 'fixed', inset: 0, zIndex: 10, background: '#000',
@@ -206,13 +228,13 @@ export default function HeroScene() {
       pointerEvents: (heroHidden || phase === 'EXITED') ? 'none' : 'auto',
     }}>
       <Canvas
-        camera={{ position: [0, 7.5, 30], fov: 57, near: 0.05, far: 650 }}
+        camera={{ position: [0, camCfg.y, camCfg.z], fov: camCfg.fov, near: 0.05, far: 650 }}
         dpr={[1, 2]}
         gl={{
           antialias:         true,
           powerPreference:   'high-performance',
           toneMapping:       THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 0.82,
+          toneMappingExposure: 1.05,
         }}
       >
         <SetBlack />
@@ -223,7 +245,7 @@ export default function HeroScene() {
         <LightRays strengthRef={lightRayRef} />
         <EffectComposer>
           <GravitationalLensing strengthRef={lensingRef} />
-          <Bloom intensity={bloom} luminanceThreshold={0.68} luminanceSmoothing={0.18} />
+          <Bloom intensity={bloom} luminanceThreshold={0.52} luminanceSmoothing={0.22} />
           <Vignette eskil={false} offset={0.22} darkness={0.85} />
         </EffectComposer>
       </Canvas>

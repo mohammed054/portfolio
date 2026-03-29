@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSceneStore } from '@/store/scene';
 
-/* Available button REMOVED per spec */
 const NAV_ITEMS = [
   { id: 'about',   label: 'About' },
   { id: 'work',    label: 'Work' },
@@ -18,6 +17,12 @@ export default function Navigation() {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 40);
+      // When in PostHero, about is always the active section
+      // PostHeroSection owns the full scroll range
+      if (heroExited) {
+        setActive('about');
+        return;
+      }
       for (const item of NAV_ITEMS) {
         const el = document.getElementById(item.id);
         if (!el) continue;
@@ -31,7 +36,12 @@ export default function Navigation() {
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [heroExited]);
+
+  // Immediately mark about active when hero exits (before first scroll event)
+  useEffect(() => {
+    if (heroExited) setActive('about');
+  }, [heroExited]);
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });

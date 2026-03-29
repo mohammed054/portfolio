@@ -177,7 +177,7 @@ export default function BlackHole() {
   }), []);
 
   const diskDimMat = useMemo(() => new THREE.ShaderMaterial({
-    uniforms: { uTime:{value:0}, uDim:{value:0.52} },
+    uniforms: { uTime:{value:0}, uDim:{value:0.80} },
     vertexShader: VERT, fragmentShader: DISK_FRAG,
     transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
   }), []);

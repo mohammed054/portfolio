@@ -42,14 +42,13 @@ export default function Home() {
     document.documentElement.style.overflow = 'hidden';
   }, []);
 
-  /* When hero exits: unlock scroll */
+  /* When hero exits: PostHeroSection owns scroll during its intro.
+     We only need to ensure the page is ready — PostHeroSection
+     unlocks overflow itself after the cinematic intro finishes. */
   useEffect(() => {
     if (heroExited) {
       window.scrollTo({ top: 0, behavior: 'instant' });
-      document.body.style.overflow = '';
-      requestAnimationFrame(() => {
-        document.documentElement.style.overflow = 'auto';
-      });
+      // Do NOT unlock here — PostHeroSection locks & unlocks its own scroll
     }
   }, [heroExited]);
 

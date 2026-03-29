@@ -50,6 +50,12 @@
   padding: 0;
 }
 
+canvas {
+  display: block;
+  border: none;
+  outline: none;
+}
+
 html {
   scroll-behavior: auto;
   overflow: hidden;
@@ -252,7 +258,7 @@ a { cursor: none; }
 .mh-name-text {
   position: relative;
   display: flex; flex-direction: column; align-items: flex-start;
-  padding-left: clamp(28px, 6vw, 88px);
+  padding-left: clamp(16px, 6vw, 88px);
   line-height: .90;
 }
 .mh-name-row {
@@ -261,7 +267,7 @@ a { cursor: none; }
 .mh-name-initial {
   font-family: var(--font-syne, 'Syne'), sans-serif;
   font-weight: 800;
-  font-size: clamp(76px, 10vw, 134px);
+  font-size: clamp(32px, 8vw, 134px);
   color: #ffffff; line-height: .90;
   text-shadow:
     0 3px 24px rgba(0, 0, 0, .95),
@@ -271,7 +277,7 @@ a { cursor: none; }
 .mh-name-rest {
   font-family: var(--font-syne, 'Syne'), sans-serif;
   font-weight: 800;
-  font-size: clamp(76px, 10vw, 134px);
+  font-size: clamp(32px, 8vw, 134px);
   color: #ffffff; line-height: .90;
   white-space: nowrap; max-width: 0; opacity: 0; overflow: hidden;
   text-shadow: 0 3px 24px rgba(0, 0, 0, .95), 0 0 44px rgba(0, 185, 255, .14);
@@ -393,7 +399,7 @@ a { cursor: none; }
 }
 .nav-root.nav-scrolled {
   background: rgba(0, 3, 14, .88);
-  border-bottom: 1px solid rgba(0, 208, 255, .08);
+  border-bottom: 1px solid transparent;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
