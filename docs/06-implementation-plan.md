@@ -1,7 +1,7 @@
 # 06 — IMPLEMENTATION PLAN
 
 **Role:** Step-by-step execution roadmap
-**Goal:** Build the experience cleanly without breaking core systems
+**Goal:** Build the system cleanly without breaking core architecture
 
 ---
 
@@ -21,51 +21,54 @@ At every step:
 
 * validate motion
 * validate camera
-* validate feel
+* validate system feel
 
 Before adding complexity.
 
 ---
 
-# 2. BUILD PHASES
+# 2. BUILD ORDER OVERVIEW
+
+```text
+Motion → Camera → Substrate → State Layers → Precision → Performance
+```
+
+NOT:
+
+```text
+UI → Features → Animation → Fix later ❌
+```
 
 ---
 
-## PHASE 0 — PROJECT SETUP
+# 3. PHASE 0 — PROJECT SETUP
 
-### Goal:
+### Goal
 
 Clean foundation
 
----
+### Tasks
 
-### Tasks:
-
-* Initialize project (Vite / Next.js)
+* Initialize project (Vite or Next.js)
 * Install:
-
   * React Three Fiber
   * drei
-  * GSAP
+  * GSAP + ScrollTrigger
   * Lenis
 
----
+### Folder Structure
 
-### Setup:
-
-```text id="j3k8qn"
+```text
 /src
   /core
   /experience
-  /scenes
+  /states
   /systems
   /config
   /utils
 ```
 
----
-
-### Output:
+### Output
 
 ✔ Empty canvas renders
 ✔ No errors
@@ -73,441 +76,355 @@ Clean foundation
 
 ---
 
-# 3. PHASE 1 — SCROLL → PROGRESS
+# 4. PHASE 1 — SCROLL → PROGRESS
 
----
+### Goal
 
-### Goal:
+Create the timeline backbone
 
-Create the **timeline backbone**
-
----
-
-### Tasks:
+### Tasks
 
 * Implement Lenis
 * Normalize scroll → progress (0 → 1)
 * Store in global state
 
----
+### Debug
 
-### Debug:
+* display progress value on screen
 
-* display progress on screen
-
----
-
-### Output:
+### Output
 
 ✔ Smooth scroll
-✔ Stable progress value
+✔ Stable progress value (0 → 1)
+
+### HARD RULE
+
+Do NOT build state layers yet.
 
 ---
 
-## HARD RULE
+# 5. PHASE 2 — CAMERA SYSTEM (ISOLATED)
 
-Do NOT build scenes yet.
-
----
-
-# 4. PHASE 2 — CAMERA SYSTEM (ISOLATED)
-
----
-
-### Goal:
+### Goal
 
 Camera works perfectly before anything else
 
----
-
-### Tasks:
+### Tasks
 
 * Create CameraRig
 * Hardcode test path:
 
-```js id="b7v4mt"
+```js
 z: 100 → 0
 ```
 
 * Apply:
-
   * lerp damping
   * mouse influence
 
----
+### Test
 
-### Test:
+* scroll → camera advances smoothly
+* mouse → subtle micro-disturbance
 
-* scroll → camera moves smoothly
-* mouse → subtle influence
+### Output
 
----
-
-### Output:
-
-✔ Cinematic movement
+✔ Controlled movement
 ✔ No jitter
 ✔ No snapping
 
----
-
-## HARD RULE
+### HARD RULE
 
 No objects yet. Only camera.
 
 ---
 
-# 5. PHASE 3 — ENTRY SCENE ONLY
+# 6. PHASE 3 — IDLE + ACTIVATING STATES
+
+### Goal
+
+Validate the substrate and first structural initialization
+
+### Tasks
+
+* Build substrate grid shader
+* Add IdleState — grid only, no panels
+* Add ActivatingState — panel emergence sequence
+* Panels emerge edge-first, aligned to grid
+* Sequential activation — not simultaneous
+
+### Focus
+
+* grid opacity feels like texture, not decoration
+* panels feel hard-edged, not soft
+* snap behavior on interaction
+
+### Output
+
+✔ Substrate feels like a computational plane
+✔ Panels initialize in correct sequence
+✔ No organic motion
+
+### HARD RULE
+
+Do NOT add next state layer yet.
 
 ---
 
-### Goal:
+# 7. PHASE 4 — IDENTIFYING STATE
 
-Validate first real scene
+### Goal
 
----
+Typography system and pass-through effect
 
-### Tasks:
+### Tasks
 
-* Add minimal particles / objects
-* React to progress (0 → 0.15)
+* Add 3D text geometry — massive scale
+* Position in depth on Z-axis
+* Add amber trace lines integrated with typography
+* Test camera pass-through behavior
 
----
+### Validate
 
-### Focus:
+* text feels like infrastructure, not a headline
+* amber appears ONLY in this state
+* scan-line event fires on pass-through
 
-* spacing
-* scale
-* motion feel
+### Output
 
----
-
-### Output:
-
-✔ Scene feels alive
-✔ Transitions smooth
-
----
-
-## HARD RULE
-
-Do NOT add next scene yet.
+✔ Strong identity impact
+✔ Camera passes through text geometry cleanly
+✔ Clean transition from Activating
 
 ---
 
-# 6. PHASE 4 — AUTHORITY SCENE
+# 8. PHASE 5 — CAMERA REFINEMENT
 
----
+### Goal
 
-### Goal:
+Fix ALL camera issues before continuing
 
-Introduce typography system
+### Tasks
 
----
-
-### Tasks:
-
-* Add 3D text
-* scale massively
-* position in depth
-
----
-
-### Camera:
-
-* test pass-through effect
-
----
-
-### Output:
-
-✔ Strong impact
-✔ Clean transition from entry
-
----
-
-# 7. PHASE 5 — CAMERA REFINEMENT
-
----
-
-### Goal:
-
-Fix ALL camera issues early
-
----
-
-### Tasks:
-
-* refine:
-
-  * damping
-  * speed
+* Refine:
+  * damping values
+  * speed per state
   * FOV shifts
-* remove:
+* Remove:
+  * any stiffness
+  * any jitter
 
-  * stiffness
-  * jitter
+### Output
 
----
+✔ Precise feel — mechanical, not robotic
+✔ Consistent motion across all states so far
 
-### Output:
+### CRITICAL
 
-✔ Premium feel
-✔ Consistent motion
-
----
-
-## CRITICAL
-
-Do this BEFORE more scenes.
+Do this BEFORE building more state layers.
 
 ---
 
-# 8. PHASE 6 — CAPABILITY SCENE
+# 9. PHASE 6 — ROUTING STATE
 
----
+### Goal
 
-### Goal:
+System topology visualization
 
-System visualization
+### Tasks
 
----
+* Build panel-based node infrastructure
+* Add blue trace connections — directional
+* Animate packet flow along traces
+* Implement hover → connection highlight
 
-### Tasks:
+### Validate
 
-* build node graph
-* add connections
-* animate flows
+* nodes feel architectural, not decorative
+* traces align to grid
+* packets feel routed, not animated
 
----
+### Output
 
-### Interaction:
-
-* hover highlights
-
----
-
-### Output:
-
-✔ Clear system representation
+✔ Clear system topology
 ✔ Interactive but controlled
+✔ Blue appears only on active connections
 
 ---
 
-# 9. PHASE 7 — PROJECT SYSTEM
+# 10. PHASE 7 — EXECUTING STATE
+
+### Goal
+
+Build reusable execution environment logic
+
+### Tasks
+
+* Define execution system structure
+* Build first execution system (Pipeline type)
+* Validate node-expands-to-environment transition
+* Validate camera inspection behavior
+* Replicate for 2 additional execution system types
+
+### Execution System Types
+
+* Pipeline — vertical stages, packet flow
+* Component — branching structure
+* Data — table grid, query travel
+
+### Validate
+
+* node expansion fills frame cleanly
+* environment resolves without cuts
+* panels deconstruct on exit — edges first
+
+### Output
+
+✔ Each execution system reads as a running system
+✔ No UI elements visible
+✔ Transitions are spatially continuous
 
 ---
 
-### Goal:
+# 11. PHASE 8 — PROCESSING STATE
 
-Build reusable project environment logic
+### Goal
 
----
+Signature core moment
 
-### Tasks:
+### Tasks
 
-* define project structure
-* create 1 project first
+* Build Request → Process → Response pipeline
+* Stages: PARSE / VALIDATE / TRANSFORM / RESPOND
+* Synchronized, deterministic packet movement
+* Amber lighting dominant
 
----
+### Focus
 
-### Validate:
+* motion synchronization — everything moves together
+* no variance in this state
+* camera holds stable frame
 
-* camera zoom-in works
-* transition smooth
+### Output
 
----
-
-### Then:
-
-* replicate for 2–3 projects
-
----
-
-### Output:
-
-✔ Projects feel like worlds
-✔ No card UI
+✔ Feels operational, not designed
+✔ Deepest layer of system understanding visible
 
 ---
 
-# 10. PHASE 8 — CLIMAX SCENE
+# 12. PHASE 9 — RESOLVED STATE
+
+### Goal
+
+System returns to stable state and exposes endpoints
+
+### Tasks
+
+* Add endpoint panels: `/contact`, `/github`, `/linkedin`
+* Panels anchored to grid
+* Snap-back physics on mouse release
+* Click → action (link, email)
+
+### Validate
+
+* panels feel anchored, not floating
+* snap-back feels mechanical
+* click feedback triggers system sound
+
+### Output
+
+✔ System feels completed
+✔ Endpoints are accessible
+✔ No decorative motion — controlled constrained drift only
 
 ---
 
-### Goal:
+# 13. PHASE 10 — PRECISION PASS
 
-Signature moment
+### Goal
 
----
+Every variable tuned to system intent
 
-### Tasks:
+### Tasks
 
-* build abstract system (data / flow / simulation)
-* refine motion synchronization
+* Adjust:
+  * spacing between system layers
+  * timing of state transitions
+  * motion curves (smooth, not linear)
+* Add:
+  * sound system (hum, ticks, clicks)
+  * postprocessing (subtle bloom on edges, vignette)
 
----
+### Output
 
-### Focus:
-
-* polish
-* lighting
-* timing
-
----
-
-### Output:
-
-✔ High-end feel
-✔ Technical depth visible
+✔ Cohesive system feel
+✔ No rough transitions
+✔ Sound aligned to state changes
 
 ---
 
-# 11. PHASE 9 — OUTRO SCENE
+# 14. PHASE 11 — PERFORMANCE PASS
 
----
-
-### Goal:
-
-Release + interaction
-
----
-
-### Tasks:
-
-* add draggable elements
-* add contact info
-* loosen physics
-
----
-
-### Output:
-
-✔ Playful ending
-✔ User freedom increases
-
----
-
-# 12. PHASE 10 — POLISH PASS
-
----
-
-### Goal:
-
-Make it feel “expensive”
-
----
-
-### Tasks:
-
-* adjust:
-
-  * spacing
-  * timing
-  * motion curves
-* add:
-
-  * subtle audio
-  * postprocessing
-
----
-
-### Output:
-
-✔ Cohesive experience
-✔ No rough edges
-
----
-
-# 13. PHASE 11 — PERFORMANCE PASS
-
----
-
-### Goal:
+### Goal
 
 Stable 60 FPS
 
----
+### Tasks
 
-### Tasks:
+* Reduce draw calls
+* Optimize geometry
+* Use instancing for panels and packets
+* Frustum culling on inactive state layers
 
-* reduce draw calls
-* optimize geometry
-* compress textures
+### Output
 
----
-
-### Output:
-
-✔ Smooth on mid devices
-✔ No frame drops
+✔ Smooth on mid-range devices
+✔ No frame drops on state transitions
 
 ---
 
-# 14. DEVELOPMENT RULES
+# 15. DEVELOPMENT RULES
+
+### Rule 1
+
+One state layer at a time.
+
+### Rule 2
+
+Never stack incomplete systems.
+
+### Rule 3
+
+If something feels wrong:
+→ fix it immediately before continuing
+
+### Rule 4
+
+Motion feel must be correct before visual detail is added.
 
 ---
 
-## Rule 1
+# 16. COMMON FAILURE CONDITIONS
 
-One system at a time.
+### ❌ Build all state layers first
 
----
+→ chaos with no validated foundation
 
-## Rule 2
+### ❌ Ignore camera before building layers
 
-Never stack unfinished features.
+→ impossible to fix traversal later
 
----
+### ❌ Use particles or organic objects
 
-## Rule 3
+→ breaks system visual language entirely
 
-If something feels off:
-→ fix immediately
+### ❌ Add decorative motion
 
----
+→ violates the deterministic model
 
-## Rule 4
+### ❌ Overuse postprocessing
 
-Do NOT chase visuals before motion feels right
-
----
-
-# 15. COMMON FAILURE PATH
-
----
-
-### ❌ Build all scenes first
-
-→ chaos
-
-### ❌ Ignore camera early
-
-→ impossible to fix later
-
-### ❌ Add UI too soon
-
-→ breaks immersion
-
-### ❌ Overuse effects
-
-→ feels cheap
-
----
-
-# 16. FINAL EXECUTION MODEL
-
-You are building in this order:
-
-```text id="z8p4cn"
-Motion → Camera → Space → Content → Detail → Polish
-```
-
-NOT:
-
-```text id="k1r7vx"
-UI → Features → Animation → Fix later ❌
-```
+→ system looks like a screensaver, not an operational environment
 
 ---
 
@@ -515,10 +432,10 @@ UI → Features → Animation → Fix later ❌
 
 This plan ensures:
 
-* control is maintained
-* complexity grows gradually
-* quality stays high
+* control is maintained at every step
+* complexity grows from a validated foundation
+* system integrity is never compromised
 
 If followed correctly:
 
-> the experience will feel intentional, cinematic, and premium — not like a collection of effects.
+> the experience will feel operational, precise, and engineered — not like a collection of effects.

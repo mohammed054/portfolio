@@ -1,6 +1,6 @@
 # 01 — CAMERA SYSTEM
 
-**Role:** Primary narrative driver
+**Role:** Primary traversal mechanism
 **Priority:** Critical (all systems depend on this)
 
 ---
@@ -37,7 +37,7 @@ This drives:
 * camera position
 * camera target
 * FOV
-* scene activation
+* state activation
 
 ---
 
@@ -79,7 +79,7 @@ camera.position = (x, y, z)
 Defines:
 
 * spatial location
-* depth progression
+* depth progression through system layers
 
 ---
 
@@ -91,8 +91,8 @@ camera.lookAt = (x, y, z)
 
 Defines:
 
-* what user focuses on
-* narrative emphasis
+* what the system exposes at this moment
+* structural emphasis
 
 ---
 
@@ -118,8 +118,8 @@ current = lerp(current, target, alpha)
 Controls:
 
 * smoothness
-* weight
-* realism
+* mechanical weight
+* controlled feel
 
 ---
 
@@ -133,173 +133,199 @@ The entire experience is one continuous path.
 
 ```text
 Z-axis dominant movement
-+ subtle X/Y shifts
++ controlled X/Y shifts
 ```
 
 Camera primarily:
 
-* moves forward (Z)
-* adjusts laterally (X/Y) for composition
+* moves forward (Z) — traversing system depth
+* adjusts laterally (X/Y) — for structural framing
 
 ---
 
 ## Path Segmentation (Logical, not visual)
 
-| Phase      | Progress Range |
-| ---------- | -------------- |
-| Entry      | 0.00 – 0.15    |
-| Authority  | 0.15 – 0.30    |
-| Capability | 0.30 – 0.50    |
-| Proof      | 0.50 – 0.75    |
-| Climax     | 0.75 – 0.90    |
-| Outro      | 0.90 – 1.00    |
+| State       | Progress Range |
+| ----------- | -------------- |
+| Idle        | 0.00 – 0.05    |
+| Activating  | 0.05 – 0.15    |
+| Identifying | 0.15 – 0.30    |
+| Routing     | 0.30 – 0.50    |
+| Executing   | 0.50 – 0.75    |
+| Processing  | 0.75 – 0.90    |
+| Resolved    | 0.90 – 1.00    |
 
 ---
 
-# 5. CAMERA BEHAVIOR PER PHASE
+# 5. CAMERA BEHAVIOR PER STATE
 
 ---
 
-## 1. ENTRY (0.00 → 0.15)
+## 1. IDLE (0.00 → 0.05)
 
 ### Movement
 
-* slow forward drift
+* very slow forward advance
+* no rotation
+* no system response yet
+
+### Purpose
+
+* establish substrate presence
+* signal that something exists
+
+### Parameters
+
+* minimum speed
+* maximum damping
+* no mouse influence
+
+---
+
+## 2. ACTIVATING (0.05 → 0.15)
+
+### Movement
+
+* slow controlled advance
 * minimal rotation
 
 ### Purpose
 
-* establish space
-* build curiosity
+* system becomes aware of traversal
+* structures begin to initialize
 
 ### Parameters
 
 * low speed
 * high damping
-* small mouse influence
+* mouse influence begins (minimal)
 
 ---
 
-## 2. AUTHORITY (0.15 → 0.30)
+## 3. IDENTIFYING (0.15 → 0.30)
 
 ### Movement
 
-* aggressive push forward
-* slight downward angle
+* aggressive push forward into typography structure
+* camera passes through the text geometry
 
 ### Purpose
 
-* create impact
-* introduce identity
+* identity declaration
+* scale impact
 
 ### Parameters
 
 * increased speed
 * reduced damping
+* mouse influence suppressed
 * minimal lateral movement
 
 ---
 
-## 3. CAPABILITY (0.30 → 0.50)
+## 4. ROUTING (0.30 → 0.50)
 
 ### Movement
 
-* orbital motion around center
-* controlled rotation
+* controlled inspection movement between nodes
+* subtle lateral and forward motion
 
 ### Purpose
 
-* demonstrate system thinking
+* expose system topology
+* demonstrate routing logic
 
 ### Parameters
 
 * moderate speed
 * controlled X/Y movement
-* increased mouse interaction
+* medium mouse influence
 
 ---
 
-## 4. PROOF (0.50 → 0.75)
+## 5. EXECUTING (0.50 → 0.75)
 
 ### Movement
 
-* guided zooms into targets
-* stop → inspect → move
+* guided traversal through execution environments
+* stop → inspect → advance per execution system
 
 ### Purpose
 
-* highlight projects
+* traverse work being performed
 
 ### Parameters
 
 * segmented motion
-* temporary slowdowns
-* focus locking
+* temporary slowdowns on entry and exit
+* focus locking per execution system
 
 ---
 
-## 5. CLIMAX (0.75 → 0.90)
+## 6. PROCESSING (0.75 → 0.90)
 
 ### Movement
 
-* slow cinematic push
-* minimal interaction
+* stable framing
+* minimal camera movement
 
 ### Purpose
 
-* maximize immersion
-* deliver peak moment
+* reveal deepest system layer
+* peak precision moment
 
 ### Parameters
 
-* very high damping
-* reduced user influence
-* smooth FOV shifts
+* maximum damping
+* mouse influence near zero
+* FOV expands gradually
 
 ---
 
-## 6. OUTRO (0.90 → 1.00)
+## 7. RESOLVED (0.90 → 1.00)
 
 ### Movement
 
 * slight pullback
-* loosened motion
+* relaxed constraints
 
 ### Purpose
 
-* release tension
-* allow exploration
+* system returns control
+* endpoints exposed
 
 ### Parameters
 
 * increased mouse influence
-* relaxed constraints
+* relaxed damping
+* widest FOV
 
 ---
 
-# 6. FOV SYSTEM (CRITICAL FOR SCALE)
+# 6. FOV SYSTEM
 
-FOV is used to manipulate perception.
+FOV is used to represent system depth and scale.
 
 ---
 
 ## Behavior
 
-* Narrow FOV → compression, seriousness
-* Wide FOV → expansion, openness
+* Narrow FOV → compression, precision, focus
+* Wide FOV → expansion, system returning to stable state
 
 ---
 
 ## Usage
 
-| Phase      | FOV Behavior      |
-| ---------- | ----------------- |
-| Entry      | neutral           |
-| Authority  | slightly narrow   |
-| Capability | dynamic           |
-| Proof      | stable            |
-| Climax     | gradual expansion |
-| Outro      | widest            |
+| State       | FOV Behavior              |
+| ----------- | ------------------------- |
+| Idle        | neutral (45)              |
+| Activating  | neutral (45)              |
+| Identifying | slightly narrow (38–42)   |
+| Routing     | dynamic (40–50)           |
+| Executing   | stable (45)               |
+| Processing  | gradual expansion (50–55) |
+| Resolved    | widest (55)               |
 
 ---
 
@@ -307,7 +333,7 @@ FOV is used to manipulate perception.
 
 Mouse does NOT move camera freely.
 
-It offsets:
+It adds micro-disturbance:
 
 ---
 
@@ -333,6 +359,7 @@ camera.position.y += mouse.y * smallFactor
 
 * clamped values
 * always returns to baseline
+* influence varies by state (see INTERACTION_STATE in variables)
 
 ---
 
@@ -352,15 +379,17 @@ No cuts. No jumps.
 
 ### 1. Depth Transition
 
-* move forward into next scene
+* camera moves forward into next system layer
 
-### 2. Occlusion
+### 2. Structure Pass-Through
 
-* object passes in front → reveals next
+* camera moves through a panel or volume
+* reveals the layer behind it
 
 ### 3. Scale Transition
 
-* zoom into object → becomes environment
+* camera moves toward a structure
+* structure fills frame and resolves as new environment
 
 ---
 
@@ -368,7 +397,7 @@ No cuts. No jumps.
 
 At any time:
 
-> Only ONE focal target exists
+> Only ONE focal structure exists
 
 ---
 
@@ -376,9 +405,9 @@ At any time:
 
 * camera.lookAt always points to:
 
-  * object of importance
-  * text anchor
-  * interaction point
+  * active structure
+  * typography anchor
+  * interaction target
 
 ---
 
@@ -390,13 +419,13 @@ No competing focal points.
 
 # 10. FAILURE CONDITIONS
 
-If any of these happen, system is broken:
+If any of these occur, the system is broken:
 
 ---
 
 ### ❌ Camera feels user-controlled
 
-→ loses direction
+→ loses traversal direction
 
 ### ❌ Movement is linear
 
@@ -404,15 +433,15 @@ If any of these happen, system is broken:
 
 ### ❌ Multiple focal points
 
-→ confusion
+→ structural confusion
 
 ### ❌ Sudden jumps
 
-→ breaks immersion
+→ breaks spatial continuity
 
 ### ❌ No damping
 
-→ feels robotic
+→ feels mechanical in the wrong way — robotic, not precise
 
 ---
 
@@ -420,14 +449,14 @@ If any of these happen, system is broken:
 
 The camera system is:
 
-> A constrained, timeline-driven, physically-smoothed navigation system where scroll defines progression, mouse adds subtle influence, and all movement is continuous, purposeful, and narrative-driven.
+> A constrained, progress-driven, damped traversal mechanism where scroll defines advancement through system states, mouse adds micro-disturbance, and all movement is continuous, purposeful, and state-aligned.
 
 It is NOT:
 
 * free navigation
-* reactive animation system
-* UI transition layer
+* a reactive animation system
+* a UI transition layer
 
 It is:
 
-> the engine of the experience.
+> the traversal engine of the system.

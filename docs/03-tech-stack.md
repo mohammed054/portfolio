@@ -1,6 +1,6 @@
 # 03 — TECH STACK
 
-**Role:** Implementation layer for the directed 3D experience
+**Role:** Implementation layer for the computational system experience
 **Constraint:** Must NOT introduce UI-first thinking
 
 ---
@@ -9,7 +9,7 @@
 
 The stack exists to serve:
 
-> timeline → camera → scene
+> progress → state → camera → system layers
 
 NOT:
 
@@ -25,76 +25,74 @@ NOT:
 
 * Three.js (via React Three Fiber)
 
-## Animation Layer
+## Timeline Layer
 
 * GSAP + ScrollTrigger
 
-## Scroll System
+## Scroll Layer
 
-* Lenis (smooth scrolling)
-
-## Interaction Layer
-
-* Native pointer events (R3F)
+* Lenis (smooth scroll normalization)
 
 ## Shader Layer
 
 * GLSL (via drei / custom materials)
 
+## Interaction Layer
+
+* Native pointer events (R3F)
+
+## Audio Layer
+
+* Web Audio API
+
 ---
 
-## Why this stack
+# 3. WHY THIS STACK
 
 ### React Three Fiber
 
-* declarative scene graph
+* declarative 3D scene structure
 * integrates with React lifecycle
-* allows composition WITHOUT UI mindset
+* enables composition without UI mindset
 
 ---
 
-### GSAP
+### GSAP + ScrollTrigger
 
 * precise timeline control
-* scroll → progress mapping
-* deterministic animation (critical)
+* maps scroll → progress deterministically
+* no secondary timing systems needed
 
 ---
 
 ### Lenis
 
 * removes native scroll inconsistencies
-* provides smooth, continuous progression
+* provides smooth, continuous progression value
 
 ---
 
 ### GLSL
 
-* enables:
-
-  * depth effects
-  * custom lighting
-  * distortion
-  * high-end visuals
-
----
-
-# 3. ARCHITECTURE (CRITICAL)
-
-We do NOT build:
-
-* pages
-* sections
-
-We build:
-
-> a single persistent 3D experience
+* substrate grid fragment shader
+* edge lighting on panels
+* trace animation (UV offset)
+* depth-of-field
+* postprocessing
 
 ---
 
-## Root Structure
+### Web Audio API
 
-```id="n5a4c1"
+* system hum tied to state
+* click sounds on interaction
+* data ticks during Routing state
+
+---
+
+# 4. ROOT STRUCTURE
+
+```text
 <App>
   <ScrollController />
   <Experience />
@@ -102,46 +100,37 @@ We build:
 </App>
 ```
 
----
-
 ## Responsibilities
 
 ### ScrollController
 
-* maps scroll → progress (0 → 1)
+* normalizes scroll → progress (0 → 1)
 * updates global state
-
----
 
 ### Experience (CORE)
 
-* contains:
-
-  * camera system
-  * scene graph
-  * timeline reactions
-
----
+* camera system
+* state layer graph
+* system reactions
 
 ### OverlayUI
 
 * minimal HTML layer
 * used ONLY for:
-
-  * text overlays (if needed)
-  * links
-  * accessibility
+  * accessibility fallbacks
+  * external links in Resolved state
 
 ---
 
-# 4. STATE MODEL
+# 5. STATE MODEL
 
 Single source of truth:
 
-```js id="q2z8lx"
-const experience = {
-  progress: 0,      // global timeline
-  mouse: { x: 0, y: 0 },
+```js
+const system = {
+  progress: 0,        // global timeline (0 → 1)
+  state: 'IDLE',      // current system state
+  mouse: { x: 0, y: 0 }
 }
 ```
 
@@ -157,132 +146,110 @@ Everything derives from:
 
 ---
 
-# 5. SCENE COMPOSITION
+# 6. STATE LAYER COMPOSITION
 
-We do NOT create “sections”.
+We do NOT create scenes.
 
 We create:
 
-> persistent scene objects that react to progress
+> persistent state layers that react to progress
 
 ---
 
-## Example Structure
+## Structure
 
-```id="z7m1pt"
+```text
 <Experience>
   <CameraRig />
-  <Scene_Entry />
-  <Scene_Authority />
-  <Scene_System />
-  <Scene_Projects />
-  <Scene_Climax />
-  <Scene_Outro />
+  <IdleState />
+  <ActivatingState />
+  <IdentifyingState />
+  <RoutingState />
+  <ExecutingState />
+  <ProcessingState />
+  <ResolvedState />
 </Experience>
 ```
 
 ---
 
-## Important
+## Rule
 
-All scenes:
+All state layers:
 
 * exist at all times
-* control visibility via progress
+* control their own visibility via progress
 * do NOT mount/unmount aggressively
 
 ---
 
-# 6. CAMERA IMPLEMENTATION
+# 7. CAMERA IMPLEMENTATION
 
 Camera is controlled centrally:
 
-```js id="h4k2ds"
+```js
 useFrame(() => {
-  camera.position.lerp(targetPosition, 0.08)
-  camera.lookAt(targetTarget)
+  camera.position.lerp(targetPosition, CAMERA_DAMPING.position)
+  camera.lookAt(targetLookAt)
 })
 ```
-
----
 
 ## Target Mapping
 
-```js id="9s2mva"
+```js
 targetPosition = getCameraPosition(progress)
-targetTarget   = getCameraTarget(progress)
+targetLookAt   = getCameraTarget(progress)
 ```
-
----
 
 ## Rule
 
-Camera NEVER depends on scene components.
+Camera NEVER depends on state layer components.
 
-Scenes respond to camera—not the opposite.
-
----
-
-# 7. SCROLL → PROGRESS PIPELINE
+State layers respond to camera — not the opposite.
 
 ---
+
+# 8. SCROLL → PROGRESS PIPELINE
 
 ## Lenis Setup
 
-```js id="l3d9fw"
+```js
 lenis.on('scroll', ({ progress }) => {
-  experience.progress = progress
+  system.progress = progress
 })
 ```
-
----
-
-## Alternative (GSAP-controlled)
-
-```js id="t8f1bx"
-ScrollTrigger.create({
-  onUpdate: (self) => {
-    experience.progress = self.progress
-  }
-})
-```
-
----
 
 ## Rule
 
 Scroll is converted into:
 
-> a normalized timeline value
+> a normalized value (0 → 1)
+
+This is the ONLY global input.
 
 ---
 
-# 8. ANIMATION STRATEGY
+# 9. ANIMATION STRATEGY
 
 We avoid:
 
 * independent animations
 * component-level motion
-
----
+* time-based systems
 
 We use:
 
 > derived animation from progress
 
----
-
 ## Example
 
-```js id="b6x8wd"
-mesh.position.z = lerp(50, 0, progressRange(0.3, 0.5))
+```js
+panel.position.z = lerp(50, 0, progressRange(0.05, 0.15))
 ```
-
----
 
 ## Helper
 
-```js id="g5c3kv"
+```js
 function progressRange(start, end) {
   return clamp((progress - start) / (end - start), 0, 1)
 }
@@ -290,131 +257,92 @@ function progressRange(start, end) {
 
 ---
 
-# 9. INTERACTION SYSTEM
-
----
+# 10. INTERACTION SYSTEM
 
 ## Mouse Tracking
 
-```js id="w1v7rx"
+```js
 onPointerMove(e) {
-  mouse.x = normalize(e.clientX)
-  mouse.y = normalize(e.clientY)
+  system.mouse.x = normalize(e.clientX)
+  system.mouse.y = normalize(e.clientY)
 }
 ```
 
----
-
 ## Camera Influence
 
-```js id="c9m2jq"
-camera.position.x += mouse.x * 0.5
-camera.position.y += mouse.y * 0.3
+```js
+camera.position.x += system.mouse.x * CAMERA_MOUSE.strengthX
+camera.position.y += system.mouse.y * CAMERA_MOUSE.strengthY
 ```
-
----
 
 ## Object Interaction
 
 * raycasting via R3F
-* hover states
-* subtle scaling / glow
-
----
+* hover → edge light boost
+* snap behavior on interaction
 
 ## Rule
 
 Interaction must:
 
 * be immediate
-* be subtle
-* never break flow
+* be precise (snap, not drift)
+* never break traversal flow
 
 ---
 
-# 10. PERFORMANCE STRATEGY
+# 11. SHADER RESPONSIBILITIES
+
+## Substrate Grid
+
+* GLSL fragment shader
+* renders the base coordinate plane
+* reacts to system activity via uniform
+
+## Panel Edge Lighting
+
+* custom material
+* edge detection + state-driven intensity
+* blue (Routing) / amber (Identifying / Processing)
+
+## Trace Animation
+
+* UV offset on line material
+* packet dots: instanced mesh traveling along trace geometry
+
+## Postprocessing
+
+* bloom — threshold 0.9, very subtle
+* depth of field — at key moments
+* vignette — focus center
+* no decorative effects
 
 ---
 
-## Constraints
-
-* target 60 FPS
-* avoid heavy geometry
-* limit draw calls
-
----
-
-## Techniques
-
-* instancing for repeated objects
-* texture compression
-* LOD (level of detail)
-* frustum culling
-
----
-
-## Critical
-
-Performance drops = immersion breaks
-
----
-
-# 11. LAYERING SYSTEM
-
----
+# 12. LAYERING SYSTEM
 
 ## 3 Layers
 
 ### 1. WebGL Layer
 
-* main experience
-* all 3D
-
----
+* full system experience
+* all 3D structure
 
 ### 2. HTML Layer
 
-* minimal text
-* UI fallback
-
----
+* minimal
+* Resolved state endpoint links only
+* accessibility fallback
 
 ### 3. Postprocessing Layer
 
-* bloom
+* bloom (edge-triggered only)
 * depth of field
-* color grading
-
----
-
-# 12. AUDIO (OPTIONAL BUT POWERFUL)
-
----
-
-## Implementation
-
-* Web Audio API
-* triggered by:
-
-  * hover
-  * transitions
-  * scene changes
-
----
-
-## Rule
-
-Audio must be:
-
-* subtle
-* synchronized
-* never intrusive
+* vignette
 
 ---
 
 # 13. WHAT WE AVOID
-
----
 
 ## DO NOT USE
 
@@ -422,22 +350,42 @@ Audio must be:
 * component-driven animation logic
 * CSS animation systems
 * UI frameworks controlling flow
-
----
+* particle systems
+* independent timing systems
 
 ## WHY
 
 They break:
 
-> the timeline → camera → scene hierarchy
+> the progress → state → camera hierarchy
 
 ---
 
-# 14. FINAL TECH DEFINITION
+# 14. PERFORMANCE STRATEGY
 
-This system is:
+## Targets
 
-> A single, persistent, WebGL-driven environment where all motion, interaction, and rendering are derived from a unified timeline, controlled by scroll, and expressed through a central camera system.
+* 60 FPS
+* no draw call spikes on state transitions
+
+## Techniques
+
+* instancing for repeated structures (panels, packets)
+* geometry pooling
+* frustum culling
+* LOD on distant state layers
+
+## Critical
+
+Performance drops = traversal breaks
+
+---
+
+# 15. FINAL DEFINITION
+
+This stack is:
+
+> A single, persistent, WebGL-driven system where all motion, interaction, and rendering are derived from a unified progress value, controlled by scroll, and expressed through a central camera traversal mechanism.
 
 It is NOT:
 
@@ -446,4 +394,4 @@ It is NOT:
 
 It is:
 
-> a real-time simulation controlled by time.
+> a real-time system simulation controlled by one value.

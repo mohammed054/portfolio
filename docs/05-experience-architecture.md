@@ -1,7 +1,7 @@
 # 05 — EXPERIENCE ARCHITECTURE
 
 **Role:** Defines how the codebase is structured
-**Goal:** Maintain control, scalability, and clarity without breaking the 3D-first philosophy
+**Goal:** Maintain control, scalability, and clarity without breaking the system-first philosophy
 
 ---
 
@@ -11,20 +11,20 @@ We are NOT structuring a React app.
 
 We are structuring:
 
-> a real-time simulation system
+> a real-time computational system simulation
 
 ---
 
 ## Architectural Hierarchy
 
-```text id="q3v7hx"
-Input (scroll/mouse)
+```text
+Input (scroll / mouse)
         ↓
 Global State (progress)
         ↓
-Camera System (driver)
+Camera System (traversal driver)
         ↓
-Scene System (reactive)
+State Layer System (reactive)
         ↓
 Rendering (output)
 ```
@@ -33,15 +33,11 @@ Rendering (output)
 
 # 2. FOLDER STRUCTURE
 
----
-
-## Root
-
-```text id="b9x2mn"
+```text
 /src
   /core
   /experience
-  /scenes
+  /states
   /systems
   /utils
   /config
@@ -52,47 +48,41 @@ Rendering (output)
 
 # 3. CORE LAYERS
 
----
-
 ## /core
 
-### Purpose:
+### Purpose
 
 Global engine logic
 
-### Contains:
+### Contains
 
-```text id="n2k5df"
+```text
 /core
   ExperienceProvider.js
   useExperience.js
   ScrollController.js
 ```
 
----
+### Responsibilities
 
-### Responsibilities:
-
-* store global state (progress, mouse)
-* update via scroll + pointer
+* store global state (progress, mouse, current system state)
+* update via scroll and pointer
 * expose via context or store
 
 ---
 
 ## /config
 
-### Purpose:
+### Purpose
 
 All variables
 
-```text id="k7d4qz"
+```text
 /config
   variables.js
 ```
 
----
-
-### Rule:
+### Rule
 
 NO magic numbers outside this folder
 
@@ -100,20 +90,18 @@ NO magic numbers outside this folder
 
 ## /utils
 
-### Purpose:
+### Purpose
 
 Pure helper functions
 
-```text id="c1p8wr"
+```text
 /utils
   math.js
   easing.js
   ranges.js
 ```
 
----
-
-### Example:
+### Contains
 
 * clamp
 * lerp
@@ -123,82 +111,71 @@ Pure helper functions
 
 # 4. EXPERIENCE LAYER
 
----
-
 ## /experience
 
-### Purpose:
+### Purpose
 
-Main 3D world
+Main 3D system
 
-```text id="x6t9la"
+```text
 /experience
   Experience.jsx
   CameraRig.jsx
   Lighting.jsx
 ```
 
----
-
-### Responsibilities:
+### Responsibilities
 
 #### Experience.jsx
 
 * mounts canvas
-* loads all scenes
+* loads all state layers
 * connects systems
-
----
 
 #### CameraRig.jsx (CRITICAL)
 
 * reads progress
 * calculates:
-
   * position
   * lookAt
   * fov
 * applies damping
 
----
-
 #### Lighting.jsx
 
-* controls global lighting
-* reacts to timeline
+* controls global edge lighting
+* reacts to system state
 
 ---
 
-# 5. SCENE SYSTEM
+# 5. STATE LAYER SYSTEM
 
----
+## /states
 
-## /scenes
+### Purpose
 
-### Purpose:
+All spatial system content
 
-All spatial content
-
-```text id="y4m2sx"
-/scenes
-  EntryScene.jsx
-  AuthorityScene.jsx
-  CapabilityScene.jsx
-  ProjectsScene.jsx
-  ClimaxScene.jsx
-  OutroScene.jsx
+```text
+/states
+  IdleState.jsx
+  ActivatingState.jsx
+  IdentifyingState.jsx
+  RoutingState.jsx
+  ExecutingState.jsx
+  ProcessingState.jsx
+  ResolvedState.jsx
 ```
 
 ---
 
-## Scene Rules
+## State Layer Rules
 
-Each scene:
+Each state layer:
 
-* ALWAYS mounted
+* is ALWAYS mounted
 * reacts to progress
-* controls:
-
+* controls its own:
   * visibility
   * opacity
   * position
@@ -208,50 +185,46 @@ Each scene:
 
 ## Example Pattern
 
-```js id="z9h3kw"
-const t = range(progress, 0.3, 0.5)
+```js
+const t = range(progress, STATES.ROUTING.start, STATES.ROUTING.end)
 
-mesh.position.z = lerp(20, 0, t)
-mesh.visible = t > 0
+panel.position.z = lerp(20, 0, t)
+panel.visible = t > 0
 ```
 
 ---
 
 ## Critical
 
-Scenes do NOT:
+State layers do NOT:
 
 * control camera
-* trigger global state
+* trigger global state changes
 * depend on each other
 
 They are:
 
-> passive responders
+> passive responders to progress
 
 ---
 
 # 6. SYSTEMS LAYER
 
----
-
 ## /systems
 
-### Purpose:
+### Purpose
 
 Reusable behavior modules
 
-```text id="m8v6ty"
+```text
 /systems
   useScroll.js
   useMouse.js
   useRaycast.js
-  useMagnetism.js
+  useSnap.js
 ```
 
----
-
-### Examples:
+### Responsibilities
 
 #### useScroll
 
@@ -265,203 +238,168 @@ Reusable behavior modules
 
 * handles hover detection
 
-#### useMagnetism
+#### useSnap
 
-* applies attraction forces
+* applies snap-to-grid forces on interaction
 
 ---
 
 # 7. COMPONENTS (STRICTLY LIMITED)
 
----
-
 ## /components
 
-### Purpose:
+### Purpose
 
 UI-only elements
 
-```text id="f5r2bn"
+```text
 /components
   Overlay.jsx
   Loader.jsx
 ```
 
----
-
-## Rule
+### Rule
 
 Components must:
 
 * NOT control 3D logic
 * NOT contain animation logic
-* only display information
+* only display static information
 
 ---
 
-# 8. DATA FLOW (VERY IMPORTANT)
-
----
+# 8. DATA FLOW (NON-NEGOTIABLE)
 
 ## Flow Direction
 
-```text id="g2l9cq"
-Scroll → progress → camera → scenes → render
+```text
+Scroll → progress → camera → state layers → render
 ```
-
----
 
 ## Forbidden Flow
 
-```text id="d7s4kx"
-scene → camera ❌
-component → animation ❌
+```text
+state layer → camera    ❌
+component → animation   ❌
+state layer → state layer ❌
 ```
 
 ---
 
 # 9. CAMERA ISOLATION
 
----
-
 Camera logic lives ONLY in:
 
-```text id="r8p3vn"
+```text
 /experience/CameraRig.jsx
 ```
 
----
-
-## Rule
+### Rule
 
 No other file:
 
 * modifies camera directly
-* accesses camera state
+* reads camera state
 
 ---
 
-# 10. SCENE COMMUNICATION
+# 10. STATE LAYER COMMUNICATION
 
----
+State layers do NOT communicate with each other.
 
-Scenes do NOT talk to each other.
+### Shared Logic via
 
----
+* global progress value
+* shared config (variables.js)
+* reusable systems (/systems)
 
-## Shared Logic via:
+### Result
 
-* global progress
-* shared config
-* reusable systems
-
----
-
-## Result
-
-Loose coupling
-High control
-No spaghetti
+Loose coupling.
+High control.
+No dependency chains.
 
 ---
 
 # 11. PERFORMANCE STRUCTURE
 
----
+## Heavy State Layers
 
-## Optimization Zones
-
-### Heavy scenes:
-
-* Projects
-* Climax
-
----
+* Executing
+* Processing
 
 ## Strategy
 
-* lazy-load assets (not components)
-* reduce geometry complexity
-* use instancing
+* lazy-load assets — not components
+* reduce geometry complexity per layer
+* use instancing for panels and packets
 
----
-
-## Important
+## Rule
 
 Do NOT:
 
-* mount/unmount scenes aggressively
+* mount/unmount state layers aggressively
 * rely on React lifecycle for animation
 
 ---
 
 # 12. DEBUG LAYER (RECOMMENDED)
 
----
-
-Add:
-
-```text id="q6t1mz"
+```text
 /debug
   DebugPanel.jsx
 ```
 
----
-
-## Features
+### Features
 
 * display progress value
-* toggle scene visibility
+* display current system state name
+* toggle state layer visibility
 * tweak variables live
 
----
+### Purpose
 
-## Purpose
-
-Speeds up tuning massively
+Speeds up system tuning significantly
 
 ---
 
 # 13. BUILD ORDER (CRITICAL)
 
----
-
-## Step-by-step
-
 1. Setup core + scroll → progress
-2. Build CameraRig (no scenes yet)
-3. Add EntryScene only
-4. Validate motion + damping
-5. Add next scene
-6. Repeat
+2. Build CameraRig — no state layers yet
+3. Add IdleState only — validate substrate grid
+4. Validate motion and damping
+5. Add ActivatingState — validate panel emergence
+6. Add next state layer
+7. Repeat
 
----
+### Rule
 
-## Rule
-
-Never build everything at once.
+Never build multiple state layers simultaneously.
 
 ---
 
 # 14. FAILURE CONDITIONS
 
----
+### ❌ State layers control camera
 
-### ❌ Scenes control camera
-
-→ system breaks
+→ system hierarchy breaks
 
 ### ❌ Multiple sources of truth
 
 → inconsistent behavior
 
-### ❌ Components contain logic
+### ❌ Components contain animation logic
 
-→ turns into UI app
+→ turns into a UI app
 
-### ❌ Mount/unmount animations
+### ❌ State layers mount/unmount aggressively
 
-→ jitter + bugs
+→ jitter and bugs
+
+### ❌ State layers reference each other
+
+→ dependency chain breaks determinism
 
 ---
 
@@ -469,7 +407,7 @@ Never build everything at once.
 
 This architecture is:
 
-> a modular, layered system where a single global timeline drives a central camera, and all scenes react independently within a persistent 3D environment.
+> a modular, layered system where a single global progress value drives a central camera, and all state layers react independently within a persistent 3D environment.
 
 It is NOT:
 
@@ -479,4 +417,4 @@ It is NOT:
 
 It is:
 
-> an engineered simulation pipeline.
+> a deterministic system simulation pipeline.

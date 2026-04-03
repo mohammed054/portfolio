@@ -1,11 +1,11 @@
 # 00 — MASTER BLUEPRINT
 
 **Project:** Mohammed Hassoun Portfolio
-**Type:** Directed 3D Experience (Not a Website)
+**Type:** Directed Computational Experience
 
 ---
 
-# 1. CORE PHILOSOPHY
+# 1. CORE DEFINITION
 
 This is not a website.
 
@@ -13,367 +13,460 @@ There are:
 
 * no pages
 * no sections
-* no scrolling document
+* no scrolling content
 
 This is:
 
-> A continuous 3D space navigated through time
+> A controlled traversal through the interior of a running computational system
 
-User does not scroll content.
-User moves through an environment.
+The user does not browse.
 
----
-
-## Spatial Model
-
-Traditional Web:
-
-* X / Y layout
-* stacked content
-
-This Experience:
-
-* X / Y / Z space
-* camera-driven navigation
-* depth as narrative
+The user is carried through execution.
 
 ---
 
-## Fundamental Rule
+# 2. FUNDAMENTAL MODEL
 
-> The camera is the main character.
+## Control System
 
-Everything is designed around:
-
-* where the camera goes
-* what it reveals
-* how fast it moves
+* Scroll → global time progression
+* Mouse → micro-influence (local perturbations)
 
 ---
 
-# 2. EXPERIENCE DEFINITION
+## Primary Driver
 
-## System Type
+> The camera is the only traversal mechanism.
 
-A **real-time directed simulation** where:
+Everything is defined by:
 
-* scroll = time progression
-* camera = narrative driver
-* 3D space = stage
-* UI = secondary layer
+* camera position
+* camera velocity
+* camera focus
+* camera constraints
 
----
-
-## Control Model
-
-User does NOT control the experience directly.
-
-Instead:
-
-* Scroll → drives global timeline
-* Mouse → influences micro-behavior
-
-Result:
-
-> Controlled experience with perceived freedom
+No system element overrides the camera.
 
 ---
 
-# 3. EMOTIONAL ENGINE
+## Core Mapping
 
-The experience is engineered as a sequence of emotional states.
+```js
+progress ∈ [0, 1]
+```
 
----
+This drives:
 
-## Emotional Timeline
-
-1. Curiosity
-2. Control
-3. Awe
-4. Release
-5. Playfulness
-
----
-
-## Mapping to Mechanics
-
-Curiosity:
-
-* unknown floating objects
-* partial visibility
-* slow movement
-
-Control:
-
-* responsive hover
-* magnetic interactions
-* immediate feedback
-
-Awe:
-
-* large scale shifts
-* camera pullbacks
-* cinematic pacing
-
-Release:
-
-* reduced density
-* lighter environments
-* visual clarity
-
-Playfulness:
-
-* loose physics
-* interactive fragments
-* low-pressure interaction
+* camera transformation
+* system state
+* visibility
+* interaction intensity
+* lighting
+* sound
 
 ---
 
-## Core Psychological Systems
+# 3. ENVIRONMENT DEFINITION
 
-* Reward loop → every interaction produces response
-* Tension / release → dark → light → dark transitions
-* Scale shifting → micro → macro → micro
-* Control illusion → user influences but does not command
+## What This Is NOT
 
----
-
-# 4. STRUCTURE (STORY, NOT SECTIONS)
-
-This experience follows a **linear cinematic progression**.
+* not space
+* not a void
+* not a gallery
+* not abstract art
 
 ---
 
-## Narrative Spine
+## What This IS
 
-1. Hook — entry into system
-2. Authority — identity & presence
-3. Capability — system thinking
-4. Proof — real work
-5. Climax — deep technical moment
-6. Resolution — release & contact
+> The logical interior of a computational system
 
----
+The environment behaves like:
 
-## Critical Constraint
-
-There are:
-
-* no visible boundaries
-* no section breaks
-* no UI transitions
-
-Only:
-
-> Continuous spatial progression
+* a substrate layer
+* a routing surface
+* a structural execution space
 
 ---
 
-# 5. SPATIAL DESIGN PRINCIPLES
+## Substrate Layer
+
+The base environment is:
+
+> a persistent computational plane
+
+Characteristics:
+
+* near-black base: #050507
+* embedded rectangular grid: #0A0C12
+* opacity: 2–3%
+* spacing: uniform and exact
 
 ---
 
-## Negative Space
+## Critical Rule
 
-Empty space is NOT absence.
+The grid is NOT decorative.
 
 It is:
 
-* focus control
-* pacing mechanism
-* scale amplifier
+> the coordinate system of the environment
+
+It must:
+
+* anchor all objects
+* define alignment
+* react subtly to system activity
 
 ---
 
-## Rules
+# 4. SYSTEM BEHAVIOR MODEL
 
-* One focal object at a time
-* Large distances between scenes
-* No visual clutter
-* Transitions must travel through space
+The experience is governed by system states, not scenes.
 
 ---
 
-## Object Behavior
+## State Set
 
-Elements behave as:
-
-> physical entities in a gallery
-
-Not UI blocks.
+| State       | Range       | Description                     |
+| ----------- | ----------- | ------------------------------- |
+| Idle        | 0.00 – 0.05 | system present but inactive     |
+| Activating  | 0.05 – 0.15 | structures initializing         |
+| Identifying | 0.15 – 0.30 | system declares identity        |
+| Routing     | 0.30 – 0.50 | topology and connections active |
+| Executing   | 0.50 – 0.75 | work is being performed         |
+| Processing  | 0.75 – 0.90 | deepest computational layer     |
+| Resolved    | 0.90 – 1.00 | system returns to stable state  |
 
 ---
 
-# 6. TYPOGRAPHY SYSTEM
+## Rule
 
-Typography is not content.
+At any moment:
 
-It is:
+> the system is in exactly one state
 
-> a spatial object
+---
+
+## What Each State Controls
+
+* color usage
+* motion intensity
+* interaction level
+* sound profile
+
+---
+
+# 5. VISUAL LANGUAGE
+
+## Structural Primitives
+
+All visuals derive from three types only:
+
+---
+
+### 1. Panels
+
+* flat, rectangular
+* hard edges
+* dark surface: #0D0F1A
+* white or dim edge definition
+
+Used for:
+
+* nodes
+* system surfaces
+* identity structures
+
+---
+
+### 2. Traces
+
+* thin linear elements
+* color: #0066FF (blue)
+* directional
+* animated with packets
+
+Used for:
+
+* connections
+* data movement
+* system activity
+
+---
+
+### 3. Volumes
+
+* extruded rectangular forms
+* pipelines / channels
+* contain moving data
+
+Used for:
+
+* execution layers
+* core systems
+
+---
+
+## Absolute Constraints
+
+No:
+
+* spheres
+* organic forms
+* soft geometry
+* particle systems
+* noise-based visuals
+
+Everything must be:
+
+> engineered, discrete, intentional
+
+---
+
+# 6. LIGHTING MODEL
+
+Lighting is:
+
+> state-driven and edge-defined
 
 ---
 
 ## Behavior
 
-* Exists in 3D space
-* Interacts with camera
-* Intersects with 3D elements
-* Acts as structural anchor
+* darkness is default
+* light appears only where function exists
+* edges reveal structure
+
+---
+
+## Types
+
+* Edge light → structure definition
+* Trace glow → active data
+* State highlight → system transitions
+
+---
+
+## Forbidden
+
+* ambient glow
+* soft lighting
+* bloom as decoration
+
+---
+
+# 7. COLOR SYSTEM (STATE-BOUND)
+
+## Core Palette
+
+* Background: #050507
+* Grid: #0A0C12
+* Panel surface: #0D0F1A
+* White: #FFFFFF
+* Blue: #0066FF
+* Amber: #FF6B00
+* Green: #00E676
+
+---
+
+## Strict Usage Rules
+
+### Blue
+
+* ONLY for active data flow
+* never static
+
+### Amber
+
+* ONLY for Identifying and Processing states
+* never continuous
+
+### Green
+
+* ONLY for system status confirmation
+* extremely rare
+
+### White
+
+* structure and typography only
+
+---
+
+## Rule
+
+> Color represents system state, not style
+
+---
+
+# 8. MOTION MODEL
+
+Motion is:
+
+> the visible result of system logic
+
+---
+
+## Mechanics
+
+* lerp-based interpolation
+* inertia
+* dampening
+* snap-to-grid
+
+---
+
+## Motion Types
+
+### Macro (Camera)
+
+* drives traversal
+* smooth, controlled
+* no abrupt changes
+
+### Micro (System Response)
+
+* hover → snap / highlight
+* activation → trace movement
+* transitions → structural shifts
+
+---
+
+## Forbidden Motion
+
+* random drift
+* organic floating
+* decorative animation
+
+---
+
+# 9. TYPOGRAPHY SYSTEM
+
+Typography is:
+
+> system output rendered as structure
+
+---
+
+## Behavior
+
+* exists in 3D space
+* intersects with environment
+* never flat UI
 
 ---
 
 ## Characteristics
 
-* Massive scale
-* Minimal wording
-* High contrast
-* Positioned in depth
+* large scale
+* hard-edged
+* white dominant
+* slight depth offset
+* never perfectly front-facing
 
 ---
 
-# 7. MOTION SYSTEM
+## Role
 
-Motion is NOT animation.
-
-Motion is:
-
-> simulated physical behavior
+* identity declaration
+* system labeling
+* structural reinforcement
 
 ---
 
-## Core Mechanics
+# 10. SPATIAL RULES
 
-* Lerp (momentum)
-* Inertia
-* Weight
-* Dampened transitions
+## Negative Space
 
----
+Empty space is:
 
-## Motion Layers
-
-1. Macro Motion (Camera)
-
-   * scroll-driven
-   * cinematic
-   * controlled
-
-2. Micro Motion (Interaction)
-
-   * mouse influence
-   * object reactions
-   * magnetic effects
+> unallocated computational capacity
 
 ---
 
-## Rule
+## Constraints
 
-Nothing should feel:
-
-* linear
-* robotic
-* UI-like
-
-Everything must feel:
-
-> responsive and alive
+* one primary structure at a time
+* large separation between system layers
+* no visual clutter
 
 ---
 
-# 8. 3D & RENDERING PRINCIPLES
+## Alignment
+
+All elements must:
+
+* align to grid
+* snap to invisible structure
+* maintain spatial logic
 
 ---
 
-## Environment
+# 11. INTERACTION MODEL
 
-* Real 3D space (not fake layers)
-* Depth-driven composition
-* Lighting defines focus
+User interaction is:
+
+> influence, not control
 
 ---
 
-## Techniques
+## Inputs
 
-* Z-axis movement
-* Depth of field
-* Camera FOV shifts
-* Layer blending (HTML + WebGL)
+* scroll → global progression
+* mouse → local interaction
+
+---
+
+## Behavior
+
+* hover → precise feedback
+* click → system action
 
 ---
 
 ## Rule
 
-3D is not decoration.
+User never overrides:
 
-It is:
-
-> the foundation of the experience
-
----
-
-# 9. SENSORY LAYER
-
-Sound is subtle but critical.
+* camera
+* timeline
+* system state
 
 ---
 
-## Components
+# 12. ANTI-TEMPLATE ENFORCEMENT
 
-* low-frequency ambient tones
-* interaction clicks
-* motion-synced audio
+## Explicitly Rejected
 
----
+* space aesthetics
+* particle systems
+* soft gradients
+* UI cards
+* gallery layouts
+* decorative shaders
+* organic motion
 
-## Purpose
+## Enforced
 
-Enhance:
-
-* immersion
-* physicality
-* feedback loop
-
----
-
-# 10. ANTI-TEMPLATE SYSTEM
-
----
-
-## What is avoided
-
-* predictable layouts
-* repeated patterns
-* grid-based structure
-* traditional UI flows
+* system logic
+* structural clarity
+* precision
+* functional visuals only
 
 ---
 
-## What is enforced
-
-* continuous flow
-* custom interactions
-* variation in composition
-* asymmetry with control
-
----
-
-## Core Principle
-
-> Unpredictable, but never chaotic
-
----
-
-# 11. EXPERIENCE RULESET (NON-NEGOTIABLE)
+# 13. EXPERIENCE RULESET (NON-NEGOTIABLE)
 
 1. Camera always leads
-2. User never fully controls navigation
-3. No hard transitions
-4. No traditional sections
-5. Every movement has feedback
-6. Space defines hierarchy
-7. One focus at a time
-8. Everything exists in depth
+2. System state defines behavior
+3. No UI-driven structure
+4. No hard transitions
+5. Every element has function
+6. No organic motion
+7. No decorative elements
+8. Color reflects state
+9. Grid is a system layer
+10. Nothing exists unless it serves the system
 
 ---
 
@@ -381,15 +474,10 @@ Enhance:
 
 This portfolio is:
 
-> A cinematic, scroll-driven, 3D system where the user moves through engineered space, guided by camera choreography, experiencing a narrative that demonstrates technical depth, control, and precision.
+> A deterministic, camera-driven traversal through the internal layers of a computational system — where identity, architecture, and execution are revealed as structured processes rather than presented as content.
 
-It is NOT:
-
-* a UI
-* a website
-* a layout
+It is not a design.
 
 It is:
 
-> a directed experience.
-    
+> a system, made visible.
