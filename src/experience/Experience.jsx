@@ -52,7 +52,14 @@ export default function Experience() {
     <Canvas
       camera={{ position: [0, 0, 100], fov: CAMERA_FOV.default, near: 0.1, far: 2000 }}
       gl={{ antialias: true, alpha: false }}
-      style={{ background: COLORS.background }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        background: COLORS.background,
+      }}
     >
       <CameraRig />
       <IdleState />

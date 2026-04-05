@@ -19,12 +19,3 @@ body {
   width: 100%;
   min-height: 100%;
 }
-
-canvas {
-  display: block;
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
-}
