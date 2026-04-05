@@ -54,16 +54,20 @@ export default function Experience() {
       gl={{ antialias: true, alpha: false }}
       style={{ background: COLORS.background }}
     >
+      <CameraRig />
+      <IdleState />
+      <ActivatingState />
       <Suspense fallback={null}>
-        <CameraRig />
-        <IdleState />
-        <ActivatingState />
         <IdentifyingState />
-        <RoutingState />
-        <ExecutingState />
-        <OriginMarker />
-        <DepthReferenceGrid />
       </Suspense>
+      <Suspense fallback={null}>
+        <RoutingState />
+      </Suspense>
+      <Suspense fallback={null}>
+        <ExecutingState />
+      </Suspense>
+      <OriginMarker />
+      <DepthReferenceGrid />
     </Canvas>
   )
 }
