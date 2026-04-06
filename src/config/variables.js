@@ -109,7 +109,10 @@ export const INTERACTION_STATE = {
 export const DATA_FLOW = {
   speedBase:     0.65,
   speedVariance: 0.2,
-  size:          0.045,
+  // FIX: was 0.045 — completely invisible (sub-pixel at all camera distances).
+  // Routing nodes are 24-28 world units wide. At camera distance 46-68 units,
+  // packets need to be at least 0.3-0.5 units to register on screen.
+  size:          0.5,
   spacing:       0.25,
 }
 
