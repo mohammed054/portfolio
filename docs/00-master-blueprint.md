@@ -1,5 +1,5 @@
 # 00 — MASTER BLUEPRINT
-// April 13 late night "no edit"//
+// April 13 late night "no edit."//
 **Project:** Mohammed Hassoun Portfolio
 **Type:** Directed 3D Experience (Not a Website)
 
