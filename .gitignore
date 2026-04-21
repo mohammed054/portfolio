@@ -2,7 +2,7 @@
 node_modules
 .pnpm-store
 .npm
-
+newfiles/
 # --- Next.js / Build Output ---
 .next
 .swc

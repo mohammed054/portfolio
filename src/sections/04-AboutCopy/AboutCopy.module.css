@@ -1,37 +1,145 @@
+/* ============================================================
+   About Copy — Cream editorial section
+   ============================================================ */
+
 .section {
   position: relative;
-  min-height: 100vh;
   background: var(--color-bg-cream);
-  padding: 8rem 8vw;
+  padding: var(--section-padding-y) 0;
+  overflow: hidden;
 }
 
+/* Subtle paper texture */
+.paperTexture {
+  position: absolute;
+  inset: 0;
+  background-image:
+    url('/textures/grain.png'),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      rgba(180, 160, 130, 0.06) 40px
+    );
+  background-size: 200px 200px, auto;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ─── CONTAINER ───────────────────────────────────────────── */
+
+.container {
+  position: relative;
+  z-index: 2;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--section-padding-x);
+}
+
+/* ─── HEADLINE ────────────────────────────────────────────── */
+
 .headline {
-  font: 900 5.5vw/1.1 var(--font-display);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(30px, 5.5vw, 88px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
   color: var(--color-text-headline);
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: clamp(40px, 6vh, 80px);
 }
+
+/* ─── COLUMNS ─────────────────────────────────────────────── */
 
 .columns {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 48px;
+}
+
+.column {
+  position: relative;
 }
 
 .column p {
-  font: 400 1.05rem/1.7 var(--font-body);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(15px, 1.05vw, 17px);
+  line-height: 1.72;
   color: var(--color-text-dark);
+  /* Left-aligned, per spec — no justify */
 }
 
-@media (max-width: 1024px) {
+/* ─── BUSINESSMAN CUTOUT ──────────────────────────────────── */
+
+.businessman {
+  position: absolute;
+  right: clamp(0px, 2vw, 40px);
+  bottom: 0;
+  z-index: 3;
+  height: 90%;
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.businessmanImg {
+  height: 100%;
+  max-height: 560px;
+  width: auto;
+  object-fit: contain;
+  object-position: bottom;
+  display: block;
+}
+
+/* Fallback when image is missing */
+.businessmanFallback {
+  display: none;
+}
+
+.businessmanImg[src=""] + .businessmanFallback,
+.businessmanImg:not([src]) + .businessmanFallback {
+  display: block;
+  width: 220px;
+  height: 400px;
+  background: linear-gradient(180deg, #d4c8b0 0%, #c8b898 100%);
+  border-radius: 4px 4px 0 0;
+  opacity: 0.4;
+}
+
+/* ─── MOBILE ──────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
   .columns {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
 
+  .businessman {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    height: auto;
+    justify-content: flex-end;
+    float: right;
+    margin: 0 0 1rem 2rem;
+  }
+
+  .businessmanImg {
+    max-height: 240px;
+  }
+}
+
+@media (max-width: 768px) {
   .headline {
-    font-size: clamp(32px, 8vw, 52px);
+    font-size: clamp(26px, 8vw, 52px);
+  }
+
+  .section {
+    padding: var(--section-padding-y) 6vw;
+  }
+
+  .container {
+    padding: 0;
   }
 }

@@ -1,32 +1,110 @@
+// ============================================================
+// SHADER REBUILD — About Copy
+// src/sections/04-AboutCopy/AboutCopy.tsx
+//
+// Spec: 05-about-copy.md
+// - Warm cream background (#f0e8d8)
+// - Large Playfair Display headline, centered
+// - 3-column EB Garamond body copy
+// - Businessman cutout slides in from the right
+// - Stagger entrance animations per column
+// ============================================================
+
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { COPY } from '../../utils/constants';
+import { SectionAnchor } from '../../components/shared/SectionAnchor';
 import styles from './AboutCopy.module.css';
 
-const column1 = `Shader is a creative development studio specialized in building interactive 3D and AI solutions for the web. Serious about business, based in Sweden, and working with brands, agencies and designers worldwide. Plugged into the future. While we're a small team of creative engineers, we have a hand-picked network of collaborators: designers, 3D artists, copywriters, animators, and creative technologists, ready to plug in with an array of capabilities.`;
-
-const column2 = `This modular approach means we can scale and adapt to each challenge. Whether it's a WebGL experiment, an interactive product visualization, a mobile app, or an AI-driven experience, we help bold brands stand out across every screen. We build storytelling platforms that demand attention and reward curiosity. We push digital mediums to places you haven't seen before, and have fun doing it. Beyond code, we offer 3D design and animation, UI and motion design, concepts and digital strategy, full-stack development, and creative consulting.`;
-
-const column3 = `Whether it's prototyping an idea, launching an augmented reality experience, or bringing high-fidelity visuals to life, Shader bridges the gap between creative ambition and technical execution. Our process is hands-on, collaborative, and tailored for teams that value both craft and innovation. We combine technical expertise with a designer's eye, ensuring that every interaction feels natural and every pixel is perfectly placed. We're not your regular IT department. We don't troubleshoot printers.`;
+gsap.registerPlugin(ScrollTrigger);
 
 function AboutCopy() {
-  return (
-    <section className={styles.section}>
-      <h2 className={styles.headline}>
-        Making Digital
-        <br />
-        Storytelling More Playful,
-        <br />
-        Powerful, and Alive
-      </h2>
+  const sectionRef    = useRef<HTMLElement>(null);
+  const headlineRef   = useRef<HTMLHeadingElement>(null);
+  const col1Ref       = useRef<HTMLDivElement>(null);
+  const col2Ref       = useRef<HTMLDivElement>(null);
+  const col3Ref       = useRef<HTMLDivElement>(null);
+  const businessmanRef = useRef<HTMLDivElement>(null);
 
-      <div className={styles.columns}>
-        <div className={styles.column}>
-          <p>{column1}</p>
+  useGSAP(() => {
+    const st = { trigger: sectionRef.current, start: 'top 65%' };
+
+    // Headline fades up
+    gsap.from(headlineRef.current, {
+      y: 30, opacity: 0, duration: 0.7, ease: 'power3.out',
+      scrollTrigger: { ...st, toggleActions: 'play none none reverse' },
+    });
+
+    // Columns stagger in left→right, 150ms apart
+    [col1Ref, col2Ref, col3Ref].forEach((ref, i) => {
+      gsap.from(ref.current, {
+        y: 20, opacity: 0, duration: 0.6, ease: 'power2.out',
+        delay: i * 0.15,
+        scrollTrigger: { ...st, toggleActions: 'play none none reverse' },
+      });
+    });
+
+    // Businessman slides in from right
+    gsap.from(businessmanRef.current, {
+      x: 80, opacity: 0, duration: 0.8, ease: 'power3.out',
+      delay: 0.4,
+      scrollTrigger: { ...st, toggleActions: 'play none none reverse' },
+    });
+
+    // Subtle parallax on the businessman — lags slightly behind
+    gsap.to(businessmanRef.current, {
+      y: -30,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+      },
+    });
+  });
+
+  return (
+    <section ref={sectionRef} className={styles.section}>
+      <SectionAnchor id="about-copy" threshold={0.4} />
+
+      {/* Paper texture overlay */}
+      <div className={styles.paperTexture} aria-hidden="true" />
+
+      <div className={styles.container}>
+        {/* Headline */}
+        <h2 ref={headlineRef} className={styles.headline}>
+          Making Digital Storytelling More Playful,
+          <br />
+          Powerful, and Alive
+        </h2>
+
+        {/* Three-column body copy */}
+        <div className={styles.columns}>
+          <div ref={col1Ref} className={styles.column}>
+            <p>{COPY.aboutCopy.col1}</p>
+          </div>
+          <div ref={col2Ref} className={styles.column}>
+            <p>{COPY.aboutCopy.col2}</p>
+          </div>
+          <div ref={col3Ref} className={styles.column}>
+            <p>{COPY.aboutCopy.col3}</p>
+          </div>
         </div>
-        <div className={styles.column}>
-          <p>{column2}</p>
-        </div>
-        <div className={styles.column}>
-          <p>{column3}</p>
-        </div>
+      </div>
+
+      {/* Businessman cutout — positioned absolute, right side */}
+      <div ref={businessmanRef} className={styles.businessman} aria-hidden="true">
+        <img
+          src="/images/businessman-about.png"
+          alt=""
+          className={styles.businessmanImg}
+          loading="lazy"
+        />
+        {/* Fallback if image missing */}
+        <div className={styles.businessmanFallback} aria-hidden="true" />
       </div>
     </section>
   );

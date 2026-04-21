@@ -1,24 +1,83 @@
+/* ============================================================
+   About Hero — Cubicle Flyover
+   ============================================================ */
+
 .section {
   position: relative;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-bg-dark);
   overflow: hidden;
+  background: #1a1410; /* fallback if image missing */
 }
 
-.gradient {
+/* Top transition — dark hero → transparent */
+.fadeFromDark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 18%;
+  background: linear-gradient(to bottom, #0d0d0d 0%, transparent 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ─── BG IMAGE ────────────────────────────────────────────── */
+
+.bgImage {
+  position: absolute;
+  inset: -20% 0; /* oversized for parallax travel */
+  background:
+    url('/images/about-office-cubicles.webp') center center / cover no-repeat;
+  /* Desaturated, high contrast treatment matching spec */
+  filter: grayscale(85%) contrast(1.25) brightness(0.85);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* Vignette */
+.vignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, var(--color-bg-dark) 0%, transparent 15%);
+  background:
+    radial-gradient(ellipse 90% 80% at 50% 50%, transparent 30%, rgba(0,0,0,0.55) 100%);
+  z-index: 2;
   pointer-events: none;
-  z-index: 1;
 }
 
+/* ─── TITLE ───────────────────────────────────────────────── */
+
 .title {
-  font: 900 15vw/1 var(--font-display);
+  position: relative;
+  z-index: 4;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(72px, 15vw, 220px);
+  line-height: 1;
+  letter-spacing: -0.03em;
   color: rgba(255, 255, 255, 0.85);
+  text-align: center;
   text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
-  z-index: 2;
+  /* CRT chromatic aberration feel on the title */
+  filter:
+    drop-shadow(2px 0 0 rgba(255, 60, 60, 0.3))
+    drop-shadow(-2px 0 0 rgba(60, 60, 255, 0.3));
+  user-select: none;
+}
+
+/* ─── MOBILE ──────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .bgImage {
+    filter: grayscale(90%) contrast(1.2) brightness(0.8);
+    /* No parallax on mobile */
+    transform: none !important;
+  }
+
+  .title {
+    font-size: clamp(60px, 18vw, 120px);
+    filter: none;
+  }
 }
