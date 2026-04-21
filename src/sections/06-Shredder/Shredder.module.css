@@ -1,0 +1,51 @@
+.section {
+  position: relative;
+  min-height: 150vh;
+  background: var(--color-bg-cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20vh;
+}
+
+.content {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.headline {
+  font: 700 4vw/1 var(--font-display);
+  color: var(--color-text-headline);
+  text-align: center;
+}
+
+.subtext {
+  font: 400 1.1rem var(--font-body);
+  color: var(--color-text-dark);
+  margin-top: 1rem;
+  opacity: 0.7;
+}
+
+.shredder {
+  position: sticky;
+  bottom: 20vh;
+  width: 100%;
+  max-width: 600px;
+  height: 120px;
+  background: linear-gradient(180deg, #d4c4a8 0%, #a89a7c 100%);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.machine {
+  padding: 1rem 2rem;
+  border: 2px dashed rgba(0, 0, 0, 0.2);
+}
+
+.label {
+  font: 700 1.5rem/1 var(--font-display);
+  color: #5a4e3a;
+  letter-spacing: 0.2em;
+}

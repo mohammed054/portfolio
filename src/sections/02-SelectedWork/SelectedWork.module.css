@@ -1,0 +1,70 @@
+.section {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(160deg, var(--color-purple-mid) 0%, var(--color-blue-deep) 50%, var(--color-bg-dark) 100%);
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8rem 0;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font: 700 3.5rem/1 var(--font-display);
+  color: var(--color-text-light);
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  margin-top: 1rem;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+.navBtn {
+  font-size: 2rem;
+  color: var(--color-text-light);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.navBtn:hover {
+  opacity: 1;
+}
+
+.dots {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--color-text-light);
+  opacity: 0.4;
+  transition: all 0.2s;
+}
+
+.dot.active {
+  opacity: 1;
+  background: var(--color-text-light);
+}

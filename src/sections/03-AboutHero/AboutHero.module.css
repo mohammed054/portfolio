@@ -1,0 +1,24 @@
+.section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-dark);
+  overflow: hidden;
+}
+
+.gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--color-bg-dark) 0%, transparent 15%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.title {
+  font: 900 15vw/1 var(--font-display);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+}

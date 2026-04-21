@@ -1,0 +1,150 @@
+.footer {
+  position: relative;
+  min-height: 100vh;
+  background: var(--color-bg-contact);
+  padding: 6rem 8vw;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.column h3 {
+  font: 700 1.2rem/1 var(--font-display);
+  color: var(--color-text-light);
+  margin-bottom: 1.5rem;
+}
+
+.column p {
+  font: 400 1rem/1.8 var(--font-body);
+  color: #c0b8a8;
+}
+
+.column a {
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.column a:hover {
+  color: var(--color-text-light);
+}
+
+.ceoCard {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 2rem;
+  border: 2px dashed rgba(240, 236, 228, 0.3);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.ceoPlaceholder {
+  font-size: 4rem;
+  filter: grayscale(0.5);
+}
+
+.ceoText h4 {
+  font: 700 1.2rem var(--font-display);
+  color: var(--color-text-light);
+}
+
+.ceoText p {
+  font: 400 1rem var(--font-body);
+  color: #c0b8a8;
+  margin-top: 0.5rem;
+}
+
+.ceoText a {
+  text-decoration: underline;
+}
+
+.footerBar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+  padding-top: 4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  align-items: center;
+}
+
+.leftBadge,
+.rightBadge {
+  text-align: center;
+}
+
+.leftBadge p,
+.rightBadge p {
+  font: 400 0.7rem/1.5 var(--font-body);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.globe {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.laurels {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.center {
+  text-align: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.logo svg {
+  width: 30px;
+  height: 30px;
+}
+
+.logo span {
+  font: 700 1.25rem var(--font-display);
+  letter-spacing: 0.1em;
+}
+
+.tagline {
+  font: 400 italic 0.9rem var(--font-body);
+  color: var(--color-text-muted);
+  margin-top: 0.5rem;
+}
+
+.copyright {
+  font: 400 0.8rem var(--font-body);
+  color: var(--color-text-muted);
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .contactGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footerBar {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .ceoCard {
+    flex-direction: column;
+    text-align: center;
+  }
+}

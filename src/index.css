@@ -1,0 +1,129 @@
+:root {
+  --color-bg-dark: #0d0d0d;
+  --color-bg-dark-2: #111111;
+  --color-bg-contact: #0a0a14;
+  --color-text-light: #f0ece4;
+  --color-text-muted: #8a8680;
+  --color-accent-gold: #c9a84c;
+  --color-purple-mid: #2a1f5e;
+  --color-blue-deep: #0e1b6e;
+
+  --color-bg-cream: #f0e8d8;
+  --color-bg-cream-2: #e8dfc8;
+  --color-text-dark: #2c2416;
+  --color-text-headline: #1a1208;
+
+  --color-rainbow-1: #e63946;
+  --color-rainbow-2: #f4a261;
+  --color-rainbow-3: #e9c46a;
+  --color-rainbow-4: #2a9d8f;
+  --color-rainbow-5: #457b9d;
+  --color-rainbow-6: #6a0572;
+
+  --color-crt-bg: #1a1aff;
+  --color-crt-text: #e8e4d8;
+  --color-crt-bar: #e8e4d8;
+  --color-crt-border: #e8e4d8;
+
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'EB Garamond', serif;
+  --font-mono: 'Courier Prime', monospace;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-light);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+.h1 {
+  font: 900 8vw/1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.h2 {
+  font: 700 5.5vw/1.1 var(--font-display);
+}
+
+.h3 {
+  font: 700 4vw/1.15 var(--font-display);
+}
+
+.hero-title {
+  font: 900 9.5vw/0.95 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.body-large {
+  font: 400 1.2rem/1.7 var(--font-body);
+}
+
+.body-base {
+  font: 400 1rem/1.65 var(--font-body);
+}
+
+.body-small {
+  font: 400 0.85rem/1.6 var(--font-body);
+}
+
+.nav-link {
+  font: 400 1rem/1 var(--font-body);
+  text-decoration: underline;
+}
+
+.mono {
+  font: 400 1rem/1.5 var(--font-mono);
+}
+
+.cta {
+  font: 400 italic 1.1rem/1 var(--font-body);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

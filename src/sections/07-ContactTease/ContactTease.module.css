@@ -1,0 +1,63 @@
+.section {
+  position: relative;
+  min-height: 100vh;
+  background: var(--color-bg-contact);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
+}
+
+.content {
+  text-align: center;
+  z-index: 2;
+}
+
+.headline {
+  font: 700 7.5vw/1.1 var(--font-display);
+  color: var(--color-text-light);
+  text-shadow: 0 0 60px rgba(240, 236, 228, 0.15);
+}
+
+.subtext {
+  font: 400 1.1rem var(--font-body);
+  color: var(--color-text-muted);
+  margin-top: 2rem;
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.star {
+  position: absolute;
+  animation: float linear infinite;
+  opacity: 0;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100px) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
