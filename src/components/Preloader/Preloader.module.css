@@ -1,43 +1,19 @@
+/* ============================================================
+   SHADER REBUILD — Preloader Styles
+   src/components/Preloader/Preloader.module.css
+   ============================================================ */
+
 .preloader {
   position: fixed;
   inset: 0;
-  z-index: 10000;
-  background: var(--color-crt-bg);
+  z-index: var(--z-preloader);
+  background: var(--color-crt-bg, #1a1aff);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-}
-
-.exit {
-  animation: crtPowerOff 0.55s ease-in forwards;
-}
-
-@keyframes crtPowerOff {
-  0% {
-    transform: scaleY(1);
-  }
-  30% {
-    transform: scaleY(0.02);
-  }
-  60% {
-    transform: scaleY(0.02) scaleX(0);
-  }
-  100% {
-    opacity: 0;
-    display: none;
-  }
-}
-
-.crtEffect {
-  perspective: 800px;
-  transform: scale(1.02);
-  width: 100%;
-  max-width: 800px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  transform-origin: center center;
 }
 
 .scanlines {
@@ -60,7 +36,7 @@
   gap: 2rem;
 }
 
-.logo {
+.logoLockup {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -72,18 +48,18 @@
   height: 140px;
 }
 
-.logoText {
-  font-family: var(--font-display);
+.wordmark {
+  font-family: var(--font-display, 'Playfair Display', serif);
   font-weight: 700;
   font-size: 3.5rem;
   letter-spacing: 0.15em;
-  color: var(--color-crt-text);
+  color: var(--color-crt-text, #e8e4d8);
 }
 
 .subtitle {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
   font-size: 1.1rem;
-  color: var(--color-crt-text);
+  color: var(--color-crt-text, #e8e4d8);
   text-align: center;
   line-height: 1.8;
 }
@@ -92,7 +68,7 @@
   width: 500px;
   max-width: 80vw;
   height: 32px;
-  border: 2px solid var(--color-crt-border);
+  border: 2px solid var(--color-crt-border, #4444aa);
   padding: 4px;
 }
 
@@ -104,7 +80,7 @@
 
 .segment {
   flex: 1;
-  background: var(--color-crt-bar);
+  background: var(--color-crt-bar, #4444aa);
   transition: opacity 0.05s;
 }
 
@@ -115,22 +91,18 @@
 .copyright {
   position: absolute;
   bottom: 2rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
   font-size: 0.75rem;
-  color: var(--color-crt-text);
+  color: var(--color-crt-text, #e8e4d8);
 }
 
 .flash {
   position: fixed;
   inset: 0;
   background: white;
-  z-index: 10001;
-  animation: flash 0.2s ease-out forwards;
-}
-
-@keyframes flash {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
+  z-index: calc(var(--z-preloader) + 1);
+  opacity: 0;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
@@ -143,7 +115,7 @@
     height: 100px;
   }
 
-  .logoText {
+  .wordmark {
     font-size: 2.5rem;
   }
 
