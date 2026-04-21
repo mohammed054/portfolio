@@ -49,7 +49,7 @@ export const SECTION_THEMES: Record<string, 'light' | 'dark'> = {
   'golden-tie':    'light',
   'handshake':     'light',
   'good-buy':      'light',
-  'footer':       'light',
+  'footer':        'light',
 };
 
 // ─── COPY ─────────────────────────────────────────────────────
@@ -108,7 +108,7 @@ export const PROJECTS: Project[] = [
     id: 1,
     name: 'eHealth Arena',
     category: '3D Showroom',
-    url: '#',
+    viewUrl: '#',
     images: {
       main: '/images/carousel/project-01-main.webp',
       detail1: '/images/carousel/project-01-detail1.webp',
@@ -118,12 +118,13 @@ export const PROJECTS: Project[] = [
     id: 2,
     name: 'Design is Funny',
     category: 'Brand Identity',
-    url: '#',
+    viewUrl: '#',
     images: {
       main: '/images/carousel/project-02-main.webp',
       detail1: '/images/carousel/project-02-detail1.webp',
     },
   },
+  // Add remaining projects here
 ];
 
 // ─── ANIMATION TIMING ─────────────────────────────────────────
@@ -133,8 +134,8 @@ export const TIMING = {
   crtCollapseY: 200,              // ms for vertical squish
   crtCollapseX: 150,              // ms for horizontal shrink
   crtFlash: 200,                  // ms for white flash
-  heroEnterDelay: 300,              // ms after preloader exits
-  sectionEnterDuration: 600,        // ms for typical section entrance
+  heroEnterDelay: 300,            // ms after preloader exits
+  sectionEnterDuration: 600,      // ms for typical section entrance
   staggerDelay: 80,               // ms between staggered items
   parallaxScrub: 1.5,             // GSAP scrub value for film strip
 } as const;
@@ -146,29 +147,3 @@ export const FEATURES = {
   enableGrain: import.meta.env.VITE_ENABLE_GRAIN !== 'false',
   enablePreloader: import.meta.env.VITE_ENABLE_PRELOADER !== 'false',
 } as const;
-
-// ─── COLOR PALETTE (for CSS variables) ────────────────────────
-
-export const COLORS = {
-  dark: {
-    bg: '#0d0d0d',
-    bg2: '#111111',
-    contact: '#0a0a14',
-    text: '#f0ece4',
-    muted: '#8a8680',
-    gold: '#c9a84c',
-    purpleMid: '#2a1f5e',
-    blueDeep: '#0e1b6e',
-  },
-  light: {
-    bg: '#f0e8d8',
-    bg2: '#e8dfc8',
-    text: '#2c2416',
-    headline: '#1a1208',
-  },
-  rainbow: ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f', '#457b9d', '#6a0572'],
-  crt: {
-    bg: '#1a1aff',
-    text: '#e8e4d8',
-  },
-};

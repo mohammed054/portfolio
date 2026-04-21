@@ -1,18 +1,18 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Mesh, MeshStandardMaterial } from 'three';
+import { Group } from 'three';
 
 function SuperPETModel() {
-  const meshRef = useRef<Mesh>(null);
+  const groupRef = useRef<Group>(null);
 
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.1;
+    if (groupRef.current) {
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.1;
     }
   });
 
   return (
-    <group ref={meshRef} position={[0, 0, 0]}>
+    <group ref={groupRef} position={[0, 0, 0]}>
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[2, 0.3, 1.5]} />
         <meshStandardMaterial color="#1a1a1a" metalness={0.3} roughness={0.7} />

@@ -4,6 +4,10 @@ export interface Project {
   category: string;
   url: string;
   image?: string;
+  images?: {
+    main: string;
+    detail1?: string;
+  };
 }
 
 export interface SectionProps {
@@ -11,18 +15,28 @@ export interface SectionProps {
 }
 
 export interface NavLink {
-  to: string;
+  to?: string;
   label: string;
+  sectionId?: string;
+  href?: string;
 }
 
 export interface ContactInfo {
   email: string;
-  ceo: string;
-  cal: string;
-  address: string;
-  linkedin: string;
-  instagram: string;
-  twitter: string;
+  ceoEmail?: string;
+  calUrl?: string;
+  address?: {
+    street: string;
+    city: string;
+    country: string;
+  };
+  social?: {
+    linkedin: string;
+    instagram: string;
+    twitter: string;
+  };
+  copyright?: string;
+  tagline?: string;
 }
 
 export interface ColorPalette {
@@ -35,3 +49,16 @@ export interface ColorPalette {
   purpleMid: string;
   blueDeep: string;
 }
+
+export type SectionId =
+  | 'home'
+  | 'work'
+  | 'about-us'
+  | 'about-copy'
+  | 'about-vintage'
+  | 'shredder'
+  | 'contact'
+  | 'golden-tie'
+  | 'handshake'
+  | 'good-buy'
+  | 'footer';

@@ -1,6 +1,8 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import SmoothScroll from './components/shared/SmoothScroll';
-import Navbar from './components/Navbar/Navbar';
+import { useState } from 'react';
+import { HashRouter as Router } from 'react-router-dom';
+import { SmoothScroll } from './components/shared/SmoothScroll';
+import { Navbar } from './components/Navbar/Navbar';
+import { GrainOverlay } from './components/shared/GrainOverlay';
 import Preloader from './components/Preloader/Preloader';
 import Hero from './sections/01-Hero/Hero';
 import SelectedWork from './sections/02-SelectedWork/SelectedWork';
@@ -15,11 +17,14 @@ import GoodBuy from './sections/10-GoodBuy/GoodBuy';
 import Footer from './sections/11-Footer/Footer';
 
 function App() {
+  const [preloaderComplete, setPreloaderComplete] = useState(false);
+
   return (
     <Router>
-      <SmoothScroll>
-        <Preloader />
+      <SmoothScroll paused={!preloaderComplete}>
+        <Preloader onComplete={() => setPreloaderComplete(true)} />
         <Navbar />
+        <GrainOverlay />
         <main>
           <Hero />
           <SelectedWork />

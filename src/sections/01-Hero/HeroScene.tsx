@@ -1,11 +1,9 @@
 import { Canvas } from '@react-three/fiber';
-import { Environment, useProgress } from '@react-three/drei';
-import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
+import { Environment } from '@react-three/drei';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import SuperPETModel from './SuperPETModel';
 
 function HeroScene() {
-  const { progress } = useProgress();
-
   return (
     <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
       <ambientLight intensity={0.2} />
@@ -24,7 +22,6 @@ function HeroScene() {
 
       <EffectComposer>
         <Bloom intensity={0.5} luminanceThreshold={0.6} />
-        <ChromaticAberration offset={[0.001, 0.001]} />
       </EffectComposer>
     </Canvas>
   );
