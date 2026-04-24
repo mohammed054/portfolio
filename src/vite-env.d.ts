@@ -1,11 +1,11 @@
 /// <reference types="vite/client" />
 
-interface ImportMetaEnv {
-  readonly VITE_ENABLE_3D: string;
-  readonly VITE_ENABLE_GRAIN: string;
-  readonly VITE_ENABLE_PRELOADER: string;
+declare module '*.css' {
+  const content: string;
+  export default content;
 }
 
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
+declare module '*.glb' {
+  const src: string;
+  export default src;
 }

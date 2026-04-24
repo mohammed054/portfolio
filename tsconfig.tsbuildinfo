@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/Navbar/Navbar.tsx","./src/components/Preloader/Preloader.tsx","./src/components/shared/GrainOverlay.tsx","./src/components/shared/SmoothScroll.tsx","./src/sections/Hero/Hero.tsx","./src/sections/Hero/SuperPETComputer.tsx","./src/sections/SelectedWork/SelectedWork.tsx"],"version":"6.0.3"}

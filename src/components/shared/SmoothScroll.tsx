@@ -1,38 +1,41 @@
-// ============================================================
-// SHADER REBUILD — Smooth Scroll Wrapper
-// src/components/shared/SmoothScroll.tsx
-// ============================================================
+import { useEffect, useRef, ReactNode } from 'react';
+import Lenis from '@studio-freight/lenis';
 
-import { useEffect } from 'react';
-import { initLenis, pauseLenis, resumeLenis } from '../../hooks/useLenis';
-
-interface Props {
-  children: React.ReactNode;
-  /** Pass `true` while the preloader is active to lock scroll. */
+interface SmoothScrollProps {
+  children: ReactNode;
   paused?: boolean;
 }
 
-/**
- * Wraps the entire app. Initialises Lenis once on mount and exposes
- * the `paused` prop to lock / unlock scrolling (used by the preloader).
- */
-export function SmoothScroll({ children, paused = false }: Props) {
-  // Initialise Lenis on first mount
-  useEffect(() => {
-    const lenis = initLenis();
-    // Start locked if preloader is active on first render
-    if (paused) pauseLenis();
-    return () => lenis.destroy();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+export function SmoothScroll({ children, paused }: SmoothScrollProps) {
+  const lenisRef = useRef<Lenis | null>(null);
 
-  // React to `paused` changes (preloader exit unlocks scroll)
   useEffect(() => {
-    if (paused) {
-      pauseLenis();
-    } else {
-      resumeLenis();
-    }
+    if (paused) return;
+
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      smoothWheel: true,
+    });
+
+    lenisRef.current = lenis;
+
+    // Sync Lenis with GSAP ScrollTrigger
+    lenis.on('scroll', () => {
+      // ScrollTrigger.update() is called internally by GSAP
+    });
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    const id = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(id);
+      lenis.destroy();
+    };
   }, [paused]);
 
   return <>{children}</>;

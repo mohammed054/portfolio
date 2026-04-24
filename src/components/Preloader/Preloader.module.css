@@ -1,8 +1,12 @@
 /* ============================================================
    SHADER REBUILD — Preloader Styles
-   src/components/Preloader/Preloader.module.css
+   Phase 2 fixes:
+     2.2 — .crtScreen barrel distortion (child, not GSAP target)
+     2.3 — .filledNew jitter keyframe animation
+     2.4 — Mobile: 70vw logo, 80vw bar, 0.85rem subtitle
    ============================================================ */
 
+/* ── Outer wrapper — GSAP scaleY/scaleX collapse target ──────── */
 .preloader {
   position: fixed;
   inset: 0;
@@ -13,9 +17,29 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  transform-origin: center center;
+  transform-origin: center center; /* required for CRT collapse */
 }
 
+/* ── 2.2 CRT screen child ─────────────────────────────────────
+   Barrel distortion lives here, NOT on .preloader, so the GSAP
+   scaleY/scaleX exit transforms on .preloader don't fight with
+   the perspective transform here.
+   Slight scale(1.02) hides edge artifacts from the barrel warp.
+*/
+.crtScreen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  perspective: 800px;
+  transform: scale(1.02);
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+/* ── Scanlines overlay ─────────────────────────────────────── */
 .scanlines {
   position: absolute;
   inset: 0;
@@ -27,8 +51,10 @@
     rgba(0, 0, 0, 0.12) 3px
   );
   pointer-events: none;
+  z-index: 1;
 }
 
+/* ── Content stack inside crtScreen ───────────────────────── */
 .content {
   display: flex;
   flex-direction: column;
@@ -43,9 +69,10 @@
   gap: 0.5rem;
 }
 
+/* 2.4 — Desktop: fixed 280px wide; mobile overridden to 70vw below */
 .logoIcon {
   width: 280px;
-  height: 140px;
+  height: auto;
 }
 
 .wordmark {
@@ -57,18 +84,19 @@
 }
 
 .subtitle {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono, 'Courier Prime', monospace);
   font-size: 1.1rem;
   color: var(--color-crt-text, #e8e4d8);
   text-align: center;
   line-height: 1.8;
 }
 
+/* ── Progress bar ─────────────────────────────────────────── */
 .progressBar {
   width: 500px;
   max-width: 80vw;
   height: 32px;
-  border: 2px solid var(--color-crt-border, #4444aa);
+  border: 2px solid var(--color-crt-border, #e8e4d8);
   padding: 4px;
 }
 
@@ -80,7 +108,7 @@
 
 .segment {
   flex: 1;
-  background: var(--color-crt-bar, #4444aa);
+  background: var(--color-crt-bar, #e8e4d8);
   transition: opacity 0.05s;
 }
 
@@ -88,14 +116,38 @@
   opacity: 0;
 }
 
+/* 2.3 — Jitter animation for newly-filled segment.
+   Two-frame flicker: opacity drops then snaps back to 1.
+   Duration matches the 200ms timeout in the component. */
+@keyframes segmentFlicker {
+  0%   { opacity: 0.55; }
+  30%  { opacity: 1; }
+  55%  { opacity: 0.65; }
+  80%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+.segment.filled {
+  opacity: 1;
+}
+
+.segment.filledNew {
+  animation: segmentFlicker 0.18s ease-out forwards;
+}
+
+/* ── Copyright ─────────────────────────────────────��───────── */
 .copyright {
   position: absolute;
   bottom: 2rem;
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-family: var(--font-mono, 'Courier Prime', monospace);
   font-size: 0.75rem;
   color: var(--color-crt-text, #e8e4d8);
+  text-align: center;
+  padding: 0 1rem;
+  z-index: 2;
 }
 
+/* ── White flash ───────────────────────────────────────────── */
 .flash {
   position: fixed;
   inset: 0;
@@ -105,21 +157,28 @@
   pointer-events: none;
 }
 
+/* ── 2.4 Mobile scaling ─────────────────────────────────────
+   Spec: logo 70vw, progress bar 80vw, subtitle 0.85rem
+*/
 @media (max-width: 768px) {
-  .progressBar {
-    width: 80vw;
-  }
-
   .logoIcon {
-    width: 200px;
-    height: 100px;
+    width: 70vw;
+    max-width: 280px;
   }
 
   .wordmark {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 7vw, 3.5rem);
   }
 
   .subtitle {
     font-size: 0.85rem;
+  }
+
+  .progressBar {
+    width: 80vw;
+  }
+
+  .copyright {
+    font-size: 0.65rem;
   }
 }

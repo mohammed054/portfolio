@@ -1,0 +1,80 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 4vw;
+  background: transparent;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.navbar__logo-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.navbar__logo-text {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--color-white);
+  letter-spacing: 0.12em;
+}
+
+.navbar__links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.navbar__link {
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(138,134,128,0.3);
+  transition: color 0.2s;
+}
+
+.navbar__link:hover {
+  color: var(--color-white);
+}
+
+.navbar__cta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--color-white);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.navbar__cta:hover {
+  color: var(--color-gold);
+}
+
+.navbar__cta-icon {
+  font-size: 0.9rem;
+  filter: grayscale(1);
+}
+
+@media (max-width: 768px) {
+  .navbar__links { display: none; }
+  .navbar__cta span:not(.navbar__cta-icon) { display: none; }
+}

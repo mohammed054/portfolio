@@ -1,0 +1,124 @@
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #1a1aff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transform-origin: center center;
+}
+
+/* Scanlines */
+.preloader__scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.10) 2px,
+    rgba(0,0,0,0.10) 3px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Vignette */
+.preloader__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,30,0.55) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.preloader__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Logo */
+.preloader__logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.preloader__icon {
+  width: 64px;
+  height: 64px;
+  filter: drop-shadow(0 0 12px rgba(255,255,255,0.3));
+}
+
+.preloader__wordmark {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 900;
+  color: #e8e4d8;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 30px rgba(232,228,216,0.3);
+}
+
+/* Subtitle */
+.preloader__subtitle {
+  text-align: center;
+  font-family: 'Courier Prime', monospace;
+  font-size: clamp(0.75rem, 2vw, 1.05rem);
+  color: #e8e4d8;
+  line-height: 1.6;
+  opacity: 0.9;
+  text-shadow: 0 0 8px rgba(232,228,216,0.4);
+}
+
+/* Progress bar */
+.preloader__bar-outer {
+  width: clamp(280px, 50vw, 520px);
+  height: 34px;
+  border: 2px solid #e8e4d8;
+  padding: 3px;
+  box-shadow: 0 0 12px rgba(232,228,216,0.15), inset 0 0 4px rgba(0,0,0,0.3);
+}
+
+.preloader__bar-inner {
+  display: flex;
+  gap: 2px;
+  height: 100%;
+}
+
+.preloader__seg {
+  flex: 1;
+  background: transparent;
+  transition: background 0.05s;
+}
+
+.preloader__seg--on {
+  background: #e8e4d8;
+  box-shadow: 0 0 6px rgba(232,228,216,0.5);
+}
+
+/* Copyright */
+.preloader__copyright {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  font-family: 'Courier Prime', monospace;
+  font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+  color: #e8e4d8;
+  opacity: 0.7;
+  white-space: nowrap;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .preloader__logo { flex-direction: column; gap: 0.5rem; }
+  .preloader__copyright { white-space: normal; padding: 0 1rem; text-align: center; }
+}
