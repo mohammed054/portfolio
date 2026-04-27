@@ -32,7 +32,7 @@ function AboutVintage() {
 
     // Deep parallax — image moves at 0.4x scroll speed
     gsap.to(imageRef.current, {
-      yPercent: 15,
+      yPercent: -15,
       ease: 'none',
       scrollTrigger: {
         trigger: sectionRef.current,
@@ -61,7 +61,7 @@ function AboutVintage() {
   });
 
   return (
-    <section ref={sectionRef} className={styles.section}>
+    <section id="section-about-vintage" ref={sectionRef} className={styles.section}>
       <SectionAnchor id="about-vintage" threshold={0.4} />
 
       {/* Top rainbow stripe separator */}

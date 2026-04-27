@@ -3,6 +3,7 @@ export interface Project {
   name: string;
   category: string;
   url: string;
+  imageAvailable?: boolean;
   image?: string;
   images?: {
     main: string;

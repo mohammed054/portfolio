@@ -10,22 +10,14 @@
 //  - Active frame is full-size; adjacent frames are scaled down
 // ============================================================
 
-import { RefObject } from 'react';
-import React from 'react';
+import { type CSSProperties, type RefObject } from 'react';
 import styles from './FilmStrip.module.css';
-
-interface Project {
-  id: number;
-  name: string;
-  category: string;
-  url: string;
-  images?: { main?: string; detail1?: string };
-}
+import type { Project } from '../../types';
 
 interface FilmStripProps {
   projects: Project[];
   activeIndex: number;
-  stripRef: RefObject<HTMLDivElement>;
+  stripRef: RefObject<HTMLDivElement | null>;
 }
 
 // Sprocket row — alternating across the full strip
@@ -59,18 +51,21 @@ function FilmStrip({ projects, activeIndex, stripRef }: FilmStripProps) {
               <div
                 key={project.id}
                 className={`${styles.frame} ${isActive ? styles.frameActive : ''}`}
+                data-project-frame="true"
+                data-project-index={i}
                 style={{
                   '--distance': distance,
-                } as React.CSSProperties}
+                } as CSSProperties}
                 aria-hidden={!isActive}
               >
                 <div className={styles.frameImage}>
-                  {project.images?.main ? (
+                  {project.imageAvailable && project.images?.main ? (
                     <img
                       src={project.images.main}
                       alt={project.name}
                       className={styles.image}
                       loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <div

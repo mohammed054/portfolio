@@ -1,9 +1,3 @@
-/* ============================================================
-   SHADER REBUILD — Navbar Styles
-   src/components/Navbar/Navbar.module.css
-   ============================================================ */
-
-/* ─── SHELL ──────────────────────────────────────────────── */
 .navbar {
   position: fixed;
   top: 0;
@@ -15,107 +9,119 @@
   justify-content: space-between;
   padding: 0 40px;
   z-index: var(--z-navbar);
-  pointer-events: none;        /* click-through to content */
+  pointer-events: none;
   border-bottom: 1px solid var(--navbar-border);
   transition: border-color var(--transition-base);
 }
 
-/* Restore pointer events on interactive children */
 .navbar > * {
   pointer-events: auto;
 }
 
-/* ─── LOGO ───────────────────────────────────────────────── */
+.logo,
+.wordmark,
+.link,
+.cta,
+.hamburger span {
+  color: var(--navbar-text-color);
+  transition:
+    color var(--transition-base),
+    background-color var(--transition-base);
+}
+
+.navbar[data-theme='dark'] .logo,
+.navbar[data-theme='dark'] .wordmark,
+.navbar[data-theme='dark'] .link,
+.navbar[data-theme='dark'] .cta {
+  color: var(--color-text-dark);
+}
+
+.navbar[data-theme='dark'] .hamburger span {
+  background: var(--color-text-dark);
+}
+
 .logo {
   display: flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: var(--navbar-text-color);
-  transition: color var(--transition-base);
+}
+
+.logoIcon {
+  width: 42px;
+  height: auto;
+  flex-shrink: 0;
 }
 
 .wordmark {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-display);
   font-weight: 900;
   font-size: 1.2rem;
-  letter-spacing: 0.05em;
-  color: var(--navbar-text-color);
-  transition: color var(--transition-base);
+  letter-spacing: 0.08em;
 }
 
-/* ─── DESKTOP NAV LINKS ──────────────────────────────────── */
 .links {
   display: flex;
   align-items: center;
-  gap: 0;
 }
 
 .link {
-  font-family: 'EB Garamond', serif;
+  margin: 0 16px;
+  font-family: var(--font-body);
   font-size: 1rem;
-  font-weight: 400;
   text-decoration: underline;
   text-underline-offset: 3px;
-  color: var(--navbar-text-color);
-  margin: 0 16px;
-  transition: color var(--transition-fast);
 }
 
-.link:hover {
-  color: var(--navbar-text-hover);
-}
-
-.linkActive {
-  font-weight: 600;
-}
-
-/* ─── DESKTOP CTA ────────────────────────────────────────── */
-.cta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'EB Garamond', serif;
-  font-style: italic;
-  font-size: 1rem;
-  color: var(--navbar-text-color);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
+.link:hover,
 .cta:hover {
   color: var(--navbar-text-hover);
 }
 
-/* ─── HAMBURGER (mobile) ─────────────────────────────────── */
+.linkActive {
+  font-weight: 700;
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-style: italic;
+}
+
+.phoneIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
 .hamburger {
   display: none;
   flex-direction: column;
   gap: 5px;
-  background: none;
-  border: none;
-  cursor: pointer;
   padding: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 .hamburger span {
-  display: block;
   width: 24px;
   height: 2px;
   background: var(--navbar-text-color);
-  transition: background var(--transition-base);
+  display: block;
 }
 
-/* ─── MOBILE MENU ────────────────────────────────────────── */
 .mobileMenu {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.96);
   z-index: calc(var(--z-navbar) + 1);
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.96);
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--transition-base);
@@ -130,49 +136,40 @@
   position: absolute;
   top: 24px;
   right: 32px;
-  font-family: 'EB Garamond', serif;
-  font-size: 1.5rem;
-  color: var(--color-text-muted);
-  background: none;
   border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 1.3rem;
   cursor: pointer;
-  transition: color var(--transition-fast);
-}
-
-.mobileClose:hover {
-  color: var(--color-text-light);
 }
 
 .mobileLinks {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
+  gap: 24px;
 }
 
 .mobileLink {
-  font-family: 'EB Garamond', serif;
-  font-size: 2rem;
   color: var(--color-text-muted);
-  text-decoration: none;
-  transition: color var(--transition-fast);
+  font-family: var(--font-body);
+  font-size: 2rem;
 }
 
-.mobileLink:hover,
-.mobileLinkActive {
+.mobileLinkActive,
+.mobileLink:hover {
   color: var(--color-text-light);
 }
 
 .mobileCta {
-  font-family: 'EB Garamond', serif;
-  font-style: italic;
-  font-size: 1.2rem;
+  margin-top: 8px;
   color: var(--color-accent-gold);
-  text-decoration: none;
-  margin-top: 16px;
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  font-style: italic;
 }
 
-/* ─── RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 768px) {
   .navbar {
     padding: 0 24px;

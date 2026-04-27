@@ -8,11 +8,12 @@
 // ============================================================
 
 import { useRef, useEffect } from 'react';
-import { useGLTF } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei/core/Gltf.js';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { MODEL_PATHS } from '../../utils/constants';
 
-const MODEL_PATH = '/models/70s_retro_computer_asset_-_old_commodore_pet.glb';
+const MODEL_PATH = MODEL_PATHS.heroComputer;
 
 function SuperPETModel() {
   const groupRef = useRef<THREE.Group>(null);

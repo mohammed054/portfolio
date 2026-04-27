@@ -1,39 +1,57 @@
-/* ============================================================
-   About Vintage — Retro Computer Spread
-   ============================================================ */
-
 .section {
   position: relative;
   height: 100vh;
   overflow: hidden;
-  background: #5a4e3a; /* fallback: warm medium brown, matches photo bg */
+  background: #5a4e3a;
   display: flex;
   flex-direction: column;
 }
 
-/* ─── BACKGROUND IMAGE ────────────────────────────────────── */
-
 .bgImage {
   position: absolute;
-  /* Oversized for parallax travel */
   inset: -15% 0;
   background:
-    url('/images/about-retro-computers.webp') center 30% / cover no-repeat;
+    radial-gradient(circle at 30% 30%, rgba(255, 235, 190, 0.4), transparent 26%),
+    radial-gradient(circle at 68% 38%, rgba(215, 190, 140, 0.28), transparent 22%),
+    linear-gradient(180deg, #d6c39f 0%, #b59d74 46%, #8f7757 100%);
   will-change: transform;
 }
 
-/* ─── VIGNETTE ────────────────────────────────────────────── */
+.bgImage::before,
+.bgImage::after {
+  content: '';
+  position: absolute;
+  background: rgba(84, 63, 34, 0.42);
+  box-shadow:
+    0 0 0 2px rgba(245, 235, 205, 0.12),
+    inset 0 0 0 1px rgba(40, 28, 16, 0.2);
+}
+
+.bgImage::before {
+  left: 12%;
+  bottom: 18%;
+  width: 22%;
+  aspect-ratio: 1.35;
+}
+
+.bgImage::after {
+  right: 14%;
+  bottom: 14%;
+  width: 25%;
+  aspect-ratio: 1.45;
+}
 
 .vignette {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 90% 80% at 50% 50%, transparent 40%, rgba(0,0,0,0.25) 100%);
-  pointer-events: none;
   z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 90% 80% at 50% 50%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.25) 100%
+  );
 }
-
-/* ─── RAINBOW STRIPE SEPARATORS ───────────────────────────── */
 
 .rainbowStripe,
 .rainbowStripeBottom {
@@ -44,16 +62,15 @@
   flex-shrink: 0;
 }
 
-.rainbowStripe   { margin-top: 0; }
-.rainbowStripeBottom { margin-top: auto; }
-
-.stripe {
-  height: 5px;
-  width: 100%;
-  display: block;
+.rainbowStripeBottom {
+  margin-top: auto;
 }
 
-/* ─── MOBILE ──────────────────────────────────────────────── */
+.stripe {
+  display: block;
+  width: 100%;
+  height: 5px;
+}
 
 @media (max-width: 768px) {
   .section {

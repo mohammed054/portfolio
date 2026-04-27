@@ -1,85 +1,181 @@
 import { useEffect, useRef, useState } from 'react';
+import { useProgress } from '@react-three/drei/core/Progress.js';
 import { gsap } from 'gsap';
-import './Preloader.css';
+import { COPY, FEATURES } from '../../utils/constants';
+import styles from './Preloader.module.css';
 
 interface PreloaderProps {
   onComplete: () => void;
 }
 
-const RAINBOW = ['#ff2020','#ff8c00','#ffe000','#00c800','#0088ff','#8800ff'];
+const RAINBOW = [
+  '#e63946',
+  '#f4a261',
+  '#e9c46a',
+  '#2a9d8f',
+  '#457b9d',
+  '#6a0572',
+];
 const SEGMENTS = 20;
 
 export function Preloader({ onComplete }: PreloaderProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
-  const [done, setDone] = useState(false);
-  const exitStarted = useRef(false);
+  const flashRef = useRef<HTMLDivElement>(null);
+  const hasCompletedRef = useRef(false);
+  const previousFilledRef = useRef(0);
+  const { progress, active } = useProgress();
+  const [fallbackReady, setFallbackReady] = useState(false);
+  const [newlyFilled, setNewlyFilled] = useState<number | null>(null);
 
-  // Simulate asset loading
   useEffect(() => {
-    let val = 0;
-    const tick = () => {
-      val += Math.random() * 6 + 3;
-      if (val >= 100) {
-        setProgress(100);
-        setTimeout(() => setDone(true), 500);
-      } else {
-        setProgress(val);
-        setTimeout(tick, 80 + Math.random() * 60);
+    if (FEATURES.enablePreloader) {
+      return;
+    }
+
+    onComplete();
+  }, [onComplete]);
+
+  useEffect(() => {
+    if (!FEATURES.enablePreloader) {
+      return;
+    }
+
+    if (progress > 0) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      if (progress === 0) {
+        setFallbackReady(true);
       }
-    };
-    const t = setTimeout(tick, 300);
-    return () => clearTimeout(t);
-  }, []);
+    }, 1500);
 
-  // CRT power-off exit
+    return () => window.clearTimeout(timer);
+  }, [progress]);
+
+  const filledSegments = Math.floor((Math.min(progress, 100) / 100) * SEGMENTS);
+
   useEffect(() => {
-    if (!done || exitStarted.current) return;
-    exitStarted.current = true;
-    const el = wrapperRef.current;
-    if (!el) { onComplete(); return; }
+    if (filledSegments <= previousFilledRef.current) {
+      return;
+    }
 
-    gsap.timeline({ onComplete })
-      .to(el, { delay: 0.3, scaleY: 0.015, duration: 0.22, ease: 'power3.in', transformOrigin: 'center center' })
-      .to(el, { scaleX: 0, duration: 0.14, ease: 'power2.in' })
-      .set(el, { backgroundColor: '#ffffff' })
-      .to(el, { opacity: 0, duration: 0.18 });
-  }, [done, onComplete]);
+    setNewlyFilled(filledSegments - 1);
+    previousFilledRef.current = filledSegments;
 
-  const filled = Math.round((progress / 100) * SEGMENTS);
+    const timer = window.setTimeout(() => {
+      setNewlyFilled((current) =>
+        current === filledSegments - 1 ? null : current,
+      );
+    }, 180);
+
+    return () => window.clearTimeout(timer);
+  }, [filledSegments]);
+
+  useEffect(() => {
+    if (!FEATURES.enablePreloader || hasCompletedRef.current) {
+      return;
+    }
+
+    const ready = (!active && progress >= 100) || fallbackReady;
+    if (!ready) {
+      return;
+    }
+
+    hasCompletedRef.current = true;
+
+    const timeline = gsap.timeline({
+      onComplete,
+    });
+
+    timeline
+      .to(wrapperRef.current, {
+        delay: 0.4,
+        scaleY: 0.02,
+        duration: 0.2,
+        ease: 'power3.in',
+        transformOrigin: 'center center',
+      })
+      .to(wrapperRef.current, {
+        scaleX: 0,
+        duration: 0.15,
+        ease: 'power2.in',
+      })
+      .to(
+        flashRef.current,
+        {
+          opacity: 1,
+          duration: 0.08,
+          ease: 'none',
+        },
+        '-=0.02',
+      )
+      .to(flashRef.current, {
+        opacity: 0,
+        duration: 0.12,
+        ease: 'none',
+      });
+  }, [active, fallbackReady, onComplete, progress]);
+
+  if (!FEATURES.enablePreloader) {
+    return null;
+  }
 
   return (
-    <div className="preloader" ref={wrapperRef}>
-      <div className="preloader__scanlines" />
-      <div className="preloader__vignette" />
+    <div ref={wrapperRef} className={styles.preloader}>
+      <div className={styles.crtScreen}>
+        <div className={styles.content}>
+          <div className={styles.logoLockup}>
+            <svg className={styles.logoIcon} viewBox="0 0 320 80" aria-hidden="true">
+              {RAINBOW.map((color, index) => (
+                <path
+                  key={color}
+                  d={`M10 ${10 + index * 10} H${170 + index * 18} L${300 - index * 4} ${18 + index * 10} H10 Z`}
+                  fill={color}
+                />
+              ))}
+            </svg>
+            <div className={styles.wordmark}>SHADER</div>
+          </div>
 
-      <div className="preloader__content">
-        <div className="preloader__logo">
-          <svg className="preloader__icon" viewBox="0 0 60 60" aria-hidden="true">
-            {RAINBOW.map((c, i) => (
-              <rect key={i} x={i * 10} y={0} width={10} height={60} fill={c} />
-            ))}
-          </svg>
-          <span className="preloader__wordmark">SHADER</span>
-        </div>
+          <div className={styles.subtitle}>
+            <p>{COPY.preloader.line1}</p>
+            <p>{COPY.preloader.line2}</p>
+          </div>
 
-        <div className="preloader__subtitle">
-          <p>Shader Development Studio, Website</p>
-          <p>Version 1.02</p>
-        </div>
+          <div
+            className={styles.progressBar}
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(fallbackReady ? 100 : progress)}
+          >
+            <div className={styles.progressInner}>
+              {Array.from({ length: SEGMENTS }).map((_, index) => {
+                const isFilled = index < filledSegments || fallbackReady;
+                const isNew = isFilled && index === newlyFilled;
 
-        <div className="preloader__bar-outer" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100}>
-          <div className="preloader__bar-inner">
-            {Array.from({ length: SEGMENTS }).map((_, i) => (
-              <div key={i} className={`preloader__seg ${i < filled ? 'preloader__seg--on' : ''}`} />
-            ))}
+                return (
+                  <div
+                    key={index}
+                    className={[
+                      styles.segment,
+                      isFilled ? styles.filled : styles.empty,
+                      isNew ? styles.filledNew : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
-      <p className="preloader__copyright">
-        Copyright (c) Shader Development Studio AB, 2026. All Rights Reserved.
-      </p>
+      <div className={styles.scanlines} aria-hidden="true" />
+      <p className={styles.copyright}>{COPY.preloader.footer}</p>
+      <div ref={flashRef} className={styles.flash} aria-hidden="true" />
     </div>
   );
 }

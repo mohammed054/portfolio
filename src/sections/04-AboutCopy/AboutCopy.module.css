@@ -1,32 +1,24 @@
-/* ============================================================
-   About Copy — Cream editorial section
-   ============================================================ */
-
 .section {
   position: relative;
+  overflow: hidden;
   background: var(--color-bg-cream);
   padding: var(--section-padding-y) 0;
-  overflow: hidden;
 }
 
-/* Subtle paper texture */
 .paperTexture {
   position: absolute;
   inset: 0;
+  opacity: 0.45;
+  pointer-events: none;
   background-image:
-    url('/textures/grain.png'),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23noise)' opacity='0.45'/%3E%3C/svg%3E"),
     repeating-linear-gradient(
       0deg,
-      transparent,
-      transparent 39px,
-      rgba(180, 160, 130, 0.06) 40px
+      transparent 0 39px,
+      rgba(180, 160, 130, 0.06) 39px 40px
     );
-  background-size: 200px 200px, auto;
-  pointer-events: none;
-  opacity: 0.7;
+  background-size: 180px 180px, auto;
 }
-
-/* ─── CONTAINER ───────────────────────────────────────────── */
 
 .container {
   position: relative;
@@ -36,20 +28,16 @@
   padding: 0 var(--section-padding-x);
 }
 
-/* ─── HEADLINE ────────────────────────────────────────────── */
-
 .headline {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: clamp(30px, 5.5vw, 88px);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  margin-bottom: clamp(40px, 6vh, 80px);
   color: var(--color-text-headline);
   text-align: center;
-  margin-bottom: clamp(40px, 6vh, 80px);
+  font-family: var(--font-display);
+  font-size: clamp(30px, 5.5vw, 88px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
-
-/* ─── COLUMNS ─────────────────────────────────────────────── */
 
 .columns {
   display: grid;
@@ -57,20 +45,13 @@
   gap: 48px;
 }
 
-.column {
-  position: relative;
-}
-
 .column p {
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: clamp(15px, 1.05vw, 17px);
-  line-height: 1.72;
   color: var(--color-text-dark);
-  /* Left-aligned, per spec — no justify */
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.05vw, 17px);
+  font-weight: 400;
+  line-height: 1.72;
 }
-
-/* ─── BUSINESSMAN CUTOUT ──────────────────────────────────── */
 
 .businessman {
   position: absolute;
@@ -83,31 +64,44 @@
   pointer-events: none;
 }
 
-.businessmanImg {
-  height: 100%;
-  max-height: 560px;
-  width: auto;
-  object-fit: contain;
-  object-position: bottom;
-  display: block;
-}
-
-/* Fallback when image is missing */
 .businessmanFallback {
-  display: none;
+  position: relative;
+  width: clamp(170px, 18vw, 250px);
+  height: clamp(360px, 48vw, 560px);
+  border-radius: 12px 12px 0 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 20%),
+    linear-gradient(180deg, #cab99c 0%, #b8a483 45%, #7f6a4d 100%);
+  opacity: 0.58;
+  box-shadow: inset 0 0 0 1px rgba(44, 36, 22, 0.12);
 }
 
-.businessmanImg[src=""] + .businessmanFallback,
-.businessmanImg:not([src]) + .businessmanFallback {
-  display: block;
-  width: 220px;
-  height: 400px;
-  background: linear-gradient(180deg, #d4c8b0 0%, #c8b898 100%);
-  border-radius: 4px 4px 0 0;
-  opacity: 0.4;
+.businessmanFallback::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: 28%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: rgba(44, 36, 22, 0.18);
 }
 
-/* ─── MOBILE ──────────────────────────────────────────────── */
+.businessmanFallback::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 70%;
+  height: 76%;
+  transform: translateX(-50%);
+  background:
+    linear-gradient(135deg, transparent 47%, rgba(44, 36, 22, 0.14) 47% 53%, transparent 53%),
+    linear-gradient(225deg, transparent 47%, rgba(44, 36, 22, 0.14) 47% 53%, transparent 53%),
+    linear-gradient(180deg, rgba(44, 36, 22, 0.12), rgba(44, 36, 22, 0.28));
+  clip-path: polygon(22% 0, 78% 0, 100% 18%, 86% 100%, 14% 100%, 0 18%);
+}
 
 @media (max-width: 900px) {
   .columns {
@@ -119,27 +113,28 @@
     position: relative;
     right: auto;
     bottom: auto;
-    height: auto;
     justify-content: flex-end;
-    float: right;
+    height: auto;
     margin: 0 0 1rem 2rem;
+    float: right;
   }
 
-  .businessmanImg {
-    max-height: 240px;
+  .businessmanFallback {
+    width: 160px;
+    height: 240px;
   }
 }
 
 @media (max-width: 768px) {
-  .headline {
-    font-size: clamp(26px, 8vw, 52px);
-  }
-
   .section {
     padding: var(--section-padding-y) 6vw;
   }
 
   .container {
     padding: 0;
+  }
+
+  .headline {
+    font-size: clamp(26px, 8vw, 52px);
   }
 }

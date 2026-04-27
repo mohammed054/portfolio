@@ -124,7 +124,7 @@
 .grain {
   position: absolute;
   inset: 0;
-  background-image: url('/textures/grain.png');
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
   background-size: 200px 200px;
   opacity: 0.06;
   pointer-events: none;

@@ -39,6 +39,8 @@ export function SectionAnchor({ id, threshold = 0.4 }: Props) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    const target = el.parentElement;
+    if (!target) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -61,10 +63,16 @@ export function SectionAnchor({ id, threshold = 0.4 }: Props) {
       { threshold },
     );
 
-    observer.observe(el);
+    observer.observe(target);
     return () => observer.disconnect();
   }, [id, threshold]);
 
-  // Zero-size div — purely an observation target
-  return <div ref={ref} id={id} style={{ position: 'absolute', top: 0 }} />;
+  return (
+    <div
+      ref={ref}
+      id={id}
+      aria-hidden="true"
+      style={{ position: 'absolute', inset: '0 auto auto 0', width: 1, height: 1 }}
+    />
+  );
 }

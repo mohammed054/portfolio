@@ -1,10 +1,5 @@
-/* ============================================================
-   Selected Work Section
-   ============================================================ */
-
 .section {
   position: relative;
-  /* Height is controlled by the GSAP pin — this is the trigger height */
   min-height: 100vh;
   background: linear-gradient(160deg, #2a1f5e 0%, #0e1b6e 50%, #0d0d0d 100%);
   display: flex;
@@ -14,35 +9,51 @@
   overflow: hidden;
 }
 
-/* ─── PROJECT METADATA ────────────────────────────────────── */
+.sectionHeader {
+  position: relative;
+  z-index: 10;
+  padding-top: calc(var(--navbar-height) + 1.5rem);
+  text-align: center;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  color: var(--color-text-light);
+}
+
+.sectionSubtitle {
+  margin-top: 0.75rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
 
 .meta {
   position: relative;
   z-index: 10;
   text-align: center;
-  padding: var(--navbar-height) 2rem 1.5rem;
-  pointer-events: none;
+  padding: 1rem 2rem 1.5rem;
 }
 
 .projectName {
   font-family: var(--font-display);
-  font-weight: 700;
   font-size: clamp(28px, 4vw, 60px);
-  color: var(--color-text-light);
+  font-weight: 700;
   line-height: 1.1;
-  transition: opacity 0.3s ease;
+  color: var(--color-text-light);
 }
 
 .projectCategory {
-  font-family: var(--font-body);
-  font-size: 1rem;
-  color: var(--color-text-muted);
   margin-top: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
-  pointer-events: auto;
+  gap: 1.25rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 1rem;
 }
 
 .viewLink {
@@ -51,38 +62,44 @@
   text-underline-offset: 3px;
   transition: color var(--transition-fast);
 }
+
 .viewLink:hover {
   color: var(--color-text-light);
 }
 
-/* ─── NAVIGATION ──────────────────────────────────────────── */
+.stripShell {
+  width: 100%;
+  will-change: transform;
+}
 
 .nav {
   position: absolute;
   bottom: 2rem;
   left: 50%;
-  transform: translateX(-50%);
+  z-index: 10;
   display: flex;
   align-items: center;
   gap: 2rem;
-  z-index: 10;
+  transform: translateX(-50%);
 }
 
 .navBtn {
-  background: none;
+  padding: 0.5rem 1rem;
   border: none;
+  background: none;
   color: var(--color-text-light);
   font-family: var(--font-body);
   font-size: 1.8rem;
+  line-height: 1;
   cursor: pointer;
-  padding: 0.5rem 1rem;
   opacity: 0.7;
   transition: opacity var(--transition-fast);
-  line-height: 1;
 }
+
 .navBtn:hover:not(:disabled) {
   opacity: 1;
 }
+
 .navBtn:disabled {
   opacity: 0.2;
   cursor: default;
@@ -97,17 +114,29 @@
 .dot {
   width: 6px;
   height: 6px;
-  border-radius: 50%;
+  padding: 0;
+  border-radius: 999px;
   border: 1.5px solid rgba(240, 236, 228, 0.5);
   background: transparent;
   cursor: pointer;
-  padding: 0;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
 }
 
 .dotActive {
-  background: var(--color-text-light);
-  border-color: var(--color-text-light);
   width: 8px;
   height: 8px;
+  background: var(--color-text-light);
+  border-color: var(--color-text-light);
+}
+
+@media (max-width: 768px) {
+  .projectCategory {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nav {
+    gap: 1rem;
+    bottom: 1.5rem;
+  }
 }

@@ -1,41 +1,34 @@
-import { useEffect, useRef, ReactNode } from 'react';
-import Lenis from '@studio-freight/lenis';
+import { useEffect, type ReactNode } from 'react';
+import {
+  destroyLenis,
+  initLenis,
+  pauseLenis,
+  resumeLenis,
+} from '../../hooks/useLenis';
 
 interface SmoothScrollProps {
   children: ReactNode;
   paused?: boolean;
 }
 
-export function SmoothScroll({ children, paused }: SmoothScrollProps) {
-  const lenisRef = useRef<Lenis | null>(null);
-
+export function SmoothScroll({
+  children,
+  paused = false,
+}: SmoothScrollProps) {
   useEffect(() => {
-    if (paused) return;
-
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      smoothWheel: true,
-    });
-
-    lenisRef.current = lenis;
-
-    // Sync Lenis with GSAP ScrollTrigger
-    lenis.on('scroll', () => {
-      // ScrollTrigger.update() is called internally by GSAP
-    });
-
-    const raf = (time: number) => {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    };
-    const id = requestAnimationFrame(raf);
+    initLenis();
 
     return () => {
-      cancelAnimationFrame(id);
-      lenis.destroy();
+      destroyLenis();
     };
+  }, []);
+
+  useEffect(() => {
+    if (paused) {
+      pauseLenis();
+    } else {
+      resumeLenis();
+    }
   }, [paused]);
 
   return <>{children}</>;

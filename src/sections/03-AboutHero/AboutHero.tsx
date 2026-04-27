@@ -28,7 +28,7 @@ function AboutHero() {
 
     // ── Parallax: image moves at 0.5x scroll ─────────────────
     gsap.to(imageRef.current, {
-      yPercent: 20,
+      yPercent: -20,
       ease: 'none',
       scrollTrigger: {
         trigger: sectionRef.current,
@@ -53,7 +53,7 @@ function AboutHero() {
   });
 
   return (
-    <section ref={sectionRef} className={styles.section}>
+    <section id="section-about-hero" ref={sectionRef} className={styles.section}>
       <SectionAnchor id="about-us" threshold={0.4} />
 
       {/* Transition gradient from dark hero above */}
@@ -66,9 +66,9 @@ function AboutHero() {
       <div className={styles.vignette} aria-hidden="true" />
 
       {/* Title */}
-      <h1 ref={titleRef} className={styles.title}>
+      <h2 ref={titleRef} className={styles.title}>
         About Us
-      </h1>
+      </h2>
     </section>
   );
 }

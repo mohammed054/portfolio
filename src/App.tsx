@@ -3,26 +3,31 @@ import { SmoothScroll } from '@components/shared/SmoothScroll';
 import { GrainOverlay } from '@components/shared/GrainOverlay';
 import { Navbar } from '@components/Navbar/Navbar';
 import { Preloader } from '@components/Preloader/Preloader';
-import { Hero } from '@sections/Hero/Hero';
-import { SelectedWork } from '@sections/SelectedWork/SelectedWork';
+import Hero from '@sections/01-Hero/Hero';
+import SelectedWork from '@sections/02-SelectedWork/SelectedWork';
+import AboutHero from '@sections/03-AboutHero/AboutHero';
+import AboutCopy from '@sections/04-AboutCopy/AboutCopy';
+import AboutVintage from '@sections/05-AboutVintage/AboutVintage';
+import { FEATURES } from '@utils/constants';
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(FEATURES.enablePreloader);
 
   return (
     <SmoothScroll paused={isLoading}>
-      <a href="#main-content" className="skip-to-content">Skip to content</a>
       <Preloader onComplete={() => setIsLoading(false)} />
+
       {!isLoading && (
         <>
-          <GrainOverlay />
+          {FEATURES.enableGrain && <GrainOverlay />}
           <Navbar />
+
           <main id="main-content">
             <Hero />
             <SelectedWork />
-            <div style={{ height: '60vh', background: '#f0e8d8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Playfair Display', serif", fontSize: '2rem', color: '#2c2416' }}>
-              About Us ↓ (Phase 4+)
-            </div>
+            <AboutHero />
+            <AboutCopy />
+            <AboutVintage />
           </main>
         </>
       )}
