@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -15,6 +15,7 @@ function AboutCopy() {
   const col2Ref = useRef<HTMLDivElement>(null);
   const col3Ref = useRef<HTMLDivElement>(null);
   const businessmanRef = useRef<HTMLDivElement>(null);
+  const [imageMissing, setImageMissing] = useState(false);
 
   useGSAP(
     () => {
@@ -88,7 +89,20 @@ function AboutCopy() {
       </div>
 
       <div ref={businessmanRef} className={styles.businessman} aria-hidden="true">
-        <div className={styles.businessmanFallback} />
+        {!imageMissing ? (
+          <img
+            src="/images/businessman-about.png"
+            alt=""
+            className={styles.businessmanImage}
+            decoding="async"
+            loading="lazy"
+            onError={() => setImageMissing(true)}
+          />
+        ) : null}
+        <div
+          className={styles.businessmanFallback}
+          hidden={!imageMissing}
+        />
       </div>
     </section>
   );

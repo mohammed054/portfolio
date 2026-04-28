@@ -65,10 +65,28 @@ export const COPY = {
     col3:
       "Whether it's prototyping an idea, launching an augmented reality experience, or bringing high-fidelity visuals to life, Shader bridges the gap between creative ambition and technical execution. Our process is hands-on, collaborative, and tailored for teams that value both craft and innovation. We combine technical expertise with a designer's eye, ensuring that every interaction feels natural and every pixel is perfectly placed. We're not your regular IT department. We don't troubleshoot printers.",
   },
+  shredder: {
+    headline: "Had Enough Reading? Let's Shred This Thing.",
+    subtext: "We've got one last trick up our sleeve.",
+  },
+  contactTease: {
+    headlineLines: [
+      'Still Not',
+      "Convinced We're",
+      'Serious About',
+      'Business?',
+    ],
+    subtext: "We've got one last trick up our sleeve.",
+  },
+  goldenTie: {
+    headline: 'Check Out This Golden Tie',
+    subtext: 'You made it this far. You deserve a tie-break.',
+  },
 } as const;
 
 export const MODEL_PATHS = {
   heroComputer: '/models/70s_retro_computer_asset_-_old_commodore_pet.glb',
+  shredderMachine: '/models/office_electronics_paper_shredder.glb',
 } as const;
 
 export const PROJECTS: Project[] = [

@@ -9,114 +9,84 @@ import styles from './SelectedWork.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+function ArrowIcon({ direction }: { direction: 'left' | 'right' }) {
+  const rotation = direction === 'left' ? 'rotate(180 12 12)' : undefined;
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <g transform={rotation}>
+        <path
+          d="M5 12H18M18 12L12.6 6.6M18 12L12.6 17.4"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+    </svg>
+  );
+}
+
 function SelectedWork() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const stripRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<ScrollTrigger | null>(null);
-  const frameProgressRef = useRef<number[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
   useGSAP(
     () => {
       const section = sectionRef.current;
-      const strip = stripRef.current;
-      const wrapper = wrapperRef.current;
-      if (!section || !strip || !wrapper) {
+      if (!section) {
         return;
       }
 
-      const init = () => {
-        let totalX = strip.scrollWidth - window.innerWidth;
-        if (totalX <= 0) {
-          return;
-        }
+      const totalSteps = Math.max(1, PROJECTS.length - 1);
+      const scrollDistance = window.innerHeight * (totalSteps * 0.72 + 1.12);
 
-        const updateFrameProgresses = () => {
-          totalX = strip.scrollWidth - window.innerWidth;
-          const frames = Array.from(
-            strip.querySelectorAll<HTMLElement>('[data-project-frame="true"]'),
+      triggerRef.current = ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: `+=${scrollDistance}`,
+        pin: true,
+        scrub: 1.2,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const nextIndex = gsap.utils.clamp(
+            0,
+            PROJECTS.length - 1,
+            Math.round(self.progress * totalSteps),
           );
+          setActiveIndex(nextIndex);
+        },
+      });
 
-          frameProgressRef.current = frames.map((frame) => {
-            const centerOffset =
-              frame.offsetLeft + frame.offsetWidth / 2 - window.innerWidth / 2;
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
+        );
 
-            return totalX > 0 ? gsap.utils.clamp(0, totalX, centerOffset) / totalX : 0;
-          });
-        };
-
-        updateFrameProgresses();
-
-        const tween = gsap.to(strip, {
-          x: () => -(strip.scrollWidth - window.innerWidth),
+        gsap.to(headerRef.current, {
+          opacity: 0,
+          y: -22,
           ease: 'none',
           scrollTrigger: {
             trigger: section,
             start: 'top top',
-            end: () => `+=${totalX + window.innerWidth * 0.5}`,
-            pin: true,
-            scrub: 1.5,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-            onRefresh: updateFrameProgresses,
-            onUpdate: (self) => {
-              const frameProgresses = frameProgressRef.current;
-              const index = frameProgresses.reduce(
-                (closestIndex, progress, currentIndex) => {
-                  const closestDistance = Math.abs(
-                    frameProgresses[closestIndex] - self.progress,
-                  );
-                  const currentDistance = Math.abs(progress - self.progress);
-
-                  return currentDistance < closestDistance
-                    ? currentIndex
-                    : closestIndex;
-                },
-                0,
-              );
-              setActiveIndex(index);
-            },
+            end: '+=18%',
+            scrub: true,
           },
         });
-
-        triggerRef.current = tween.scrollTrigger ?? null;
-
-        gsap.fromTo(
-          wrapper,
-          { scale: 0.6, opacity: 0 },
-          {
-            scale: 1,
-            opacity: 1,
-            scrollTrigger: {
-              trigger: section,
-              start: 'top 90%',
-              end: 'top 20%',
-              scrub: true,
-            },
-          },
-        );
-
-        if (headerRef.current) {
-          gsap.to(headerRef.current, {
-            opacity: 0,
-            y: -24,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top top',
-              end: '+=20%',
-              scrub: true,
-            },
-          });
-        }
-      };
-
-      const raf = requestAnimationFrame(init);
+      }
 
       return () => {
-        cancelAnimationFrame(raf);
         triggerRef.current?.kill();
       };
     },
@@ -125,13 +95,13 @@ function SelectedWork() {
 
   const goTo = (targetIndex: number) => {
     const trigger = triggerRef.current;
-    const frameProgresses = frameProgressRef.current;
-    if (!trigger || frameProgresses.length === 0) {
+    if (!trigger) {
       return;
     }
 
     const clampedIndex = Math.max(0, Math.min(PROJECTS.length - 1, targetIndex));
-    const progress = frameProgresses[clampedIndex] ?? 0;
+    const totalSteps = Math.max(1, PROJECTS.length - 1);
+    const progress = clampedIndex / totalSteps;
     const scrollY = trigger.start + progress * (trigger.end - trigger.start);
 
     setActiveIndex(clampedIndex);
@@ -159,25 +129,22 @@ function SelectedWork() {
 
       <div className={styles.meta} aria-live="polite">
         <h3 className={styles.projectName}>{activeProject.name}</h3>
-        <p className={styles.projectCategory}>
+        <p className={styles.projectMetaRow}>
           <span>{activeProject.category}</span>
+          <span className={styles.separator} aria-hidden="true" />
           <a
             href={activeProject.url}
             className={styles.viewLink}
             target="_blank"
             rel="noopener noreferrer"
           >
-            View project →
+            View project
           </a>
         </p>
       </div>
 
-      <div ref={wrapperRef} className={styles.stripShell}>
-        <FilmStrip
-          projects={PROJECTS}
-          activeIndex={activeIndex}
-          stripRef={stripRef}
-        />
+      <div className={styles.stripShell}>
+        <FilmStrip projects={PROJECTS} activeIndex={activeIndex} />
       </div>
 
       <div className={styles.nav}>
@@ -188,7 +155,7 @@ function SelectedWork() {
           disabled={activeIndex === 0}
           aria-label="Previous project"
         >
-          ←
+          <ArrowIcon direction="left" />
         </button>
 
         <div className={styles.dots} role="tablist" aria-label="Project pagination">
@@ -212,7 +179,7 @@ function SelectedWork() {
           disabled={activeIndex === PROJECTS.length - 1}
           aria-label="Next project"
         >
-          →
+          <ArrowIcon direction="right" />
         </button>
       </div>
     </section>

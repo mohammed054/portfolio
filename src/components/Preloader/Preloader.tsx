@@ -26,32 +26,43 @@ export function Preloader({ onComplete }: PreloaderProps) {
   const { progress, active } = useProgress();
   const [fallbackReady, setFallbackReady] = useState(false);
   const [newlyFilled, setNewlyFilled] = useState<number | null>(null);
+  const skipPreloader =
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).has('skip-preloader');
 
   useEffect(() => {
-    if (FEATURES.enablePreloader) {
+    if (FEATURES.enablePreloader && !skipPreloader) {
       return;
     }
 
     onComplete();
-  }, [onComplete]);
+  }, [onComplete, skipPreloader]);
 
   useEffect(() => {
-    if (!FEATURES.enablePreloader) {
-      return;
-    }
-
-    if (progress > 0) {
+    if (!FEATURES.enablePreloader || skipPreloader) {
       return;
     }
 
     const timer = window.setTimeout(() => {
-      if (progress === 0) {
+      if (progress < 100) {
         setFallbackReady(true);
       }
-    }, 1500);
+    }, progress > 0 ? 3200 : 1800);
 
     return () => window.clearTimeout(timer);
-  }, [progress]);
+  }, [progress, skipPreloader]);
+
+  useEffect(() => {
+    if (!FEATURES.enablePreloader || skipPreloader) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setFallbackReady(true);
+    }, 6000);
+
+    return () => window.clearTimeout(timer);
+  }, [skipPreloader]);
 
   const filledSegments = Math.floor((Math.min(progress, 100) / 100) * SEGMENTS);
 
@@ -73,7 +84,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
   }, [filledSegments]);
 
   useEffect(() => {
-    if (!FEATURES.enablePreloader || hasCompletedRef.current) {
+    if (!FEATURES.enablePreloader || skipPreloader || hasCompletedRef.current) {
       return;
     }
 
@@ -115,9 +126,9 @@ export function Preloader({ onComplete }: PreloaderProps) {
         duration: 0.12,
         ease: 'none',
       });
-  }, [active, fallbackReady, onComplete, progress]);
+  }, [active, fallbackReady, onComplete, progress, skipPreloader]);
 
-  if (!FEATURES.enablePreloader) {
+  if (!FEATURES.enablePreloader || skipPreloader) {
     return null;
   }
 

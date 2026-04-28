@@ -23,17 +23,8 @@
   position: absolute;
   inset: -20% 0;
   background:
-    linear-gradient(160deg, #2a2a2a 0%, #1a1818 50%, #0d0d0d 100%),
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.025) 0 4%,
-      rgba(0, 0, 0, 0.05) 4% 8%
-    ),
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.02) 0 5%,
-      rgba(0, 0, 0, 0.06) 5% 10%
-    );
+    linear-gradient(160deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.5)),
+    linear-gradient(160deg, #2a2927 0%, #1a1818 46%, #0d0d0d 100%);
   filter: saturate(0.15) contrast(1.2);
   transform-origin: center center;
   will-change: transform;
@@ -44,19 +35,36 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: inherit;
-  opacity: 0.12;
-  mix-blend-mode: screen;
 }
 
 .bgImage::before {
-  transform: translateX(-2px);
-  background-color: rgba(255, 60, 60, 0.08);
+  inset: 8% 6% 14%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(226, 220, 208, 0.06) 0 6px,
+      transparent 6px 84px,
+      rgba(0, 0, 0, 0.14) 84px 88px,
+      transparent 88px 176px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(245, 240, 232, 0.04) 0 7px,
+      transparent 7px 76px,
+      rgba(0, 0, 0, 0.22) 76px 80px,
+      transparent 80px 160px
+    );
+  transform: perspective(1400px) rotateX(63deg) scale(1.35) translateY(12%);
+  opacity: 0.9;
+  filter: blur(0.6px);
 }
 
 .bgImage::after {
-  transform: translateX(2px);
-  background-color: rgba(60, 90, 255, 0.08);
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255, 80, 80, 0.08), transparent 18%),
+    radial-gradient(circle at 88% 22%, rgba(60, 90, 255, 0.09), transparent 18%);
+  mix-blend-mode: screen;
+  opacity: 0.3;
 }
 
 .vignette {

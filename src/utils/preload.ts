@@ -3,4 +3,5 @@ import { MODEL_PATHS } from './constants';
 
 export function preloadPhaseAssets(): void {
   useGLTF.preload(MODEL_PATHS.heroComputer);
+  useGLTF.preload(MODEL_PATHS.shredderMachine);
 }

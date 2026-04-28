@@ -55,19 +55,29 @@
 
 .businessman {
   position: absolute;
-  right: clamp(0px, 2vw, 40px);
+  right: clamp(0px, 1vw, 24px);
   bottom: 0;
   z-index: 3;
-  height: 90%;
+  height: min(90%, 720px);
   display: flex;
   align-items: flex-end;
   pointer-events: none;
 }
 
+.businessmanImage {
+  width: clamp(240px, 25vw, 420px);
+  height: auto;
+  object-fit: contain;
+  object-position: bottom center;
+  filter: saturate(0.72) contrast(1.02) sepia(0.1);
+  mix-blend-mode: multiply;
+  opacity: 0.92;
+}
+
 .businessmanFallback {
   position: relative;
-  width: clamp(170px, 18vw, 250px);
-  height: clamp(360px, 48vw, 560px);
+  width: clamp(220px, 22vw, 320px);
+  height: clamp(420px, 52vw, 620px);
   border-radius: 12px 12px 0 0;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 20%),
@@ -117,6 +127,10 @@
     height: auto;
     margin: 0 0 1rem 2rem;
     float: right;
+  }
+
+  .businessmanImage {
+    width: 180px;
   }
 
   .businessmanFallback {

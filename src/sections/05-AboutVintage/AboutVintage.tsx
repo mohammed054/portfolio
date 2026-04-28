@@ -72,7 +72,47 @@ function AboutVintage() {
       </div>
 
       {/* Parallax background */}
-      <div ref={imageRef} className={styles.bgImage} role="img" aria-label="Vintage retro computer product spread from the 1980s" />
+      <div ref={imageRef} className={styles.bgImage} aria-hidden="true">
+        <div className={styles.surfaceGlow} />
+        <div className={styles.productSpread}>
+          <div className={`${styles.device} ${styles.keyboardLeft}`}>
+            <div className={styles.keyboardDeck} />
+          </div>
+
+          <div className={`${styles.device} ${styles.printer}`}>
+            <div className={styles.printerFeed} />
+          </div>
+
+          <div className={`${styles.device} ${styles.monitor}`}>
+            <div className={styles.monitorStand} />
+            <div className={styles.monitorShell}>
+              <div className={styles.monitorScreen}>
+                <span className={styles.chartTitle}>NET SALES BY DIVISION</span>
+                <div className={styles.chart}>
+                  {[28, 46, 58, 34, 72, 64, 52].map((height, index) => (
+                    <span
+                      key={height}
+                      className={styles.chartBar}
+                      style={
+                        {
+                          '--bar-height': `${height}%`,
+                          '--bar-hue': `${index * 48}`,
+                        } as React.CSSProperties
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className={`${styles.device} ${styles.keyboardRight}`}>
+            <div className={styles.keyboardDeck} />
+          </div>
+
+          <div className={`${styles.device} ${styles.drive}`} />
+        </div>
+      </div>
 
       {/* Light vignette */}
       <div className={styles.vignette} aria-hidden="true" />
