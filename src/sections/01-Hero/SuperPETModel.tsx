@@ -7,21 +7,10 @@ import { MODEL_PATHS } from '../../utils/constants';
 const MODEL_PATH = MODEL_PATHS.heroComputer;
 
 const MONITOR_SCENES = [
-  [
-    '/images/carousel/project-11-main.jpg',
-    '/images/carousel/project-01-main.jpg',
-    '/images/carousel/project-03-main.jpg',
-  ],
-  [
-    '/images/carousel/project-02-main.jpg',
-    '/images/carousel/project-06-main.jpg',
-    '/images/carousel/project-07-main.jpg',
-  ],
-  [
-    '/images/carousel/project-09-main.jpg',
-    '/images/carousel/project-10-main.jpg',
-    '/images/carousel/project-08-main.jpg',
-  ],
+  '/images/carousel/project-10-main.jpg',
+  '/images/carousel/project-09-main.jpg',
+  '/images/carousel/project-01-main.jpg',
+  '/images/carousel/project-11-main.jpg',
 ] as const;
 
 function roundRect(
@@ -71,152 +60,84 @@ function drawCoverImage(
   context.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
 }
 
-function drawMonitorPanel(
+function drawMonitorScene(
   context: CanvasRenderingContext2D,
   image: HTMLImageElement | undefined,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  rotation: number,
-  brightness: number,
-  glow: string,
-) {
-  context.save();
-  context.translate(x + width * 0.5, y + height * 0.5);
-  context.rotate(rotation);
-
-  context.shadowColor = glow;
-  context.shadowBlur = 22;
-  context.shadowOffsetY = 10;
-
-  context.fillStyle = '#040404';
-  roundRect(context, -width * 0.5, -height * 0.5, width, height, 18);
-  context.fill();
-
-  context.clip();
-  context.fillStyle = '#0b0d0f';
-  context.fillRect(-width * 0.5, -height * 0.5, width, height);
-
-  if (image && image.complete && image.naturalWidth > 0) {
-    context.filter = `brightness(${brightness}) saturate(0.92) contrast(1.08)`;
-    drawCoverImage(context, image, -width * 0.5, -height * 0.5, width, height);
-    context.filter = 'none';
-  } else {
-    const fallbackGradient = context.createLinearGradient(
-      -width * 0.5,
-      -height * 0.5,
-      width * 0.5,
-      height * 0.5,
-    );
-    fallbackGradient.addColorStop(0, '#1d2c38');
-    fallbackGradient.addColorStop(1, '#0d1218');
-    context.fillStyle = fallbackGradient;
-    context.fillRect(-width * 0.5, -height * 0.5, width, height);
-  }
-
-  context.fillStyle = 'rgba(5, 8, 12, 0.22)';
-  context.fillRect(-width * 0.5, -height * 0.5, width, height);
-
-  context.strokeStyle = 'rgba(255, 246, 227, 0.3)';
-  context.lineWidth = 2;
-  roundRect(context, -width * 0.5 + 1, -height * 0.5 + 1, width - 2, height - 2, 16);
-  context.stroke();
-  context.restore();
-}
-
-function drawWorkShowcaseScene(
-  context: CanvasRenderingContext2D,
   width: number,
   height: number,
   time: number,
   alpha: number,
-  images: Array<HTMLImageElement | undefined>,
 ) {
   context.save();
   context.globalAlpha = alpha;
+  roundRect(context, 0, 0, width, height, 28);
+  context.clip();
 
   const background = context.createRadialGradient(
-    width * 0.58,
-    height * 0.22,
-    width * 0.04,
-    width * 0.54,
-    height * 0.56,
-    width * 0.9,
+    width * 0.5,
+    height * 0.38,
+    width * 0.05,
+    width * 0.5,
+    height * 0.5,
+    width * 0.86,
   );
-  background.addColorStop(0, '#203c36');
-  background.addColorStop(0.24, '#152925');
-  background.addColorStop(0.55, '#060709');
-  background.addColorStop(1, '#010102');
+  background.addColorStop(0, '#24433d');
+  background.addColorStop(0.3, '#152c27');
+  background.addColorStop(0.72, '#050608');
+  background.addColorStop(1, '#020203');
   context.fillStyle = background;
   context.fillRect(0, 0, width, height);
 
+  if (image && image.complete && image.naturalWidth > 0) {
+    const driftX = Math.sin(time * 0.12) * width * 0.018;
+    const driftY = Math.cos(time * 0.1) * height * 0.014;
+    context.save();
+    context.translate(driftX, driftY);
+    context.filter = 'brightness(0.74) saturate(0.95) contrast(1.06)';
+    drawCoverImage(context, image, -width * 0.03, -height * 0.03, width * 1.06, height * 1.06);
+    context.filter = 'none';
+    context.restore();
+  } else {
+    const fallbackGradient = context.createRadialGradient(
+      width * 0.5,
+      height * 0.45,
+      width * 0.08,
+      width * 0.5,
+      height * 0.5,
+      width * 0.8,
+    );
+    fallbackGradient.addColorStop(0, '#7caf81');
+    fallbackGradient.addColorStop(0.48, '#375648');
+    fallbackGradient.addColorStop(1, '#0a1012');
+    context.fillStyle = fallbackGradient;
+    context.fillRect(0, 0, width, height);
+  }
+
   const glow = context.createRadialGradient(
-    width * 0.54,
-    height * 0.56,
-    width * 0.08,
+    width * 0.52,
+    height * 0.46,
+    width * 0.04,
+    width * 0.52,
+    height * 0.46,
     width * 0.5,
-    height * 0.64,
-    width * 0.55,
   );
-  glow.addColorStop(0, 'rgba(133, 243, 228, 0.18)');
-  glow.addColorStop(1, 'rgba(133, 243, 228, 0)');
+  glow.addColorStop(0, 'rgba(236, 255, 229, 0.045)');
+  glow.addColorStop(1, 'rgba(232, 255, 236, 0)');
   context.fillStyle = glow;
   context.fillRect(0, 0, width, height);
 
-  const horizonY = height * 0.44 + Math.sin(time * 0.18) * 4;
-  context.strokeStyle = 'rgba(250, 238, 213, 0.78)';
-  context.lineWidth = 4;
-  context.beginPath();
-  context.moveTo(width * 0.04, horizonY);
-  context.lineTo(width * 0.96, horizonY);
-  context.stroke();
-
-  const floorGlow = context.createLinearGradient(0, horizonY, 0, height);
-  floorGlow.addColorStop(0, 'rgba(255, 246, 223, 0.02)');
-  floorGlow.addColorStop(1, 'rgba(0, 0, 0, 0.82)');
-  context.fillStyle = floorGlow;
-  context.fillRect(0, horizonY, width, height - horizonY);
-
-  const drift = Math.sin(time * 0.22) * 6;
-  drawMonitorPanel(
-    context,
-    images[0],
-    width * 0.1 + drift * 0.35,
-    height * 0.3,
-    width * 0.21,
-    height * 0.38,
-    -0.17,
-    0.92,
-    'rgba(121, 214, 255, 0.18)',
+  const vignette = context.createRadialGradient(
+    width * 0.52,
+    height * 0.48,
+    width * 0.16,
+    width * 0.5,
+    height * 0.5,
+    width * 0.74,
   );
-  drawMonitorPanel(
-    context,
-    images[1],
-    width * 0.39,
-    height * 0.16 + drift * 0.1,
-    width * 0.24,
-    height * 0.52,
-    -0.02,
-    1.08,
-    'rgba(255, 255, 255, 0.22)',
-  );
-  drawMonitorPanel(
-    context,
-    images[2],
-    width * 0.71 - drift * 0.25,
-    height * 0.27,
-    width * 0.17,
-    height * 0.33,
-    0.13,
-    0.98,
-    'rgba(140, 94, 255, 0.18)',
-  );
-
-  context.fillStyle = 'rgba(255, 248, 226, 0.8)';
-  context.fillRect(width * 0.49, horizonY - height * 0.16, width * 0.022, height * 0.32);
-  context.fillStyle = 'rgba(255, 248, 226, 0.08)';
-  context.fillRect(width * 0.02, height * 0.06, width * 0.96, height * 0.88);
+  vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
+  vignette.addColorStop(1, 'rgba(0, 0, 0, 0.58)');
+  context.fillStyle = vignette;
+  context.fillRect(0, 0, width, height);
 
   context.restore();
 }
@@ -248,7 +169,7 @@ function createMonitorTexture(animated: boolean, onUpdate?: () => void) {
   let rafId = 0;
   let lastRenderTime = -Infinity;
 
-  MONITOR_SCENES.flat().forEach((source) => {
+  MONITOR_SCENES.forEach((source) => {
     if (monitorImages.has(source)) {
       return;
     }
@@ -259,14 +180,14 @@ function createMonitorTexture(animated: boolean, onUpdate?: () => void) {
   });
 
   const drawSceneByIndex = (sceneIndex: number, time: number, alpha: number) => {
-    const sceneSources = MONITOR_SCENES[sceneIndex] ?? MONITOR_SCENES[0];
-    drawWorkShowcaseScene(
+    const sceneSource = MONITOR_SCENES[sceneIndex] ?? MONITOR_SCENES[0];
+    drawMonitorScene(
       context,
+      monitorImages.get(sceneSource),
       canvas.width,
       canvas.height,
       time,
       alpha,
-      sceneSources.map((source) => monitorImages.get(source)),
     );
   };
 
@@ -298,13 +219,13 @@ function createMonitorTexture(animated: boolean, onUpdate?: () => void) {
     context.globalCompositeOperation = 'screen';
     const sweep = context.createLinearGradient(0, 0, width, height);
     sweep.addColorStop(0, 'rgba(160, 255, 244, 0)');
-    sweep.addColorStop(0.48 + Math.sin(time * 0.45) * 0.05, 'rgba(160, 255, 244, 0.14)');
+    sweep.addColorStop(0.48 + Math.sin(time * 0.45) * 0.05, 'rgba(160, 255, 244, 0.045)');
     sweep.addColorStop(1, 'rgba(160, 255, 244, 0)');
     context.fillStyle = sweep;
     context.fillRect(0, 0, width, height);
     context.globalCompositeOperation = 'source-over';
 
-    context.strokeStyle = 'rgba(215, 255, 245, 0.12)';
+    context.strokeStyle = 'rgba(215, 255, 245, 0.08)';
     context.lineWidth = 1;
     for (let scanline = 0; scanline < height; scanline += 4) {
       context.beginPath();
@@ -409,20 +330,17 @@ function SuperPETModel({ animated = true }: { animated?: boolean }) {
 
       const isScreen =
         name.includes('screen') ||
-        name.includes('monitor') ||
-        name.includes('display') ||
-        name.includes('crt') ||
         materialNames.includes('screen');
 
       if (isScreen) {
         const screenMaterial = new THREE.MeshStandardMaterial({
-          color: new THREE.Color('#f2fffb'),
+          color: new THREE.Color('#eef8f4'),
           map: screenTexture,
-          emissive: new THREE.Color('#97fff1'),
+          emissive: new THREE.Color('#7de0d7'),
           emissiveMap: screenTexture,
-          emissiveIntensity: 1.68,
-          metalness: 0.1,
-          roughness: 0.12,
+          emissiveIntensity: 0.72,
+          metalness: 0.06,
+          roughness: 0.14,
           toneMapped: false,
         });
 
@@ -473,15 +391,15 @@ function SuperPETModel({ animated = true }: { animated?: boolean }) {
     }
 
     const time = state.clock.elapsedTime;
-    groupRef.current.position.y = -0.98 + Math.sin(time * 0.42) * 0.026;
+    groupRef.current.position.y = -1.18 + Math.sin(time * 0.42) * 0.026;
     groupRef.current.rotation.y = -0.62 + Math.sin(time * 0.24) * 0.026;
-    groupRef.current.rotation.x = 0.012 + Math.sin(time * 0.18) * 0.008;
+    groupRef.current.rotation.x = 0.012 + Math.sin(time * 0.18) * 0.007;
   });
 
   return (
     <group
       ref={groupRef}
-      position={[2.52, -0.98, -0.14]}
+      position={[3.3, -1.18, -1.5]}
       rotation={[0.02, -0.62, 0]}
       scale={[1.06, 1.06, 1.06]}
     />

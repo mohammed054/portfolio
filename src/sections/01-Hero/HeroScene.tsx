@@ -1,8 +1,9 @@
-import { Suspense, useMemo, useRef } from 'react';
+import { Suspense, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment } from '@react-three/drei/core/Environment.js';
 import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
+import { gsap } from 'gsap';
 import SuperPETModel from './SuperPETModel';
 import { useScrollProgress } from '../../hooks/useScrollProgress';
 import { prefersReducedMotion } from '../../utils/motion';
@@ -11,38 +12,88 @@ interface HeroSceneProps {
   quality: 'high' | 'low';
 }
 
+type HeroDebugState = 'intro' | 'landing' | 'focus' | null;
+
+function getHeroDebugState(): HeroDebugState {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const value = new URLSearchParams(window.location.search).get('heroState');
+  return value === 'intro' || value === 'landing' || value === 'focus' ? value : null;
+}
+
 function CameraController({
   animated,
   progress,
+  debugState,
 }: {
   animated: boolean;
   progress: number;
+  debugState: HeroDebugState;
 }) {
-  const target = useMemo(() => new THREE.Vector3(0.08, 0.22, 6.18), []);
-  const lookAtTarget = useMemo(() => new THREE.Vector3(1.18, 0.16, 0.08), []);
+  const introProgress = useRef({ value: prefersReducedMotion ? 1 : 0 });
+  const target = useMemo(() => new THREE.Vector3(), []);
+  const lookAtTarget = useMemo(() => new THREE.Vector3(), []);
+  const introStartPosition = useMemo(() => new THREE.Vector3(3.54, 0.68, -1.2), []);
+  const introStartLookAt = useMemo(() => new THREE.Vector3(3.06, 0.66, -1.64), []);
+  const landingPosition = useMemo(() => new THREE.Vector3(8.25, 0.98, 2.64), []);
+  const landingLookAt = useMemo(() => new THREE.Vector3(0.48, -0.08, -0.82), []);
+  const scrollEndPosition = useMemo(() => new THREE.Vector3(3.58, 0.69, -1.14), []);
+  const scrollEndLookAt = useMemo(() => new THREE.Vector3(3.06, 0.66, -1.64), []);
+
+  useEffect(() => {
+    if (!animated || prefersReducedMotion) {
+      introProgress.current.value = 1;
+      return;
+    }
+
+    introProgress.current.value = 0;
+
+    const tween = gsap.to(introProgress.current, {
+      value: 1,
+      duration: 1.45,
+      delay: 0.08,
+      ease: 'power3.out',
+    });
+
+    return () => {
+      tween.kill();
+    };
+  }, [animated]);
 
   useFrame(({ camera }) => {
-    const easedProgress = THREE.MathUtils.smootherstep(progress, 0, 1);
+    const focusProgress = THREE.MathUtils.clamp((progress - 0.02) / 0.88, 0, 1);
+    const resolvedFocusProgress =
+      debugState === 'focus' ? 1 : debugState === 'intro' || debugState === 'landing' ? 0 : focusProgress;
+    const easedProgress = THREE.MathUtils.smootherstep(resolvedFocusProgress, 0, 1);
+    const easedLookProgress = THREE.MathUtils.smootherstep(
+      THREE.MathUtils.clamp(resolvedFocusProgress / 0.42, 0, 1),
+      0,
+      1,
+    );
+    const intro =
+      debugState === 'intro' ? 0 : debugState === 'landing' || debugState === 'focus' ? 1 : introProgress.current.value;
 
     if (!animated || prefersReducedMotion) {
-      camera.position.set(0.08, 0.22, 6.18);
+      camera.position.copy(landingPosition);
+      camera.lookAt(landingLookAt);
+      return;
+    }
+
+    target.copy(introStartPosition).lerp(landingPosition, intro);
+    target.lerp(scrollEndPosition, easedProgress);
+
+    lookAtTarget.copy(introStartLookAt).lerp(landingLookAt, intro);
+    lookAtTarget.lerp(scrollEndLookAt, easedLookProgress);
+
+    if (debugState) {
+      camera.position.copy(target);
       camera.lookAt(lookAtTarget);
       return;
     }
 
-    target.set(
-      THREE.MathUtils.lerp(0.08, 1.06, easedProgress),
-      THREE.MathUtils.lerp(0.22, 0.76, easedProgress),
-      THREE.MathUtils.lerp(6.18, 2.46, easedProgress),
-    );
-
-    lookAtTarget.set(
-      THREE.MathUtils.lerp(1.18, 1.54, easedProgress),
-      THREE.MathUtils.lerp(0.16, 0.68, easedProgress),
-      THREE.MathUtils.lerp(0.08, 0.64, easedProgress),
-    );
-
-    camera.position.lerp(target, 0.06);
+    camera.position.lerp(target, 0.08);
     camera.lookAt(lookAtTarget);
   });
 
@@ -64,7 +115,7 @@ function ScreenGlow({
     }
 
     const targetIntensity =
-      !animated || prefersReducedMotion ? 1.02 : 1.38 - progress * 0.22;
+      !animated || prefersReducedMotion ? 0.48 : 0.62 - progress * 0.1;
     lightRef.current.intensity = THREE.MathUtils.lerp(
       lightRef.current.intensity,
       targetIntensity,
@@ -75,11 +126,11 @@ function ScreenGlow({
   return (
     <pointLight
       ref={lightRef}
-      position={[1.22, 0.78, 1.2]}
-      intensity={1.4}
-      distance={6}
+      position={[3.1, 0.66, -1.42]}
+      intensity={0.58}
+      distance={4.4}
       decay={1.8}
-      color="#93f3ff"
+      color="#8de8e1"
     />
   );
 }
@@ -87,6 +138,7 @@ function ScreenGlow({
 function SceneContent({ quality }: HeroSceneProps) {
   const progress = useScrollProgress('#section-hero');
   const animated = !prefersReducedMotion;
+  const debugState = useMemo(() => getHeroDebugState(), []);
 
   return (
     <>
@@ -118,7 +170,7 @@ function SceneContent({ quality }: HeroSceneProps) {
         decay={2}
       />
 
-      <CameraController animated={animated} progress={progress} />
+      <CameraController animated={animated} progress={progress} debugState={debugState} />
       <ScreenGlow animated={animated} progress={progress} />
 
       <Suspense fallback={null}>
@@ -130,9 +182,9 @@ function SceneContent({ quality }: HeroSceneProps) {
       {quality === 'high' && (
         <EffectComposer>
           <Bloom
-            intensity={0.9}
-            luminanceThreshold={0.62}
-            luminanceSmoothing={0.88}
+            intensity={0.46}
+            luminanceThreshold={0.78}
+            luminanceSmoothing={0.9}
             mipmapBlur
           />
         </EffectComposer>
@@ -151,7 +203,7 @@ function HeroScene({ quality }: HeroSceneProps) {
       dpr={dpr}
       frameloop="always"
       aria-hidden="true"
-      camera={{ position: [0.08, 0.22, 6.18], fov: 34 }}
+      camera={{ position: [8.25, 0.98, 2.64], fov: 34 }}
       gl={{
         antialias: quality === 'high',
         alpha: true,
@@ -159,7 +211,7 @@ function HeroScene({ quality }: HeroSceneProps) {
       }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.18;
+        gl.toneMappingExposure = 1.04;
       }}
       style={{ position: 'absolute', inset: 0 }}
     >

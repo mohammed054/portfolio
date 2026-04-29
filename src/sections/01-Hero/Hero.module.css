@@ -1,13 +1,18 @@
 .hero {
   position: relative;
+  min-height: 185vh;
+  background:
+    radial-gradient(circle at 70% 58%, rgba(104, 82, 112, 0.24) 0%, rgba(104, 82, 112, 0) 30%),
+    linear-gradient(180deg, #0b0b0b 0%, #0d0d0d 100%);
+}
+
+.heroViewport {
+  position: relative;
   min-height: 100vh;
   padding: calc(var(--navbar-height) + 3.5rem) 7.8vw 5rem;
   display: flex;
   align-items: center;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 70% 58%, rgba(104, 82, 112, 0.24) 0%, rgba(104, 82, 112, 0) 30%),
-    linear-gradient(180deg, #0b0b0b 0%, #0d0d0d 100%);
 }
 
 .heroLowPower .fogBloom,
@@ -197,10 +202,13 @@
 
 @media (max-width: 768px) {
   .hero {
+    text-align: center;
+  }
+
+  .heroViewport {
     justify-content: center;
     align-items: center;
     padding: calc(var(--navbar-height) + 3rem) 6vw 4rem;
-    text-align: center;
   }
 
   .textColumn {

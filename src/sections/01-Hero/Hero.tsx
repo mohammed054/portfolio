@@ -32,6 +32,7 @@ function ScrollArrowIcon() {
 
 function Hero() {
   const containerRef = useRef<HTMLElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLParagraphElement>(null);
   const linesRef = useRef<HTMLSpanElement[]>([]);
@@ -60,9 +61,21 @@ function Hero() {
   useGSAP(
     () => {
       const lines = linesRef.current.filter(Boolean);
-      if (!textRef.current || !ctaRef.current || lines.length === 0) {
+      const section = containerRef.current;
+      const viewport = viewportRef.current;
+
+      if (!section || !viewport || !textRef.current || !ctaRef.current || lines.length === 0) {
         return;
       }
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: 'bottom bottom',
+        pin: viewport,
+        pinSpacing: false,
+        anticipatePin: 1,
+      });
 
       if (prefersReducedMotion) {
         gsap.set(lines, { x: 0, opacity: 1, filter: 'blur(0px)' });
@@ -95,13 +108,13 @@ function Hero() {
         );
 
       gsap.to(textRef.current, {
-        yPercent: -22,
-        opacity: 0.35,
+        yPercent: -32,
+        opacity: 0,
         ease: 'none',
         scrollTrigger: {
-          trigger: containerRef.current,
+          trigger: section,
           start: 'top top',
-          end: 'bottom top',
+          end: '45% top',
           scrub: true,
         },
       });
@@ -116,40 +129,42 @@ function Hero() {
       className={`${styles.hero} ${isLowPerformanceDevice ? styles.heroLowPower : ''}`}
     >
       <SectionAnchor id="home" threshold={0.3} />
-      <div className={styles.scene3d} aria-hidden="true">
-        {FEATURES.enable3D && isSceneVisible ? <HeroScene quality={heroSceneQuality} /> : null}
-      </div>
+      <div className={styles.heroViewport} ref={viewportRef}>
+        <div className={styles.scene3d} aria-hidden="true">
+          {FEATURES.enable3D && isSceneVisible ? <HeroScene quality={heroSceneQuality} /> : null}
+        </div>
 
-      <div className={styles.vignette} aria-hidden="true" />
-      <div className={styles.fogLeft} aria-hidden="true" />
-      <div className={styles.fogBloom} aria-hidden="true" />
-      <div className={styles.fogBottom} aria-hidden="true" />
+        <div className={styles.vignette} aria-hidden="true" />
+        <div className={styles.fogLeft} aria-hidden="true" />
+        <div className={styles.fogBloom} aria-hidden="true" />
+        <div className={styles.fogBottom} aria-hidden="true" />
 
-      <div className={styles.textColumn} ref={textRef}>
-        <h1 className={styles.headline}>
-          {COPY.hero.headline.map((line, index) => (
-            <span
-              key={line}
-              className={styles.headlineLine}
-              ref={(element) => {
-                if (element) {
-                  linesRef.current[index] = element;
-                }
-              }}
-            >
-              {line}
+        <div className={styles.textColumn} ref={textRef}>
+          <h1 className={styles.headline}>
+            {COPY.hero.headline.map((line, index) => (
+              <span
+                key={line}
+                className={styles.headlineLine}
+                ref={(element) => {
+                  if (element) {
+                    linesRef.current[index] = element;
+                  }
+                }}
+              >
+                {line}
+              </span>
+            ))}
+          </h1>
+
+          <p ref={ctaRef} className={styles.cta}>
+            {COPY.hero.subCta}
+            <span className={styles.scrollIcons} aria-hidden="true">
+              <ScrollArrowIcon />
+              <ScrollArrowIcon />
+              <ScrollArrowIcon />
             </span>
-          ))}
-        </h1>
-
-        <p ref={ctaRef} className={styles.cta}>
-          {COPY.hero.subCta}
-          <span className={styles.scrollIcons} aria-hidden="true">
-            <ScrollArrowIcon />
-            <ScrollArrowIcon />
-            <ScrollArrowIcon />
-          </span>
-        </p>
+          </p>
+        </div>
       </div>
     </section>
   );

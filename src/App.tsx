@@ -4,9 +4,9 @@ import { GrainOverlay } from '@components/shared/GrainOverlay';
 import { Navbar } from '@components/Navbar/Navbar';
 import { Preloader } from '@components/Preloader/Preloader';
 import Hero from '@sections/01-Hero/Hero';
+import SelectedWork from '@sections/02-SelectedWork/SelectedWork';
 import { FEATURES } from '@utils/constants';
 
-const SelectedWork = lazy(() => import('@sections/02-SelectedWork/SelectedWork'));
 const AboutHero = lazy(() => import('@sections/03-AboutHero/AboutHero'));
 const AboutCopy = lazy(() => import('@sections/04-AboutCopy/AboutCopy'));
 const AboutVintage = lazy(() => import('@sections/05-AboutVintage/AboutVintage'));
@@ -68,8 +68,8 @@ export default function App() {
 
           <main id="main-content">
             {(!soloTarget || soloTarget === 'home') && <Hero />}
+            {(!soloTarget || soloTarget === 'work') && <SelectedWork />}
             <Suspense fallback={null}>
-              {(!soloTarget || soloTarget === 'work') && <SelectedWork />}
               {(!soloTarget || soloTarget === 'about-us') && <AboutHero />}
               {(!soloTarget || soloTarget === 'about-copy') && <AboutCopy />}
               {(!soloTarget || soloTarget === 'about-vintage') && <AboutVintage />}
