@@ -1,7 +1,7 @@
 .viewport {
   position: relative;
   width: 100%;
-  height: min(69vh, 720px);
+  height: min(74vh, 780px);
   perspective: 2400px;
   perspective-origin: 50% 20%;
   overflow: visible;
@@ -15,9 +15,9 @@
 
 .frame {
   position: absolute;
-  top: 56%;
+  top: 62%;
   left: 50%;
-  width: clamp(320px, 38vw, 680px);
+  width: clamp(420px, 52vw, 960px);
   aspect-ratio: 4 / 3;
   transform-style: preserve-3d;
   transition:

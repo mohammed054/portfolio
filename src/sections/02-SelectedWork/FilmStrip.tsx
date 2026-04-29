@@ -118,11 +118,11 @@ function FilmStrip({ projects, activeIndex }: FilmStripProps) {
           const depth = Math.abs(offset);
           const scale = Math.max(0.48, 1 - depth * 0.13);
           const opacity = depth > 4 ? 0 : Math.max(0.18, 1 - depth * 0.18);
-          const translateX = `calc(-50% + ${offset * 21}vw)`;
-          const translateY = `calc(-50% + ${22 + depth * 24}px)`;
-          const translateZ = `${-depth * 210}px`;
-          const rotateY = `${offset * -22}deg`;
-          const rotateZ = `${offset * -5.2}deg`;
+          const translateX = `calc(-50% + ${offset * 30}vw)`;
+          const translateY = `calc(-50% + ${30 + depth * 20}px)`;
+          const translateZ = `${-depth * 260}px`;
+          const rotateY = `${offset * -26}deg`;
+          const rotateZ = `${offset * -4.8}deg`;
 
           return (
             <article

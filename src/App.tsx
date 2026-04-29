@@ -11,6 +11,9 @@ import AboutVintage from '@sections/05-AboutVintage/AboutVintage';
 import Shredder from '@sections/06-Shredder/Shredder';
 import ContactTease from '@sections/07-ContactTease/ContactTease';
 import GoldenTie from '@sections/08-GoldenTie/GoldenTie';
+import Handshake from '@sections/09-Handshake/Handshake';
+import GoodBuy from '@sections/10-GoodBuy/GoodBuy';
+import Footer from '@sections/11-Footer/Footer';
 import { FEATURES } from '@utils/constants';
 
 export default function App() {
@@ -54,9 +57,12 @@ export default function App() {
             {(!soloTarget || soloTarget === 'about-us') && <AboutHero />}
             {(!soloTarget || soloTarget === 'about-copy') && <AboutCopy />}
             {(!soloTarget || soloTarget === 'about-vintage') && <AboutVintage />}
-            {(!soloTarget || soloTarget === 'shredder') && <Shredder />}
-            {(!soloTarget || soloTarget === 'contact') && <ContactTease />}
-            {(!soloTarget || soloTarget === 'golden-tie') && <GoldenTie />}
+            {soloTarget === 'shredder' && <Shredder />}
+            {soloTarget === 'contact-tease' && <ContactTease />}
+            {soloTarget === 'golden-tie' && <GoldenTie />}
+            {soloTarget === 'handshake' && <Handshake />}
+            {soloTarget === 'good-buy' && <GoodBuy />}
+            {(!soloTarget || soloTarget === 'contact' || soloTarget === 'footer') && <Footer />}
           </main>
         </>
       )}

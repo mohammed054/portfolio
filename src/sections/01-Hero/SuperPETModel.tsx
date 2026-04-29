@@ -363,9 +363,9 @@ function SuperPETModel() {
   return (
     <group
       ref={groupRef}
-      position={[2.18, -0.9, -0.24]}
+      position={[2.28, -0.94, -0.24]}
       rotation={[0.02, -0.68, 0]}
-      scale={[0.94, 0.94, 0.94]}
+      scale={[1.01, 1.01, 1.01]}
     />
   );
 }
