@@ -1,5 +1,5 @@
-# 20 — IMPLEMENTATION PHASES
-## Shader Rebuild — Phased Build Plan
+﻿# 20 â€” IMPLEMENTATION PHASES
+## Shader Rebuild â€” Phased Build Plan
 
 ---
 
@@ -17,36 +17,36 @@ Each phase lists exactly which files to read, which files to touch, what the out
 
 ## PROJECT STATE SNAPSHOT (as of April 22, 2026)
 
-### ✅ Solid / Production-Ready
+### âœ… Solid / Production-Ready
 | Component | Files | Notes |
 |-----------|-------|-------|
 | Shared infrastructure | `GrainOverlay`, `SmoothScroll`, `SectionAnchor`, `Navbar`, CSS variables, hooks, constants | Complete per spec |
 | Preloader | `Preloader.tsx`, `Preloader.module.css` | Full CRT boot sequence + exit animation |
-| Hero layout + animation | `Hero.tsx`, `Hero.module.css`, `HeroScene.tsx`, `SuperPETModel.tsx` | 3D scene, fog, lights, bloom, entrance — scroll camera orbit missing |
-| Selected Work architecture | `SelectedWork.tsx`, `FilmStrip.tsx`, and CSS | Horizontal scroll + pin + sprockets — missing enter-scale anim + real images |
-| About Hero | `AboutHero.tsx`, `AboutHero.module.css` | Parallax + title — missing bg image |
-| About Copy | `AboutCopy.tsx`, `AboutCopy.module.css` | 3-column layout + all copy correct — missing businessman image |
-| About Vintage | `AboutVintage.tsx`, `AboutVintage.module.css` | Parallax + rainbow stripes — missing bg image |
+| Hero layout + animation | `Hero.tsx`, `Hero.module.css`, `HeroScene.tsx`, `SuperPETModel.tsx` | 3D scene, fog, lights, bloom, entrance â€” scroll camera orbit missing |
+| Selected Work architecture | `SelectedWork.tsx`, `FilmStrip.tsx`, and CSS | Horizontal scroll + pin + sprockets â€” missing enter-scale anim + real images |
+| About Hero | `AboutHero.tsx`, `AboutHero.module.css` | Parallax + title â€” missing bg image |
+| About Copy | `AboutCopy.tsx`, `AboutCopy.module.css` | 3-column layout + all copy correct â€” missing businessman image |
+| About Vintage | `AboutVintage.tsx`, `AboutVintage.module.css` | Parallax + rainbow stripes â€” missing bg image |
 
-### 🔶 Skeleton / Stub (structure exists, needs real implementation)
+### ðŸ”¶ Skeleton / Stub (structure exists, needs real implementation)
 | Component | Files | State |
 |-----------|-------|-------|
-| Shredder | `Shredder.tsx`, `ShredderCanvas.tsx` | `ShredderCanvas` is a flat cream plane — GLSL exists in `src/utils/glsl/shredWarp.glsl` but NOT connected; no scroll trigger; no 3D model loaded; no businessman figure |
+| Shredder | `Shredder.tsx`, `ShredderCanvas.tsx` | Needs rebuild to match capture: horizontal CSS/SVG gate, duplicated shredded paper layer, scroll-driven strip warp, businessman figure |
 | Contact Tease | `ContactTease.tsx` | CSS-only star rotation, no GSAP lifecycle, no entrance animation |
 | Golden Tie | `GoldenTie.tsx`, `TieScene.tsx` | Cone geometry placeholders; emoji audience; no GLB loaded; no entrance animations |
-| Handshake | `Handshake.tsx` | Pure placeholder `<div>` — no image, no parallax, no animation |
+| Handshake | `Handshake.tsx` | Pure placeholder `<div>` â€” no image, no parallax, no animation |
 | Good Buy | `GoodBuy.tsx`, `PhonesScene.tsx` | Box geometry placeholders; phones GLB available but not loaded; no camera orbit |
 | Footer | `Footer.tsx`, `Footer.module.css` | Functional links but missing visual design (no dashed CEO card border, emoji icons, wrong layout) |
 
-### 📦 3D Models Available in `/public/models/`
+### ðŸ“¦ 3D Models Available in `/public/models/`
 | File | Size | Assigned To |
 |------|------|-------------|
-| `70s_retro_computer_asset_-_old_commodore_pet.glb` | 2.8 MB | Hero ✓ already in use |
-| `Meshy_AI_A_classic_men_s_busin_0421141231_texture.glb` | 7.2 MB | Golden Tie (the "businessman tie" model — load and assess for use as the tie) |
-| `office_electronics_paper_shredder.glb` | 11.1 MB | Shredder section |
+| `70s_retro_computer_asset_-_old_commodore_pet.glb` | 2.8 MB | Hero âœ“ already in use |
+| `Meshy_AI_A_classic_men_s_busin_0421141231_texture.glb` | 7.2 MB | Golden Tie (the "businessman tie" model â€” load and assess for use as the tie) |
+| `office_electronics_paper_shredder.glb` | 11.1 MB | Legacy/reference only; observed shredder uses CSS/SVG gate |
 | `post_apocalyptic_style_retro_telephone.glb` | 5.9 MB | Good Buy phones |
 
-### 🔴 Photo/Image Assets — NOT YET CREATED (see `18-photo-asset-specs.md`)
+### ðŸ”´ Photo/Image Assets â€” NOT YET CREATED (see `18-photo-asset-specs.md`)
 These must be sourced, rendered, or AI-generated separately. Every phase that depends on one will note it explicitly and provide a fallback strategy so development can proceed without the final asset.
 
 | File | Used In |
@@ -66,23 +66,23 @@ These must be sourced, rendered, or AI-generated separately. Every phase that de
 
 | Phase | Name | Effort | Status |
 |-------|------|--------|--------|
-| 1 | Foundation & Wiring Audit | S | 🔶 Needs fixes |
-| 2 | Preloader Finalization | S | ✅ Nearly done |
-| 3 | Hero — Camera Scroll Orbit | M | 🔶 Needs addition |
-| 4 | Selected Work — Enter Animation & Data | S | 🔶 Needs additions |
-| 5 | About Sections (03, 04, 05) | S | 🔶 Image-dependent |
-| 6 | Shredder — Full GLSL Pipeline | XL | 🔴 Major build |
-| 7 | Contact Tease + Golden Tie | L | 🔴 Major build |
-| 8 | Handshake + Good Buy | M | 🔴 Medium build |
-| 9 | Footer Visual Polish | S | 🔶 Needs redesign |
-| 10 | Cross-Cutting Polish | M | 🔴 Not started |
-| 11 | QA & Launch | M | 🔴 Not started |
+| 1 | Foundation & Wiring Audit | S | ðŸ”¶ Needs fixes |
+| 2 | Preloader Finalization | S | âœ… Nearly done |
+| 3 | Hero â€” Camera Scroll Orbit | M | ðŸ”¶ Needs addition |
+| 4 | Selected Work â€” Enter Animation & Data | S | ðŸ”¶ Needs additions |
+| 5 | About Sections (03, 04, 05) | S | ðŸ”¶ Image-dependent |
+| 6 | Shredder â€” Full GLSL Pipeline | XL | ðŸ”´ Major build |
+| 7 | Contact Tease + Golden Tie | L | ðŸ”´ Major build |
+| 8 | Handshake + Good Buy | M | ðŸ”´ Medium build |
+| 9 | Footer Visual Polish | S | ðŸ”¶ Needs redesign |
+| 10 | Cross-Cutting Polish | M | ðŸ”´ Not started |
+| 11 | QA & Launch | M | ðŸ”´ Not started |
 
 ---
 
 ---
 
-# PHASE 1 — Foundation & Wiring Audit
+# PHASE 1 â€” Foundation & Wiring Audit
 
 **Goal**: Ensure the project compiles cleanly, all shared systems are correctly wired, and the development environment works end-to-end before any section work begins.
 
@@ -92,9 +92,9 @@ These must be sourced, rendered, or AI-generated separately. Every phase that de
 
 ## What to Fix
 
-### 1.1 — SectionAnchor: Update `body.dataset.activeSection`
+### 1.1 â€” SectionAnchor: Update `body.dataset.activeSection`
 
-**Current bug**: `SectionAnchor.tsx` only calls `history.replaceState()` when a section enters view. But `Navbar.tsx` reads `document.body.dataset.activeSection` to determine the active link. These are not connected — the navbar never knows which section is active.
+**Current bug**: `SectionAnchor.tsx` only calls `history.replaceState()` when a section enters view. But `Navbar.tsx` reads `document.body.dataset.activeSection` to determine the active link. These are not connected â€” the navbar never knows which section is active.
 
 **Fix**: In `SectionAnchor.tsx`, also set the body data attribute when the section becomes active:
 
@@ -107,7 +107,7 @@ document.body.dataset.activeSection = id;
 
 ---
 
-### 1.2 — Navbar: Apply Light/Dark Theme Classes
+### 1.2 â€” Navbar: Apply Light/Dark Theme Classes
 
 **Current state**: `SECTION_THEMES` map exists in `constants.ts` but nothing in `Navbar.tsx` or `index.css` actually switches the navbar text color based on it.
 
@@ -132,7 +132,7 @@ const theme = SECTION_THEMES[activeSection] ?? 'light';
 
 ---
 
-### 1.3 — ScrollTrigger Defaults & Lenis Bridge
+### 1.3 â€” ScrollTrigger Defaults & Lenis Bridge
 
 **Verify** that `useLenis.ts` is correctly bridging Lenis to ScrollTrigger. Specifically confirm:
 - `lenis.on('scroll', ScrollTrigger.update)` is present
@@ -143,7 +143,7 @@ const theme = SECTION_THEMES[activeSection] ?? 'light';
 
 ---
 
-### 1.4 — GSAP Plugin Registration
+### 1.4 â€” GSAP Plugin Registration
 
 Verify the following plugins are registered in `src/main.tsx` before any component renders:
 
@@ -160,20 +160,20 @@ gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 ---
 
-### 1.5 — TypeScript: Clean Build
+### 1.5 â€” TypeScript: Clean Build
 
 Run `npm run type-check`. Fix all TypeScript errors before proceeding.
 
 ---
 
-### 1.6 — Fonts
+### 1.6 â€” Fonts
 
 Verify `/public/fonts/` contains the three required `.woff2` files:
 - `playfair-display-900.woff2`
 - `eb-garamond-400.woff2`  
 - `courier-prime-400.woff2`
 
-If they are missing, add the `@font-face` declarations in `index.html` to load from Google Fonts as a temporary fallback, and flag this for the art director to provide self-hosted files per spec `16-dev-environment.md § Font Loading`.
+If they are missing, add the `@font-face` declarations in `index.html` to load from Google Fonts as a temporary fallback, and flag this for the art director to provide self-hosted files per spec `16-dev-environment.md Â§ Font Loading`.
 
 ---
 
@@ -191,7 +191,7 @@ If they are missing, add the `@font-face` declarations in `index.html` to load f
 
 ---
 
-# PHASE 2 — Preloader Finalization
+# PHASE 2 â€” Preloader Finalization
 
 **Goal**: Verify the preloader is pixel-accurate per spec and handles all edge cases correctly.
 
@@ -202,7 +202,7 @@ If they are missing, add the `@font-face` declarations in `index.html` to load f
 
 ## What to Verify / Fix
 
-### 2.1 — Dev Mode Auto-Complete
+### 2.1 â€” Dev Mode Auto-Complete
 
 The current code has a commented-out TODO in the dev-mode timer. If `VITE_ENABLE_PRELOADER=false`, the preloader should not render at all. Wire this up:
 
@@ -221,29 +221,29 @@ Also: when no 3D assets are in `<Suspense>` (e.g. dev with 3D disabled), `usePro
 
 ---
 
-### 2.2 — CRT Barrel Distortion
+### 2.2 â€” CRT Barrel Distortion
 
-The CSS approximation (`perspective: 800px; transform: scale(1.02)`) is in the module CSS — confirm it's applied to the `.content` container, not the outer wrapper (the outer wrapper is the one that gets GSAP `scaleY`/`scaleX` during the exit animation; if they're the same element, the transforms will conflict).
+The CSS approximation (`perspective: 800px; transform: scale(1.02)`) is in the module CSS â€” confirm it's applied to the `.content` container, not the outer wrapper (the outer wrapper is the one that gets GSAP `scaleY`/`scaleX` during the exit animation; if they're the same element, the transforms will conflict).
 
 Structure should be:
 ```
-.preloader (GSAP target — scaleY/scaleX exit animation)
-  └── .crtScreen (CSS barrel distortion — perspective + scale)
-       └── .content (logo, subtitle, progress)
-  └── .scanlines (fixed overlay)
-  └── .copyright
-  └── .flash (GSAP target — opacity)
+.preloader (GSAP target â€” scaleY/scaleX exit animation)
+  â””â”€â”€ .crtScreen (CSS barrel distortion â€” perspective + scale)
+       â””â”€â”€ .content (logo, subtitle, progress)
+  â””â”€â”€ .scanlines (fixed overlay)
+  â””â”€â”€ .copyright
+  â””â”€â”€ .flash (GSAP target â€” opacity)
 ```
 
 ---
 
-### 2.3 — Progress Bar Segment Jitter
+### 2.3 â€” Progress Bar Segment Jitter
 
-Per spec, segments should have a slight stutter/flicker as they fill. Add this: when a segment fills for the first time, apply a CSS class `filledNew` that triggers a 2-frame opacity flicker (`opacity: 0.6 → 1`) via a short CSS animation.
+Per spec, segments should have a slight stutter/flicker as they fill. Add this: when a segment fills for the first time, apply a CSS class `filledNew` that triggers a 2-frame opacity flicker (`opacity: 0.6 â†’ 1`) via a short CSS animation.
 
 ---
 
-### 2.4 — Mobile Scaling
+### 2.4 â€” Mobile Scaling
 
 Verify on viewport < 768px:
 - Progress bar width is `80vw`
@@ -258,7 +258,7 @@ Verify on viewport < 768px:
 - [ ] SHADER logo (rainbow icon + wordmark) is centered and proportionally correct
 - [ ] "Shader Development Studio, Website / Version 1.02" in Courier Prime
 - [ ] Progress bar fills in chunky segments (not a smooth gradient)
-- [ ] CRT power-off animation plays: vertical collapse → horizontal shrink → white flash
+- [ ] CRT power-off animation plays: vertical collapse â†’ horizontal shrink â†’ white flash
 - [ ] After animation, hero is immediately visible (no blank frame)
 - [ ] `VITE_ENABLE_PRELOADER=false` skips preloader entirely during dev
 - [ ] Copyright text is fixed to bottom of screen
@@ -267,7 +267,7 @@ Verify on viewport < 768px:
 
 ---
 
-# PHASE 3 — Hero Section: Camera Scroll Orbit
+# PHASE 3 â€” Hero Section: Camera Scroll Orbit
 
 **Goal**: Add the scroll-driven camera movement that pushes the camera toward the computer monitor as the user scrolls. This is the visual bridge from Hero to Selected Work.
 
@@ -278,12 +278,12 @@ Verify on viewport < 768px:
 
 ## What to Build
 
-### 3.1 — Wire `useScrollProgress` to the Hero Section
+### 3.1 â€” Wire `useScrollProgress` to the Hero Section
 
 The hook exists at `src/hooks/useScrollProgress.ts` but is not yet used in `HeroScene.tsx`. Import and connect it:
 
 ```typescript
-// HeroScene.tsx — inside SceneContent
+// HeroScene.tsx â€” inside SceneContent
 import { useScrollProgress } from '../../hooks/useScrollProgress';
 
 function SceneContent() {
@@ -294,11 +294,11 @@ function SceneContent() {
 
 ---
 
-### 3.2 — Camera Movement via `useFrame`
+### 3.2 â€” Camera Movement via `useFrame`
 
 Add a `useFrame` hook to `SceneContent` (or a new `CameraController` child component) that moves the R3F camera toward the monitor screen as scroll progress increases:
 
-Per `13-scroll-animation-system.md § HERO`:
+Per `13-scroll-animation-system.md Â§ HERO`:
 
 ```typescript
 useFrame(({ camera }) => {
@@ -315,11 +315,11 @@ useFrame(({ camera }) => {
 });
 ```
 
-Use `THREE.MathUtils.lerp` — do NOT use GSAP inside `useFrame`.
+Use `THREE.MathUtils.lerp` â€” do NOT use GSAP inside `useFrame`.
 
 ---
 
-### 3.3 — Fog Fade on Scroll
+### 3.3 â€” Fog Fade on Scroll
 
 Per `13-scroll-animation-system.md`, the fog particles should fade as the user scrolls into the selected work section. The `FogCloud` component in `HeroScene.tsx` needs to receive `progress` and reduce its opacity:
 
@@ -343,7 +343,7 @@ Per `13-scroll-animation-system.md`, the fog particles should fade as the user s
 
 ---
 
-# PHASE 4 — Selected Work: Enter Animation & Project Data
+# PHASE 4 â€” Selected Work: Enter Animation & Project Data
 
 **Goal**: Add the film strip enter scale animation, populate real project data, and confirm the pinned horizontal scroll is working perfectly.
 
@@ -354,9 +354,9 @@ Per `13-scroll-animation-system.md`, the fog particles should fade as the user s
 
 ## What to Build
 
-### 4.1 — Film Strip Enter Scale Animation
+### 4.1 â€” Film Strip Enter Scale Animation
 
-Per spec and `13-scroll-animation-system.md § SELECTED WORK`, the film strip should zoom from `scale: 0.6` to `scale: 1.0` as the section enters the viewport. Add this to `SelectedWork.tsx`'s `useGSAP` block:
+Per spec and `13-scroll-animation-system.md Â§ SELECTED WORK`, the film strip should zoom from `scale: 0.6` to `scale: 1.0` as the section enters the viewport. Add this to `SelectedWork.tsx`'s `useGSAP` block:
 
 ```typescript
 // In the init() function, after the main horizontal scroll tween:
@@ -376,7 +376,7 @@ gsap.fromTo(strip.parentElement, // the .perspective wrapper
 
 ---
 
-### 4.2 — Project Data
+### 4.2 â€” Project Data
 
 Update `src/utils/constants.ts` with the known real project data. Populate at minimum these two confirmed projects (from spec `03-selected-work.md`), then add placeholder entries up to 11 total. For each missing image, keep the path but the `FilmStrip` component already has a gradient placeholder fallback:
 
@@ -404,7 +404,7 @@ export const PROJECTS: Project[] = [
 
 ---
 
-### 4.3 — Dot Pagination Polish
+### 4.3 â€” Dot Pagination Polish
 
 The current dot pagination uses `<button>` elements with CSS for filled/outline state. Verify that:
 - The active dot is visually distinct (filled white, ~8px)
@@ -413,7 +413,7 @@ The current dot pagination uses `<button>` elements with CSS for filled/outline 
 
 ---
 
-### 4.4 — Section Header
+### 4.4 â€” Section Header
 
 Per `03-selected-work.md`, there is a header above the film strip that reads "Selected Work / Browse our project carousel...". This header should fade out once the scroll begins (scroll progress > 0). Add a GSAP tween for this.
 
@@ -421,7 +421,7 @@ Per `03-selected-work.md`, there is a header above the film strip that reads "Se
 
 ## Acceptance Criteria
 
-- [ ] Film strip zooms from small to full-size as the section pins (scale 0.6 → 1.0 scrub)
+- [ ] Film strip zooms from small to full-size as the section pins (scale 0.6 â†’ 1.0 scrub)
 - [ ] 11 projects in the carousel (real or placeholder data)
 - [ ] Active project name and category update as user scrolls through
 - [ ] Left/right arrows jump to adjacent project
@@ -434,9 +434,9 @@ Per `03-selected-work.md`, there is a header above the film strip that reads "Se
 
 ---
 
-# PHASE 5 — About Sections (03, 04, 05)
+# PHASE 5 â€” About Sections (03, 04, 05)
 
-**Goal**: Polish the three About sections. All animation logic already exists — this phase wires in final assets and applies any missing CSS details.
+**Goal**: Polish the three About sections. All animation logic already exists â€” this phase wires in final assets and applies any missing CSS details.
 
 **Spec docs**: `04-about-hero.md`, `05-about-copy.md`, `06-about-vintage.md`, `18-photo-asset-specs.md`
 **Files in scope**: All files in `src/sections/03-AboutHero/`, `src/sections/04-AboutCopy/`, `src/sections/05-AboutVintage/`
@@ -445,9 +445,9 @@ Per `03-selected-work.md`, there is a header above the film strip that reads "Se
 
 ## What to Build
 
-### 5.1 — About Hero: Background Image
+### 5.1 â€” About Hero: Background Image
 
-**Asset dependency**: Needs `/public/images/about-office-cubicles.webp`. See `18-photo-asset-specs.md § P-01` for the exact spec.
+**Asset dependency**: Needs `/public/images/about-office-cubicles.webp`. See `18-photo-asset-specs.md Â§ P-01` for the exact spec.
 
 **Fallback if asset not ready**: Use a CSS gradient that approximates the desaturated institutional feel:
 ```css
@@ -458,7 +458,7 @@ Per `03-selected-work.md`, there is a header above the film strip that reads "Se
 
 Once the real image exists, the CSS background-image in `AboutHero.module.css` simply needs to be pointed at the file.
 
-**Also add**: The CRT chromatic aberration on the section — per `04-about-hero.md`, the entire image has a CSS RGB channel split. Apply via `filter: url(#crt-glitch)` or using CSS `text-shadow`-style approach on the image:
+**Also add**: The CRT chromatic aberration on the section â€” per `04-about-hero.md`, the entire image has a CSS RGB channel split. Apply via `filter: url(#crt-glitch)` or using CSS `text-shadow`-style approach on the image:
 ```css
 .bgImage {
   /* Chromatic aberration simulation */
@@ -477,9 +477,9 @@ Or use a simpler approach: add a CSS `filter: saturate(0.15) contrast(1.2)` on t
 
 ---
 
-### 5.2 — About Copy: Businessman Image
+### 5.2 â€” About Copy: Businessman Image
 
-**Asset dependency**: Needs `/public/images/businessman-about.png`. See `18-photo-asset-specs.md § P-03`.
+**Asset dependency**: Needs `/public/images/businessman-about.png`. See `18-photo-asset-specs.md Â§ P-03`.
 
 **Current state**: The `<img>` tag already exists in `AboutCopy.tsx` with the correct src path. There is also a `.businessmanFallback` div in the markup. Style the fallback to be a placeholder silhouette (a simple outlined rectangle with a person icon shape) so the layout looks intentional without the real asset.
 
@@ -487,9 +487,9 @@ Or use a simpler approach: add a CSS `filter: saturate(0.15) contrast(1.2)` on t
 
 ---
 
-### 5.3 — About Vintage: Background Image
+### 5.3 â€” About Vintage: Background Image
 
-**Asset dependency**: Needs `/public/images/about-retro-computers.webp`. See `18-photo-asset-specs.md § P-02`.
+**Asset dependency**: Needs `/public/images/about-retro-computers.webp`. See `18-photo-asset-specs.md Â§ P-02`.
 
 **Fallback**: A warm catalog-photography CSS gradient:
 ```css
@@ -498,7 +498,7 @@ Or use a simpler approach: add a CSS `filter: saturate(0.15) contrast(1.2)` on t
 }
 ```
 
-**Also verify**: Rainbow stripe separator colors match exactly: `#e63946, #f4a261, #e9c46a, #2a9d8f, #457b9d, #6a0572` — per `14-shared-components.md § CSS Custom Properties`. Check the RAINBOW array in the component against these values.
+**Also verify**: Rainbow stripe separator colors match exactly: `#e63946, #f4a261, #e9c46a, #2a9d8f, #457b9d, #6a0572` â€” per `14-shared-components.md Â§ CSS Custom Properties`. Check the RAINBOW array in the component against these values.
 
 ---
 
@@ -507,7 +507,7 @@ Or use a simpler approach: add a CSS `filter: saturate(0.15) contrast(1.2)` on t
 - [ ] About Hero: Full-bleed background (image or fallback gradient), parallax works
 - [ ] About Hero: "About Us" text is very large (~15vw), semi-transparent white, centered
 - [ ] About Hero: CRT chromatic aberration effect is subtly visible on the image
-- [ ] About Copy: Cream background (#f0e8d8) — full departure from dark mode
+- [ ] About Copy: Cream background (#f0e8d8) â€” full departure from dark mode
 - [ ] About Copy: 3-column layout with correct copy text (verify verbatim against spec)
 - [ ] About Copy: Businessman image or styled placeholder is positioned right side
 - [ ] About Copy: All entrance animations trigger correctly (headline, columns, businessman)
@@ -519,160 +519,153 @@ Or use a simpler approach: add a CSS `filter: saturate(0.15) contrast(1.2)` on t
 
 ---
 
-# PHASE 6 — Shredder: Full GLSL Pipeline
+# PHASE 6 - Shredder: Observed Gate + Strip Warp
 
-**Goal**: Build the complete interactive paper shredder effect — the site's most technically complex DOM section. Connect the existing `shredWarp.glsl` to `ShredderCanvas.tsx`, load the shredder 3D model, add scroll-triggered warp progression, and add the businessman shrug figure.
+**Goal**: Build the shredder transition shown in the 2026-04-29 Chrome capture: a cream brochure panel with the "Had Enough Reading?" headline and shrugging businessman, a full-width horizontal `SHREDDER` gate sweeping upward, dense wavy vertical strip distortion below the gate, and the navy Contact Tease rising underneath.
 
-**Spec docs**: `07-shredder.md`, `13-scroll-animation-system.md § SHREDDER`
-**Files in scope**: `src/sections/06-Shredder/Shredder.tsx`, `src/sections/06-Shredder/ShredderCanvas.tsx`, `src/sections/06-Shredder/Shredder.module.css`
+**Spec docs**: `07-shredder.md`, `13-scroll-animation-system.md` (update the SHREDDER section to match `07-shredder.md` before implementation)
+**Files in scope**: `src/sections/06-Shredder/Shredder.tsx`, `src/sections/06-Shredder/ShredderCanvas.tsx`, `src/sections/06-Shredder/Shredder.module.css`, optional `src/sections/06-Shredder/ShredderGate.tsx`, optional `src/utils/glsl/shredLines.glsl`
 
 ---
 
 ## What to Build
 
-### 6.1 — Complete Rebuild of `ShredderCanvas.tsx`
+### 6.1 - Rebuild the Section Layers
 
-The current file creates an empty Three.js scene with a flat cream plane. This needs to be completely replaced.
+The old plan assumed a centered 3D shredder model. Replace that with the observed layer stack:
 
-**Architecture**: The shredder canvas captures a screenshot/texture of the DOM content above it and applies the `shredWarp.glsl` shader to it as scroll progresses. Since true DOM-to-texture (html2canvas) can be complex, use this simplified but visually convincing approach:
+1. `paperClean`: cream paper panel, rainbow rule, headline, and businessman cutout.
+2. `shreddedPaper`: duplicated paper content, clipped to the area below the gate.
+3. `shredderGate`: full-width horizontal machine head with a centered `SHREDDER` badge.
+4. `contactPreview`: navy Contact Tease content rising underneath.
 
-1. Create a **pre-rendered texture** that represents the "about copy" cream section (just a flat cream-colored plane with a paper texture)
-2. Apply `shredWarp.glsl` to this plane via a `THREE.ShaderMaterial`
-3. Pass `uProgress` (0→1 from ScrollTrigger) and `uShredderY` (0.5) as uniforms
+```tsx
+<section ref={sectionRef} className={styles.shredder}>
+  <div className={styles.paperClean}>
+    <RainbowRule />
+    <h2>Had Enough Reading? Let's Shred This Thing.</h2>
+    <img src="/images/businessman-shrug.png" alt="" />
+  </div>
 
-```typescript
-// ShredderCanvas.tsx — complete rebuild
+  <div className={styles.shreddedPaper} aria-hidden="true">
+    <div className={styles.paperDuplicate}>{/* same visual content */}</div>
+  </div>
 
-import { useRef, useEffect } from 'react';
-import * as THREE from 'three';
-import shredWarpVert from '../../utils/glsl/shredWarp.vert'; // vertex shader
-import shredWarpFrag from '../../utils/glsl/shredWarp.glsl'; // fragment shader
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  <ShredderGate />
 
-// The fragment shader is in shredWarp.glsl.
-// A vertex shader needs to be created: src/utils/glsl/shredWarp.vert
-// (standard passthrough: outputs vUv and gl_Position)
+  <div className={styles.contactPreview} aria-hidden="true">
+    <h2>Still Not Convinced We're Serious About Business?</h2>
+    <p>We've got one last trick up our sleeve.</p>
+  </div>
+</section>
 ```
-
-**Create** `src/utils/glsl/shredWarp.vert`:
-```glsl
-varying vec2 vUv;
-void main() {
-  vUv = uv;
-  gl_FragPosition = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-```
-(Note: use the correct `gl_Position`, not `gl_FragPosition` — this is a vertex shader)
-
-The `uProgress` uniform is updated every frame via a `requestAnimationFrame` loop that reads from a `ref` that `Shredder.tsx` updates via ScrollTrigger's `onUpdate`.
-
-See the full GLSL shader logic in `src/utils/glsl/shredWarp.glsl` — it already has the strip displacement logic.
 
 ---
 
-### 6.2 — Load Shredder 3D Model
+### 6.2 - Build the Horizontal Shredder Gate
 
-Replace the CSS `.machine` div in `Shredder.tsx` with an R3F `<Canvas>` that loads the shredder GLB:
+Create a CSS/SVG gate instead of loading `office_electronics_paper_shredder.glb`.
 
-```typescript
-// /public/models/office_electronics_paper_shredder.glb
-import { useGLTF } from '@react-three/drei';
-const { scene } = useGLTF('/models/office_electronics_paper_shredder.glb');
-```
+Required visual details:
 
-Apply `mat_shredder_body` material overrides per `15-3d-asset-specs.md § MODEL 4`:
-- Warm gray `#c0bdb5`, roughness 0.7, metalness 0.08
+- Full viewport width.
+- Warm gray / olive office-equipment face.
+- Center black badge reading `SHREDDER`.
+- Vent slits and small dark hardware marks on both sides of the badge.
+- Subtle bevel, top highlight, and underside shadow.
+- Gate position driven by scroll via `--gate-y`.
 
-Add an idle jiggle animation via `useFrame`: `±2px` Y-oscillation at 0.5Hz. At scroll > 20%, increase jiggle to `±3px` at ~10Hz (motor vibration).
+A full standalone shredder bin is no longer required for this phase.
 
 ---
 
-### 6.3 — ScrollTrigger Pin + Shader Uniform Update
+### 6.3 - Implement the Strip Distortion
 
-Per `13-scroll-animation-system.md § SHREDDER`:
+Target the captured look: dense, wavy black vertical lines over cream paper. Avoid random separated falling scraps.
+
+Preferred implementation path:
+
+1. Use a duplicated DOM layer for the headline and businessman.
+2. Clip/mask that layer to the region below the moving gate.
+3. Overlay a `repeating-linear-gradient()` stripe field.
+4. Use SVG `feTurbulence` / `feDisplacementMap` or WebGL to bend the duplicated layer horizontally.
+5. Increase `--wave-amount` and stripe opacity as scroll progresses.
+
+If using WebGL, rename or replace the current shred shader with a line-focused shader such as `shredLines.glsl`. See `07-shredder.md` for the conceptual fragment shader.
+
+---
+
+### 6.4 - ScrollTrigger Timing
+
+The section should feel like a continuous scroll transition rather than a static pinned machine.
 
 ```typescript
-// Shredder.tsx — pin this section and drive the shader progress
 const progressRef = useRef(0);
 
 useGSAP(() => {
   ScrollTrigger.create({
     trigger: sectionRef.current,
-    pin: true,
-    start: 'top top',
-    end: '+=200%',
-    anticipatePin: 1,
+    start: 'top bottom',
+    end: 'bottom top',
+    scrub: true,
     onUpdate: (self) => {
-      progressRef.current = self.progress; // ShredderCanvas reads this
+      progressRef.current = self.progress;
+      sectionRef.current?.style.setProperty('--shred-progress', String(self.progress));
     },
   });
 });
 ```
 
-Pass `progressRef` down to `ShredderCanvas` so it can update `uProgress` each frame.
+Map scroll progress roughly as follows:
+
+- `0.00-0.20`: previous CTA exits; rainbow rule and shredder panel enter.
+- `0.20-0.35`: headline and businessman are clean and readable.
+- `0.35-0.70`: gate crosses the panel; the shredded layer expands below it.
+- `0.70-0.85`: gate exits near the top; cream sheet becomes a warped curtain.
+- `0.85-1.00`: navy Contact Tease centers while the cream remnant leaves the top.
 
 ---
 
-### 6.4 — Businessman Shrug Figure
+### 6.5 - Businessman + Contact Reveal
 
-**Asset dependency**: `/public/images/businessman-shrug.png`. See `18-photo-asset-specs.md § P-04`.
+**Asset dependency**: `/public/images/businessman-shrug.png`. See `18-photo-asset-specs.md` P-04.
 
-Add an `<img>` element in `Shredder.tsx` positioned to the right of the headline, arms-wide pose. As `uProgress` increases past 0.5, this image should also be visually "shredded" — achieve this by applying the same CSS clip-path strip effect (approximately 8 CSS gradient strips that shift as a CSS variable changes).
-
-**Fallback if no image**: Use a styled text placeholder `[🤷 businessman]` that still shifts/breaks apart.
-
----
-
-### 6.5 — Background Transition
-
-The section background transitions from cream (`#f0e8d8`) at the top to deep navy (`#0a0a14`) at the bottom. Implement via a CSS gradient on the section background that changes based on scroll progress (update a CSS custom property via the ScrollTrigger `onUpdate`):
-
-```css
-.section {
-  background: linear-gradient(
-    to bottom,
-    var(--shred-top-color, #f0e8d8) 0%,
-    #0a0a14 100%
-  );
-}
-```
-
-Update `--shred-top-color` from cream to transparent as progress increases.
+- Position the clean businessman to the right of the headline.
+- Duplicate him in the shredded layer so he bends with the paper after the gate crosses him.
+- Lower the shredded duplicate opacity slightly to make him feel printed into the page.
+- Reveal the Contact Tease title and subtext under the irregular cream edge before the shred fully exits.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] Section pins for ~2x viewport height of scroll
-- [ ] Shredder 3D model is visible and centered
-- [ ] Shredder has idle jiggle animation
-- [ ] At scroll > 20%, jiggle increases (motor vibration)
-- [ ] The "cream plane" begins distorting into vertical strips as scroll progress increases
-- [ ] At 60%+ progress, the strip warp is clearly visible (shredded appearance)
-- [ ] The businessman figure also visually breaks apart at high scroll progress
-- [ ] Background transitions from cream to dark navy from top to bottom of the section
-- [ ] At 100% scroll, section un-pins and Contact Tease is revealed
-- [ ] Mobile: CSS-only strip fallback (no WebGL) per `07-shredder.md § MOBILE`
+- [ ] The section matches the reference frames in `07-shredder.md` from roughly `00:22.5` to `00:25.3`.
+- [ ] Full-width shredder gate sweeps upward and includes a centered `SHREDDER` badge.
+- [ ] No full standalone shredder bin/GLB is required for the desktop effect.
+- [ ] Clean cream panel shows the exact headline and shrugging businessman before the gate crosses.
+- [ ] Below the gate, dense wavy vertical black lines distort the headline and businessman.
+- [ ] Navy Contact Tease rises underneath during the shred, not only after it.
+- [ ] Contact copy is exact: "Still Not Convinced We're Serious About Business?" and "We've got one last trick up our sleeve."
+- [ ] Nav contrast remains readable throughout the mixed cream/navy overlap.
+- [ ] Mobile uses the CSS-only simplified strip fallback described in `07-shredder.md`.
+
+---
+---
+# PHASE 7 â€” Contact Tease + Golden Tie
+
+**Goal**: Build the Contact Tease section with proper GSAP entrance animations and a proper star lifecycle. Then build the full Golden Tie scene â€” load the tie GLB, implement cloth-like sway, add the applauding audience, and add all entrance animations.
+
+**Spec docs**: `08-contact-tease.md`, `09-golden-tie.md`, `13-scroll-animation-system.md Â§ CONTACT TEASE`, `13-scroll-animation-system.md Â§ GOLDEN TIE`
 
 ---
 
----
-
-# PHASE 7 — Contact Tease + Golden Tie
-
-**Goal**: Build the Contact Tease section with proper GSAP entrance animations and a proper star lifecycle. Then build the full Golden Tie scene — load the tie GLB, implement cloth-like sway, add the applauding audience, and add all entrance animations.
-
-**Spec docs**: `08-contact-tease.md`, `09-golden-tie.md`, `13-scroll-animation-system.md § CONTACT TEASE`, `13-scroll-animation-system.md § GOLDEN TIE`
-
----
-
-## 7A — Contact Tease
+## 7A â€” Contact Tease
 
 **Files in scope**: `src/sections/07-ContactTease/ContactTease.tsx`, `src/sections/07-ContactTease/ContactTease.module.css`
 
-### 7A.1 — Word-by-Word Headline Entrance
+### 7A.1 â€” Word-by-Word Headline Entrance
 
-Per `13-scroll-animation-system.md § CONTACT TEASE`, the headline words stagger in from below. Split the headline text into individual `<span>` elements — one per word — then apply the stagger animation via GSAP ScrollTrigger.
+Per `13-scroll-animation-system.md Â§ CONTACT TEASE`, the headline words stagger in from below. Split the headline text into individual `<span>` elements â€” one per word â€” then apply the stagger animation via GSAP ScrollTrigger.
 
 ```tsx
 // Split "Still Not Convinced We're Serious About Business?" into word spans
@@ -689,30 +682,30 @@ gsap.from(wordSpans, {
 });
 ```
 
-### 7A.2 — Star GSAP Lifecycle
+### 7A.2 â€” Star GSAP Lifecycle
 
-Replace the current CSS-animation-only stars with a proper GSAP lifecycle per `13-scroll-animation-system.md § CONTACT TEASE star particle system`. Each star has: spawn position, velocity vector, rotation speed, opacity lifecycle (0 → 1 → 0), and a lifetime of 3–6 seconds. When a star completes, remove it and spawn a new one.
+Replace the current CSS-animation-only stars with a proper GSAP lifecycle per `13-scroll-animation-system.md Â§ CONTACT TEASE star particle system`. Each star has: spawn position, velocity vector, rotation speed, opacity lifecycle (0 â†’ 1 â†’ 0), and a lifetime of 3â€“6 seconds. When a star completes, remove it and spawn a new one.
 
-This is a JS `requestAnimationFrame` loop (not GSAP tweens — too many tweens). Update star positions via direct style mutation each frame.
+This is a JS `requestAnimationFrame` loop (not GSAP tweens â€” too many tweens). Update star positions via direct style mutation each frame.
 
 ---
 
-## 7B — Golden Tie
+## 7B â€” Golden Tie
 
 **Files in scope**: `src/sections/08-GoldenTie/GoldenTie.tsx`, `src/sections/08-GoldenTie/GoldenTie.module.css`, `src/sections/08-GoldenTie/TieScene.tsx`
 
-### 7B.1 — Load the Tie GLB
+### 7B.1 â€” Load the Tie GLB
 
 The model `Meshy_AI_A_classic_men_s_busin_0421141231_texture.glb` is available. Load it and assess its geometry. If it is a business tie model, use it. If not suitable, build a procedural tie mesh (a flat extruded shape with ~40 vertical segments, tapering from wide at bottom to narrow at top with a knot).
 
-Per `15-3d-asset-specs.md § MODEL 2`, the tie mesh needs enough vertical edge loops for deformation. Override its material with `MeshPhysicalMaterial`:
+Per `15-3d-asset-specs.md Â§ MODEL 2`, the tie mesh needs enough vertical edge loops for deformation. Override its material with `MeshPhysicalMaterial`:
 ```typescript
 color: '#c9a84c', metalness: 0.88, roughness: 0.12, clearcoat: 0.3
 ```
 
-### 7B.2 — Cloth Sway (Procedural Vertex Deformation)
+### 7B.2 â€” Cloth Sway (Procedural Vertex Deformation)
 
-Per `13-scroll-animation-system.md § GOLDEN TIE`:
+Per `13-scroll-animation-system.md Â§ GOLDEN TIE`:
 
 ```typescript
 useFrame(({ clock }) => {
@@ -732,7 +725,7 @@ useFrame(({ clock }) => {
 
 The knot (top) vertex remains fixed at Y=0. The blade (bottom) has maximum sway.
 
-### 7B.3 — Dramatic Spotlight
+### 7B.3 â€” Dramatic Spotlight
 
 Add a `THREE.SpotLight` pointing straight down at the tie:
 ```typescript
@@ -751,9 +744,9 @@ Add a `SpotLightHelper` during development, remove for production.
 
 For the visible light cone, add a CSS radial gradient behind the canvas: `radial-gradient(ellipse 40% 70% at 50% 20%, rgba(255,220,120,0.15) 0%, transparent 70%)`.
 
-### 7B.4 — Applauding Audience
+### 7B.4 â€” Applauding Audience
 
-**Asset dependency**: `/public/images/applauding/clap-figure-01-a.png` through `clap-figure-05-b.png`. See `18-photo-asset-specs.md § P-07`.
+**Asset dependency**: `/public/images/applauding/clap-figure-01-a.png` through `clap-figure-05-b.png`. See `18-photo-asset-specs.md Â§ P-07`.
 
 Replace the current emoji placeholders with:
 1. DOM `<img>` elements positioned with CSS `position: absolute` at `bottom: 0`, distributed across the viewport width
@@ -767,17 +760,17 @@ Replace the current emoji placeholders with:
 ```
 Or better: toggle between two `<img>` tags with opacity.
 
-**Fallback if no cutout PNGs**: Use animated emoji `👏` at larger size (`3rem`) with the existing CSS animation. This is the current state — it works as a placeholder.
+**Fallback if no cutout PNGs**: Use animated emoji `ðŸ‘` at larger size (`3rem`) with the existing CSS animation. This is the current state â€” it works as a placeholder.
 
-### 7B.5 — Entrance Animations
+### 7B.5 â€” Entrance Animations
 
-Per `13-scroll-animation-system.md § GOLDEN TIE`:
+Per `13-scroll-animation-system.md Â§ GOLDEN TIE`:
 - Pure black for 200ms, then spotlight fades in (600ms)
-- Tie drops from above: `translateY(-100vh)` → spring settle (`back.out(1.4)`, 0.8s)
+- Tie drops from above: `translateY(-100vh)` â†’ spring settle (`back.out(1.4)`, 0.8s)
 - Headline fades in with the tie settle
 - Audience figures slide in from left/right edges, staggered 100ms
 
-### 7B.6 — Headline Gold Shimmer
+### 7B.6 â€” Headline Gold Shimmer
 
 Per `09-golden-tie.md`, the headline has a shine sweep every ~4 seconds:
 ```css
@@ -806,7 +799,7 @@ Per `09-golden-tie.md`, the headline has a shine sweep every ~4 seconds:
 - [ ] Pure black enters, spotlight turns on with flicker
 - [ ] 3D tie drops from above and settles
 - [ ] Tie sways continuously (cloth-like deformation, more movement at bottom)
-- [ ] Tie is gold metallic (not yellow plastic) — high metalness, low roughness
+- [ ] Tie is gold metallic (not yellow plastic) â€” high metalness, low roughness
 - [ ] Headline is gold colored with shimmer sweep animation
 - [ ] Sub-text is visible and muted
 - [ ] Audience figures are visible at bottom edge (images or emoji fallback)
@@ -817,21 +810,21 @@ Per `09-golden-tie.md`, the headline has a shine sweep every ~4 seconds:
 
 ---
 
-# PHASE 8 — Handshake + Good Buy
+# PHASE 8 â€” Handshake + Good Buy
 
 **Goal**: Build the Handshake cinematic image section and the Good Buy phones monument with camera orbit.
 
-**Spec docs**: `10-handshake.md`, `11-good-buy.md`, `13-scroll-animation-system.md § HANDSHAKE`, `13-scroll-animation-system.md § GOOD BUY`
+**Spec docs**: `10-handshake.md`, `11-good-buy.md`, `13-scroll-animation-system.md Â§ HANDSHAKE`, `13-scroll-animation-system.md Â§ GOOD BUY`
 
 ---
 
-## 8A — Handshake
+## 8A â€” Handshake
 
 **Files in scope**: `src/sections/09-Handshake/Handshake.tsx`, `src/sections/09-Handshake/Handshake.module.css`
 
-### 8A.1 — Background Image
+### 8A.1 â€” Background Image
 
-**Asset dependency**: `/public/images/handshake.webp`. See `18-photo-asset-specs.md § P-06`.
+**Asset dependency**: `/public/images/handshake.webp`. See `18-photo-asset-specs.md Â§ P-06`.
 
 **Fallback**: A CSS radial gradient suggesting hands in darkness: `radial-gradient(ellipse 60% 80% at 50% 50%, #3a2a1a 0%, #0d0d0d 60%)`.
 
@@ -842,9 +835,9 @@ Replace the current placeholder div with a proper background image container:
 </div>
 ```
 
-### 8A.2 — Parallax + Entrance
+### 8A.2 â€” Parallax + Entrance
 
-Per `13-scroll-animation-system.md § HANDSHAKE`:
+Per `13-scroll-animation-system.md Â§ HANDSHAKE`:
 
 ```typescript
 // Entrance: zoom-out + fade-in
@@ -861,19 +854,19 @@ gsap.to(imageRef.current, {
 });
 ```
 
-### 8A.3 — Top/Bottom Fades
+### 8A.3 â€” Top/Bottom Fades
 
-The section needs gradient fades at top and bottom to blend seamlessly with surrounding sections. These are already in `Handshake.module.css` as `.fadeTop` and `.fadeBottom` — verify the gradient directions and colors are correct:
+The section needs gradient fades at top and bottom to blend seamlessly with surrounding sections. These are already in `Handshake.module.css` as `.fadeTop` and `.fadeBottom` â€” verify the gradient directions and colors are correct:
 - Top: `linear-gradient(to bottom, #000000 0%, transparent 15%)`
 - Bottom: `linear-gradient(to top, #0d0d0d 0%, transparent 15%)`
 
 ---
 
-## 8B — Good Buy
+## 8B â€” Good Buy
 
 **Files in scope**: `src/sections/10-GoodBuy/GoodBuy.tsx`, `src/sections/10-GoodBuy/GoodBuy.module.css`, `src/sections/10-GoodBuy/PhonesScene.tsx`
 
-### 8B.1 — Load the Phones GLB
+### 8B.1 â€” Load the Phones GLB
 
 Replace the box geometry placeholders in `PhonesScene.tsx` with the real model:
 
@@ -882,14 +875,14 @@ import { useGLTF } from '@react-three/drei';
 const { scene } = useGLTF('/models/post_apocalyptic_style_retro_telephone.glb');
 ```
 
-Apply the phone body material override per `15-3d-asset-specs.md § MODEL 3`:
+Apply the phone body material override per `15-3d-asset-specs.md Â§ MODEL 3`:
 - `color: '#d4cfc4'`, `roughness: 0.75`, `metalness: 0.05`
 
-Scale and position the model to appear as a tight cluster in the center of the scene, per `11-good-buy.md § LAYOUT`.
+Scale and position the model to appear as a tight cluster in the center of the scene, per `11-good-buy.md Â§ LAYOUT`.
 
-### 8B.2 — Camera Orbit via Scroll
+### 8B.2 â€” Camera Orbit via Scroll
 
-Per `13-scroll-animation-system.md § GOOD BUY`:
+Per `13-scroll-animation-system.md Â§ GOOD BUY`:
 
 ```typescript
 const progress = useScrollProgress('#good-buy');
@@ -901,7 +894,7 @@ useFrame(({ camera }) => {
 });
 ```
 
-### 8B.3 — Spotlight + Floor Reflection
+### 8B.3 â€” Spotlight + Floor Reflection
 
 Per `11-good-buy.md`, a strong overhead spotlight on the phone cluster:
 ```typescript
@@ -911,9 +904,9 @@ Per `11-good-buy.md`, a strong overhead spotlight on the phone cluster:
 
 Optional floor reflection: add a `THREE.MeshStandardMaterial` with `roughness: 0.05` and low opacity on a floor plane.
 
-### 8B.4 — "Good buy." Text Entrance
+### 8B.4 â€” "Good buy." Text Entrance
 
-Per `13-scroll-animation-system.md § GOOD BUY`:
+Per `13-scroll-animation-system.md Â§ GOOD BUY`:
 
 ```typescript
 gsap.fromTo('.good-buy-text',
@@ -923,7 +916,7 @@ gsap.fromTo('.good-buy-text',
 );
 ```
 
-Verify the "Good buy." text styling: `Playfair Display`, weight 900, `~12–14vw`, `#f0ece4`. **The period is mandatory.**
+Verify the "Good buy." text styling: `Playfair Display`, weight 900, `~12â€“14vw`, `#f0ece4`. **The period is mandatory.**
 
 ---
 
@@ -940,7 +933,7 @@ Verify the "Good buy." text styling: `Playfair Display`, weight 900, `~12–14vw
 - [ ] Real phone GLB loaded and visible as a cluster of units
 - [ ] Phones are cream/gray colored (correct materials applied)
 - [ ] Strong overhead spotlight lights the phones dramatically
-- [ ] Camera slowly orbits the phone cluster as user scrolls (~20° arc)
+- [ ] Camera slowly orbits the phone cluster as user scrolls (~20Â° arc)
 - [ ] "Good buy." text is massive, centered below phones, with period
 - [ ] Text fades up on scroll enter
 
@@ -948,9 +941,9 @@ Verify the "Good buy." text styling: `Playfair Display`, weight 900, `~12–14vw
 
 ---
 
-# PHASE 9 — Footer Visual Polish
+# PHASE 9 â€” Footer Visual Polish
 
-**Goal**: Rebuild the footer's visual design to match the spec — dashed CEO card border, SVG globe and laurel icons, proper three-column layout.
+**Goal**: Rebuild the footer's visual design to match the spec â€” dashed CEO card border, SVG globe and laurel icons, proper three-column layout.
 
 **Spec docs**: `12-footer.md`, `14-shared-components.md`
 **Files in scope**: `src/sections/11-Footer/Footer.tsx`, `src/sections/11-Footer/Footer.module.css`
@@ -959,7 +952,7 @@ Verify the "Good buy." text styling: `Playfair Display`, weight 900, `~12–14vw
 
 ## What to Build
 
-### 9.1 — CEO Card: Dashed Border
+### 9.1 â€” CEO Card: Dashed Border
 
 The current footer has no dashed border styling on the CEO card. Per `12-footer.md`:
 
@@ -977,15 +970,15 @@ The current footer has no dashed border styling on the CEO card. Per `12-footer.
 }
 ```
 
-### 9.2 — CEO Photo
+### 9.2 â€” CEO Photo
 
-**Asset dependency**: `/public/images/ceo-phone-portrait.png`. See `18-photo-asset-specs.md § P-05`.
+**Asset dependency**: `/public/images/ceo-phone-portrait.png`. See `18-photo-asset-specs.md Â§ P-05`.
 
-Replace the `📞` emoji with a proper `<img>` tag. Style it as `~120px × 150px` within the card. Fallback: a styled silhouette placeholder div.
+Replace the `ðŸ“ž` emoji with a proper `<img>` tag. Style it as `~120px Ã— 150px` within the card. Fallback: a styled silhouette placeholder div.
 
-### 9.3 — Footer Bar: Globe SVG (Left Badge)
+### 9.3 â€” Footer Bar: Globe SVG (Left Badge)
 
-Replace the `🌐` emoji with a proper wireframe globe SVG. The spec calls for a "parallel/meridian grid style" globe — similar to the classic UN/ISO globe icon:
+Replace the `ðŸŒ` emoji with a proper wireframe globe SVG. The spec calls for a "parallel/meridian grid style" globe â€” similar to the classic UN/ISO globe icon:
 
 ```tsx
 function GlobeIcon() {
@@ -1005,9 +998,9 @@ function GlobeIcon() {
 }
 ```
 
-### 9.4 — Footer Bar: Laurel Wreaths (Right Badge)
+### 9.4 â€” Footer Bar: Laurel Wreaths (Right Badge)
 
-Replace the `🌿 🌿` emoji with SVG laurel wreaths flanking the accessibility text:
+Replace the `ðŸŒ¿ ðŸŒ¿` emoji with SVG laurel wreaths flanking the accessibility text:
 
 ```tsx
 function LaurelLeft() {
@@ -1025,9 +1018,9 @@ function LaurelLeft() {
 // LaurelRight mirrors LaurelLeft horizontally (scaleX: -1)
 ```
 
-### 9.5 — GSAP Entrance Animations
+### 9.5 â€” GSAP Entrance Animations
 
-Add the stagger entrance animation from `13-scroll-animation-system.md § FOOTER`:
+Add the stagger entrance animation from `13-scroll-animation-system.md Â§ FOOTER`:
 
 ```typescript
 useGSAP(() => {
@@ -1060,19 +1053,19 @@ useGSAP(() => {
 
 ---
 
-# PHASE 10 — Cross-Cutting Polish
+# PHASE 10 â€” Cross-Cutting Polish
 
 **Goal**: Apply all site-wide quality improvements that span multiple sections. This phase should be done last before QA, once all sections are individually complete.
 
-**Spec docs**: `13-scroll-animation-system.md § PREFERS-REDUCED-MOTION`, `17-qa-checklist.md`, `14-shared-components.md`, `16-dev-environment.md`
+**Spec docs**: `13-scroll-animation-system.md Â§ PREFERS-REDUCED-MOTION`, `17-qa-checklist.md`, `14-shared-components.md`, `16-dev-environment.md`
 
 ---
 
 ## What to Build
 
-### 10.1 — `prefers-reduced-motion` Across All Sections
+### 10.1 â€” `prefers-reduced-motion` Across All Sections
 
-Every section that uses GSAP scroll animations must be wrapped with the motion check. The utility `prefersReducedMotion` exists in `src/utils/motion.ts` — apply it:
+Every section that uses GSAP scroll animations must be wrapped with the motion check. The utility `prefersReducedMotion` exists in `src/utils/motion.ts` â€” apply it:
 
 ```typescript
 import { prefersReducedMotion } from '../../utils/motion';
@@ -1091,12 +1084,12 @@ useGSAP(() => {
 
 ---
 
-### 10.2 — Mobile Responsive Pass
+### 10.2 â€” Mobile Responsive Pass
 
 For every section, verify against the mobile spec in its respective doc. Key items:
 - Hero: 3D computer hidden or simplified on `< 768px`, text full-width centered
 - Film Strip: flat horizontal swipe (touch events) instead of 3D perspective strip
-- Shredder: CSS-only strip fallback per `07-shredder.md § MOBILE`
+- Shredder: CSS-only strip fallback per `07-shredder.md Â§ MOBILE`
 - Golden Tie: simplified tie (no vertex deformation), 3 audience figures
 - Footer: 2-column grid contact, stacked footer bar
 
@@ -1104,7 +1097,7 @@ Add breakpoints in each section's `.module.css` where they are missing.
 
 ---
 
-### 10.3 — Performance Audit
+### 10.3 â€” Performance Audit
 
 - Add `will-change: transform` to film strip and parallax images only (max 4 elements)
 - Confirm `dpr={[1, 1.5]}` on mobile for all R3F Canvas elements (not `[1, 2]`)
@@ -1114,9 +1107,9 @@ Add breakpoints in each section's `.module.css` where they are missing.
 
 ---
 
-### 10.4 — Accessibility Pass
+### 10.4 â€” Accessibility Pass
 
-Per `17-qa-checklist.md § SECTION 7`:
+Per `17-qa-checklist.md Â§ SECTION 7`:
 - All `<canvas>` and 3D elements have `aria-hidden="true"`
 - All decorative images have `alt=""`
 - All meaningful images have descriptive `alt` text
@@ -1127,7 +1120,7 @@ Per `17-qa-checklist.md § SECTION 7`:
 
 ---
 
-### 10.5 — Safari-Specific Fixes
+### 10.5 â€” Safari-Specific Fixes
 
 Test in Safari 17+:
 - Lenis smooth scroll compatibility (may require `lerp` option adjustment)
@@ -1137,9 +1130,9 @@ Test in Safari 17+:
 
 ---
 
-### 10.6 — Grain Overlay on Preloader
+### 10.6 â€” Grain Overlay on Preloader
 
-Per `14-shared-components.md § GRAIN OVERLAY`, the grain canvas should NOT render over the preloader (the preloader has its own scanline effect — compound noise would be too heavy). Add a conditional in `GrainOverlay.tsx`:
+Per `14-shared-components.md Â§ GRAIN OVERLAY`, the grain canvas should NOT render over the preloader (the preloader has its own scanline effect â€” compound noise would be too heavy). Add a conditional in `GrainOverlay.tsx`:
 
 ```typescript
 // Don't render grain when preloader is active
@@ -1167,11 +1160,11 @@ This is already gated in `App.tsx` (`GrainOverlay` only renders when `!isLoading
 
 ---
 
-# PHASE 11 — QA & Launch Verification
+# PHASE 11 â€” QA & Launch Verification
 
 **Goal**: Complete the full QA checklist per `17-qa-checklist.md` before production deploy.
 
-**Spec doc**: `17-qa-checklist.md` (this is the authoritative checklist — use it directly)
+**Spec doc**: `17-qa-checklist.md` (this is the authoritative checklist â€” use it directly)
 
 ---
 
@@ -1186,28 +1179,28 @@ This is already gated in `App.tsx` (`GrainOverlay` only renders when `!isLoading
 ## Additional Pre-Launch Items
 
 ### Lighthouse Targets
-Per `17-qa-checklist.md § SECTION 6`:
-- Performance: ≥ 70
-- Accessibility: ≥ 90
-- Best Practices: ≥ 90
+Per `17-qa-checklist.md Â§ SECTION 6`:
+- Performance: â‰¥ 70
+- Accessibility: â‰¥ 90
+- Best Practices: â‰¥ 90
 - LCP: < 2.5s
 
 Run `npm run build` and test on staging with Lighthouse mobile preset.
 
 ### Cloudflare Pages Deploy
-Per `16-dev-environment.md § DEPLOYMENT`:
+Per `16-dev-environment.md Â§ DEPLOYMENT`:
 - Confirm `_headers` file is in `/public/` with correct cache-control rules
 - Confirm `_redirects` is in `/public/` for SPA routing
 - Set `VITE_ENABLE_PRELOADER=true` in Cloudflare environment variables
 - Node version: 20
 
 ### Final Copy Check
-Per `17-qa-checklist.md § SECTION 3`, verify every text string verbatim — especially:
+Per `17-qa-checklist.md Â§ SECTION 3`, verify every text string verbatim â€” especially:
 - "Good buy." (with period, capital G, lowercase b)
 - "Version 1.02"
 - The full copyright line
 - CEO email: `ceo@shader.se`
-- Address: `Laxholmstorget 3, 602 21 Norrköping, Sweden`
+- Address: `Laxholmstorget 3, 602 21 NorrkÃ¶ping, Sweden`
 
 ---
 
@@ -1215,8 +1208,8 @@ Per `17-qa-checklist.md § SECTION 3`, verify every text string verbatim — esp
 
 - [ ] All 140 items in `17-qa-checklist.md` are checked
 - [ ] Zero blocker items remain
-- [ ] Lighthouse Performance ≥ 70 on mobile
-- [ ] Lighthouse Accessibility ≥ 90
+- [ ] Lighthouse Performance â‰¥ 70 on mobile
+- [ ] Lighthouse Accessibility â‰¥ 90
 - [ ] Tested in: Chrome latest, Firefox latest, Safari 17+, Edge latest
 - [ ] Tested on: iPhone 14 (Safari), Samsung Galaxy S24 (Chrome), iPad (Safari)
 - [ ] `Book a call` Cal.com flow works end-to-end
@@ -1229,19 +1222,19 @@ Per `17-qa-checklist.md § SECTION 3`, verify every text string verbatim — esp
 
 ## ASSET PRODUCTION PARALLEL TRACK
 
-While Phases 1–11 are in progress, the following assets can be produced in parallel. Each phase that depends on an asset has a fallback so development is never blocked.
+While Phases 1â€“11 are in progress, the following assets can be produced in parallel. Each phase that depends on an asset has a fallback so development is never blocked.
 
 | Asset | Spec | Used In Phase | Fallback |
 |-------|------|--------------|---------|
-| `about-office-cubicles.webp` | `18-photo-asset-specs.md § P-01` | Phase 5 | CSS dark gradient |
-| `about-retro-computers.webp` | `18-photo-asset-specs.md § P-02` | Phase 5 | CSS warm gradient |
-| `businessman-about.png` | `18-photo-asset-specs.md § P-03` | Phase 5 | Styled silhouette placeholder |
-| `businessman-shrug.png` | `18-photo-asset-specs.md § P-04` | Phase 6 | Text placeholder `[🤷]` |
-| `ceo-phone-portrait.png` | `18-photo-asset-specs.md § P-05` | Phase 9 | Styled silhouette placeholder |
-| `handshake.webp` | `18-photo-asset-specs.md § P-06` | Phase 8 | CSS radial gradient |
+| `about-office-cubicles.webp` | `18-photo-asset-specs.md Â§ P-01` | Phase 5 | CSS dark gradient |
+| `about-retro-computers.webp` | `18-photo-asset-specs.md Â§ P-02` | Phase 5 | CSS warm gradient |
+| `businessman-about.png` | `18-photo-asset-specs.md Â§ P-03` | Phase 5 | Styled silhouette placeholder |
+| `businessman-shrug.png` | `18-photo-asset-specs.md Â§ P-04` | Phase 6 | Text placeholder `[ðŸ¤·]` |
+| `ceo-phone-portrait.png` | `18-photo-asset-specs.md Â§ P-05` | Phase 9 | Styled silhouette placeholder |
+| `handshake.webp` | `18-photo-asset-specs.md Â§ P-06` | Phase 8 | CSS radial gradient |
 | `carousel/project-*.webp` | `18-photo-asset-specs.md` | Phase 4 | Gradient placeholders in FilmStrip |
-| `applauding/clap-figure-*.png` | `18-photo-asset-specs.md § P-07` | Phase 7 | `👏` emoji at 3rem |
-| Fonts in `/public/fonts/` | `16-dev-environment.md § 6` | Phase 1 | Google Fonts CDN fallback |
+| `applauding/clap-figure-*.png` | `18-photo-asset-specs.md Â§ P-07` | Phase 7 | `ðŸ‘` emoji at 3rem |
+| Fonts in `/public/fonts/` | `16-dev-environment.md Â§ 6` | Phase 1 | Google Fonts CDN fallback |
 
 ---
 
@@ -1254,9 +1247,10 @@ While Phases 1–11 are in progress, the following assets can be produced in par
 | 3 | `src/sections/01-Hero/HeroScene.tsx`, `src/hooks/useScrollProgress.ts` |
 | 4 | `src/sections/02-SelectedWork/SelectedWork.tsx`, `src/sections/02-SelectedWork/FilmStrip.module.css`, `src/utils/constants.ts` |
 | 5 | `src/sections/03-AboutHero/AboutHero.module.css`, `src/sections/04-AboutCopy/AboutCopy.tsx`, `src/sections/04-AboutCopy/AboutCopy.module.css`, `src/sections/05-AboutVintage/AboutVintage.module.css` |
-| 6 | `src/sections/06-Shredder/Shredder.tsx`, `src/sections/06-Shredder/ShredderCanvas.tsx`, `src/sections/06-Shredder/Shredder.module.css`, `src/utils/glsl/shredWarp.vert` *(new)* |
+| 6 | `src/sections/06-Shredder/Shredder.tsx`, `src/sections/06-Shredder/ShredderCanvas.tsx`, `src/sections/06-Shredder/Shredder.module.css`, optional `src/sections/06-Shredder/ShredderGate.tsx`, optional `src/utils/glsl/shredLines.glsl` |
 | 7 | `src/sections/07-ContactTease/ContactTease.tsx`, `src/sections/07-ContactTease/ContactTease.module.css`, `src/sections/08-GoldenTie/GoldenTie.tsx`, `src/sections/08-GoldenTie/GoldenTie.module.css`, `src/sections/08-GoldenTie/TieScene.tsx` |
 | 8 | `src/sections/09-Handshake/Handshake.tsx`, `src/sections/09-Handshake/Handshake.module.css`, `src/sections/10-GoodBuy/GoodBuy.tsx`, `src/sections/10-GoodBuy/GoodBuy.module.css`, `src/sections/10-GoodBuy/PhonesScene.tsx` |
 | 9 | `src/sections/11-Footer/Footer.tsx`, `src/sections/11-Footer/Footer.module.css` |
 | 10 | All section `.tsx` files (motion guard), all section `.module.css` (mobile breakpoints) |
 | 11 | Deploy config, `public/_headers`, `public/_redirects` |
+

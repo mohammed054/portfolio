@@ -86,16 +86,16 @@ Compare every section against the original `shader.se` (or recorded reference vi
 
 ### Shredder
 - [ ] Section starts in cream (continuous from above)
-- [ ] Shredder machine is visible and centered
-- [ ] "SHREDDER" label on machine
+- [ ] Full-width horizontal shredder gate sweeps upward through the viewport
+- [ ] Center badge on the gate reads "SHREDDER"
+- [ ] Gate includes vent slits / hardware details and casts a believable shadow
 - [ ] Businessman/shrug figure is positioned correctly (right of text)
 - [ ] Headline "Had Enough Reading? Let's Shred This Thing." is correct
-- [ ] Shredder idle animation is visible (subtle jiggle)
 - [ ] On scroll: shred warp effect activates progressively
-- [ ] The vertical strip distortion effect is convincing (looks like shredded paper)
+- [ ] Vertical strip distortion uses dense wavy black lines, not random falling scraps
 - [ ] The businessman image also gets shredded at high scroll progress
-- [ ] Background transitions from cream to dark navy at bottom
-- [ ] After full shred, next section (Contact Tease) enters smoothly
+- [ ] Navy contact tease rises underneath while the cream sheet is still shredding
+- [ ] After full shred, the cream remnant exits near the top and Contact Tease is centered
 
 ### Contact Tease
 - [ ] Background is deep navy-black
@@ -180,7 +180,6 @@ Every text string must match exactly. Check these specifically:
 - [ ] Preloader: "Shader Development Studio, Website / Version 1.02"
 - [ ] About headline: "Making Digital Storytelling More Playful, Powerful, and Alive"
 - [ ] Shredder headline: "Had Enough Reading? Let's Shred This Thing."
-- [ ] Shredder sub: "We've got one last trick up our sleeve."
 - [ ] Contact tease: "Still Not Convinced We're Serious About Business?"
 - [ ] Contact tease sub: "We've got one last trick up our sleeve."
 - [ ] Golden Tie headline: "Check Out This Golden Tie"

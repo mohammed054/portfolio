@@ -353,7 +353,7 @@ shader-rebuild/
 │   │   ├── glsl/
 │   │   │   ├── crtDistort.glsl
 │   │   │   ├── filmGrain.glsl
-│   │   │   └── shredWarp.glsl
+│   │   │   └── shredLines.glsl
 │   │   └── constants.ts
 │   │
 │   └── types/

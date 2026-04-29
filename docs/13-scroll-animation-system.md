@@ -309,51 +309,38 @@ gsap.fromTo('.rainbow-stripe-segment',
 ---
 
 ### SHREDDER
-**Scroll type**: **PINNED** + scroll-progress-driven GLSL shader
+**Scroll type**: scroll-bound transition + moving gate + strip warp
+
+The reference capture shows a full-width horizontal shredder gate sweeping upward while the cream page becomes dense wavy vertical strips. Drive the effect with CSS custom properties so the DOM, CSS/SVG fallback, and optional WebGL shader stay in sync.
 
 ```typescript
-// Pin the shredder section
+const section = document.querySelector<HTMLElement>('.section-shredder');
+
 ScrollTrigger.create({
-  trigger: '.section-shredder',
-  pin: true,
-  start: 'top top',
-  end: '+=200%',    // 2x viewport height of scroll distance
-  anticipatePin: 1,
+  trigger: section,
+  start: 'top bottom',
+  end: 'bottom top',
+  scrub: true,
   onUpdate: (self) => {
-    // Pass progress to the WebGL shader uniform
-    shredderShader.uniforms.uProgress.value = self.progress;
-    
-    // At 20% progress, "power on" the shredder
-    if (self.progress > 0.2 && !shredderActive) {
-      activateShredder();
-      shredderActive = true;
-    }
+    const progress = self.progress;
+
+    section?.style.setProperty('--shred-progress', String(progress));
+    section?.style.setProperty('--gate-y', `${100 - progress * 120}%`);
+    section?.style.setProperty('--wave-amount', String(Math.min(1, progress * 1.35)));
+
+    // Optional WebGL path: keep shader uniforms aligned with the DOM gate.
+    shredderShader?.uniforms.uProgress.value = progress;
+    shredderShader?.uniforms.uGateY.value = 1 - progress;
   },
 });
-
-// Shredder machine jiggle (idle)
-gsap.to('.shredder-machine', {
-  y: '2px',
-  duration: 0.08,
-  repeat: -1,
-  yoyo: true,
-  ease: 'none',
-  id: 'shredder-idle',
-});
-
-// Shredder machine active jiggle (intensified)
-function activateShredder() {
-  gsap.getById('shredder-idle')?.kill();
-  gsap.to('.shredder-machine', {
-    x: '2px',
-    y: '2px',
-    duration: 0.05,
-    repeat: -1,
-    yoyo: true,
-    ease: 'none',
-  });
-}
 ```
+
+Progress mapping:
+- `0.00-0.20`: previous cream CTA exits; rainbow rule and shredder headline enter.
+- `0.20-0.35`: headline and businessman remain clean and readable.
+- `0.35-0.70`: gate crosses the panel; shredded layer expands below it.
+- `0.70-0.85`: gate leaves near the top; cream sheet becomes a wavy curtain.
+- `0.85-1.00`: navy Contact Tease centers under the cream remnant.
 
 ---
 

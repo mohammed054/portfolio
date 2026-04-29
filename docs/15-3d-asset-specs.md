@@ -1,4 +1,4 @@
-# 15 — 3D ASSET PRODUCTION SPECS
+﻿# 15 â€” 3D ASSET PRODUCTION SPECS
 ## For the 3D Artists / Asset Pipeline Team
 
 ---
@@ -32,7 +32,7 @@ The Commodore SuperPET SP9000 (also related to CBM 8032 / PET series). Visual re
 | Monitor housing | CRT bezel with thick bezels, curved front | Monitor face must be a clean flat quad mesh (receives video texture) |
 | Monitor screen | **Separate named mesh: `monitor_screen`** | Assigned transparent/emissive material, receives VideoTexture |
 | CRT tube neck | Visible behind monitor housing if at any angle | Low poly fine |
-| Power cable | Subtle, drapes off back of keyboard base | Optional — only if visible in render |
+| Power cable | Subtle, drapes off back of keyboard base | Optional â€” only if visible in render |
 | Front label area | Flat face panel on keyboard front | Must accommodate "SHADER" branding decal |
 | Side vents | Subtle grille pattern on side faces | Can be normal-mapped rather than modeled |
 
@@ -40,10 +40,10 @@ The Commodore SuperPET SP9000 (also related to CBM 8032 / PET series). Visual re
 ```
 superpet_keyboard_base
 superpet_monitor_housing
-superpet_monitor_screen      ← CRITICAL: must be named exactly this
+superpet_monitor_screen      â† CRITICAL: must be named exactly this
 superpet_keys_group
-superpet_label_shader        ← front face label
-superpet_label_superpet      ← original "SuperPET SP9000" label on monitor side
+superpet_label_shader        â† front face label
+superpet_label_superpet      â† original "SuperPET SP9000" label on monitor side
 ```
 
 ### Materials
@@ -53,7 +53,7 @@ mat_computer_body:
   Base Color: #c8c0a8  (warm off-white / cream-beige)
   Metalness: 0.05
   Roughness: 0.65
-  Normal Map: subtle plastic surface micro-bumps (1024×1024)
+  Normal Map: subtle plastic surface micro-bumps (1024Ã—1024)
 
 mat_monitor_screen:
   Base Color: #000000
@@ -114,9 +114,9 @@ The tie mesh must be built for **procedural vertex deformation** (soft-body simu
 
 ### Naming Convention
 ```
-tie_blade          ← the main tie body (deforming part)
-tie_knot           ← the knot at the top (non-deforming, stays fixed)
-tie_tail           ← the thin tail behind the knot (static or minimal deform)
+tie_blade          â† the main tie body (deforming part)
+tie_knot           â† the knot at the top (non-deforming, stays fixed)
+tie_tail           â† the thin tail behind the knot (static or minimal deform)
 ```
 
 The **top edge loop** of `tie_blade` (where it meets the knot) must have its vertices marked or positioned at Y=0 (world origin). These vertices will be **pinned** in the deformation simulation.
@@ -129,7 +129,7 @@ mat_golden_tie:
   Roughness: 0.12
   Clearcoat: 0.3
   Clearcoat Roughness: 0.1
-  NOTE: This should look like polished gold — highly specular, 
+  NOTE: This should look like polished gold â€” highly specular, 
         clear reflections, slight warmth
 ```
 
@@ -157,23 +157,23 @@ Late 1990s / early 2000s office telephone equipment. Reference models:
 
 ### Phone Units Required
 
-**Unit 1 — Cordless Handset (standing upright)**
+**Unit 1 â€” Cordless Handset (standing upright)**
 - The handset stands in its cradle vertically
 - Antenna visible at top
 - Keypad on front face
 - "SHADER" label on face
 
-**Unit 2 — Cordless Phone Base / Answering Machine**
+**Unit 2 â€” Cordless Phone Base / Answering Machine**
 - Flat horizontal unit, the widest piece in the arrangement
 - Speaker grille visible
 - "SHADER" label on front face
 
-**Unit 3 — Desk Phone (left)**
+**Unit 3 â€” Desk Phone (left)**
 - Boxy form, handset resting in cradle on top
 - Number buttons on angled face
 - "SHADER" label
 
-**Unit 4 — Additional handset or device (right edge)**
+**Unit 4 â€” Additional handset or device (right edge)**
 
 ### Arrangement
 All phones are arranged as a **tight cluster**, like a product display or shrine:
@@ -182,26 +182,26 @@ All phones are arranged as a **tight cluster**, like a product display or shrine
 - The desk phone is to the left
 - An additional unit is to the right
 
-The arrangement should look deliberate and slightly absurd — like someone artfully stacked their entire phone collection.
+The arrangement should look deliberate and slightly absurd â€” like someone artfully stacked their entire phone collection.
 
 ### Naming Convention
 ```
-phone_base_unit          ← flat answering machine
-phone_cordless_handset   ← upright handset
-phone_desk_left          ← boxy desk phone
-phone_unit_right         ← fourth unit
-phones_floor_plane       ← optional invisible plane for reflection
+phone_base_unit          â† flat answering machine
+phone_cordless_handset   â† upright handset
+phone_desk_left          â† boxy desk phone
+phone_unit_right         â† fourth unit
+phones_floor_plane       â† optional invisible plane for reflection
 ```
 
 ### Materials
 ```
 mat_phone_body:
-  Base Color: #d4cfc4  (warm light gray-cream — classic 90s office equipment)
+  Base Color: #d4cfc4  (warm light gray-cream â€” classic 90s office equipment)
   Roughness: 0.75
   Metalness: 0.05
-  Normal Map: subtle plastic texture (800×800)
+  Normal Map: subtle plastic texture (800Ã—800)
 
-mat_phone_screen:        ← LCD display if visible
+mat_phone_screen:        â† LCD display if visible
   Base Color: #1a2010  (very dark green)
   Emissive: #4a6030 (faint green glow)
   Emissive Intensity: 0.3
@@ -213,43 +213,44 @@ mat_phone_keys:
 
 ---
 
-## MODEL 4: Paper Shredder (Shredder Section)
+## MODEL 4: Shredder Gate (Shredder Section)
 
-**Filename**: `shredder-machine.glb`  
-**Budget**: < 1.5 MB compressed  
-**Polygon target**: ~25,000 triangles
+**Filename**: `shredder-gate.svg` or CSS component  
+**Budget**: < 100 KB  
+**Polygon target**: N/A
 
-**Note**: The shredder may alternatively be a high-quality SVG illustration. A 3D model is preferred for the light responsiveness.
+**Note**: The Chrome capture shows a full-width horizontal shredder head/gate, not a standalone desktop shredder bin. Do not spend 3D budget on `shredder-machine.glb` unless a later design revision explicitly brings back the full physical object.
 
 ### Physical Reference
-Desktop office paper shredder, cross-cut style. Reference: Fellowes or Staples branded desktop shredders circa 2000–2010.
+
+Top head / mouth of an office paper shredder, stretched as a theatrical viewport-wide gate. It should feel like late-1990s office equipment: warm gray plastic or painted metal, slightly olive, with bevels and small hardware details.
 
 ### Parts Required
 
 | Part | Description |
 |------|-------------|
-| Main body | Tall rectangular unit, the "head" of the shredder containing the blades |
-| Paper input slot | A horizontal slot at the top of the main body |
-| Waste basket | The lower container/bin that collects shredded paper |
-| Front panel label | Face of the main body, must say "SHADER" with the rainbow icon |
-| Side vents | Decorative grille on the sides |
+| Main gate bar | Full-width horizontal machine face that crosses the viewport |
+| Center badge | Small black label reading `SHREDDER` |
+| Vent slits | Short vertical grille details on both sides of the badge |
+| Side hardware | Small dark screws / sensor marks near the badge area |
+| Underside shadow | Dark lip under the gate so paper appears to pass behind it |
 
-### Materials
-```
-mat_shredder_body:
-  Base Color: #c0bdb5  (warm gray — typical office equipment)
-  Roughness: 0.7
-  Metalness: 0.08
-  Subtle normal map: plastic texture
+### Materials / Styling
 
-mat_shredder_label:
-  Base Color: uses SHADER label texture (see Textures section)
-
-mat_shredder_slot:
-  Base Color: #111111  (the dark interior of the input slot)
-  Roughness: 0.9
+```css
+--shredder-gate-face: #aaa58f;    /* warm gray-olive office plastic */
+--shredder-gate-edge: #5d5a4f;    /* darker bevel and underside */
+--shredder-gate-highlight: rgba(255, 255, 230, 0.35);
+--shredder-gate-badge: #111111;
+--shredder-gate-label: #f4efe2;
 ```
 
+### Implementation Notes
+
+- Prefer SVG or CSS gradients so the gate can stretch across any desktop width without texture blur.
+- Include a subtle top highlight and underside drop shadow.
+- The gate position is scroll-driven via `--gate-y`; no idle jiggle is required.
+- Pair this asset with the strip-warp layer described in `07-shredder.md`.
 ---
 
 ## 5. TEXTURES & DECALS
@@ -258,21 +259,21 @@ mat_shredder_slot:
 
 Every 3D model uses a version of the SHADER logo as a label/sticker on its surface. This decal must be:
 
-- **Format**: PNG, 512×256px (2:1 ratio), transparent background
+- **Format**: PNG, 512Ã—256px (2:1 ratio), transparent background
 - **Contents**: Rainbow-striped icon (left) + "SHADER" wordmark (right)
 - **Color**: The logo colors on a white rectangle background, like a real product label
 - The label rectangle has a very slight bevel/raised appearance in the normal map
 
 ### Grain Texture
 - **File**: `grain.webp` (or PNG)
-- **Size**: 512×512px
+- **Size**: 512Ã—512px
 - **Content**: Pure noise / film grain, no pattern
 - **Usage**: Used as an emissive/overlay texture in the postprocessing pass
-- **Tileable**: Yes — seamless in both directions
+- **Tileable**: Yes â€” seamless in both directions
 
 ### CRT Screen Mesh Texture (for hero computer screen)
 - **File**: `crt-shadow-mask.webp`
-- **Size**: 256×256px, tileable
+- **Size**: 256Ã—256px, tileable
 - **Content**: A repeating slot-mask or aperture-grille pattern (vertical stripes of very slight darkness, ~2px period)
 - **Usage**: Blended over the VideoTexture on the monitor screen at ~15% opacity
 
@@ -301,8 +302,7 @@ ls -lah superpet-computer-opt.glb
 superpet-computer.glb    < 3.0 MB
 golden-tie.glb           < 1.0 MB
 phones-array.glb         < 2.0 MB
-shredder-machine.glb     < 1.5 MB
-TOTAL                    < 7.5 MB
+TOTAL                    < 6.0 MB
 ```
 
 ---
@@ -342,12 +342,13 @@ For each GLB, the 3D artist must confirm:
 
 - [ ] No n-gons (all faces are triangles or quads)
 - [ ] No overlapping UVs (except intentional mirrored UVs)
-- [ ] All meshes have correct world transforms applied (`Object → Apply → All Transforms` in Blender)
+- [ ] All meshes have correct world transforms applied (`Object â†’ Apply â†’ All Transforms` in Blender)
 - [ ] Origin is set as specified per model
-- [ ] All materials use PBR (no legacy Blinn-Phong or unlit materials — except `monitor_screen` which is intentionally emissive)
+- [ ] All materials use PBR (no legacy Blinn-Phong or unlit materials â€” except `monitor_screen` which is intentionally emissive)
 - [ ] No stray loose vertices or edges
 - [ ] Normals are correct direction (no inverted normals)
 - [ ] File opens correctly in `gltf.report` online validator (zero errors)
 - [ ] DRACO compressed version loads in Three.js sandbox (test via threejs.org/editor)
 - [ ] Compressed file size is within budget
 - [ ] Visual parity check: side-by-side with original shader.se confirmed by art director
+

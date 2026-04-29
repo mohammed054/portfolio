@@ -71,7 +71,8 @@ The URL becomes `shader.se/#contact` here.
 ## ANIMATION
 
 ### Enter (from shredder)
-- The dark background fades in as the cream/shredder section transitions out
+- The dark background rises underneath the shredded cream paper while the cream remnant is still visible near the top edge
+- The headline can begin appearing before the shredder transition has fully cleared, matching the captured overlap
 - The headline words **stagger in from below**:
   - Each word: `translateY(40px) opacity:0 → rest`
   - 60ms stagger between words
