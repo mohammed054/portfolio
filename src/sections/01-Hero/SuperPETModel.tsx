@@ -14,6 +14,12 @@ type MonitorScenePainter = (
   alpha: number,
 ) => void;
 
+const MONITOR_IMAGE_SOURCES = [
+  '/images/carousel/project-01-main.jpg',
+  '/images/carousel/project-02-main.jpg',
+  '/images/carousel/project-11-main.jpg',
+];
+
 function createMonitorTexture() {
   const canvas = document.createElement('canvas');
   canvas.width = 1024;
@@ -199,6 +205,11 @@ function createMonitorTexture() {
   };
 
   const painters = [drawDesignScene, drawShowroomScene, drawOrbitScene];
+  const monitorImages = MONITOR_IMAGE_SOURCES.map((source) => {
+    const image = new Image();
+    image.src = source;
+    return image;
+  });
   let rafId = 0;
 
   const render = (timestamp: number) => {
@@ -214,8 +225,64 @@ function createMonitorTexture() {
     ctx.fillStyle = '#06090d';
     ctx.fillRect(0, 0, width, height);
 
-    painters[currentIndex](ctx, width, height, time, 1 - mix);
-    painters[nextIndex](ctx, width, height, time, mix);
+    const currentImage = monitorImages[currentIndex];
+    const nextImage = monitorImages[nextIndex];
+    const currentLoaded = currentImage?.complete && currentImage.naturalWidth > 0;
+    const nextLoaded = nextImage?.complete && nextImage.naturalWidth > 0;
+
+    if (currentLoaded || nextLoaded) {
+      const drawImageFrame = (image: HTMLImageElement, alpha: number) => {
+        if (!(image.complete && image.naturalWidth > 0)) {
+          return;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = alpha;
+
+        const imageRatio = image.naturalWidth / image.naturalHeight;
+        const canvasRatio = width / height;
+
+        let drawWidth = width;
+        let drawHeight = height;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        if (imageRatio > canvasRatio) {
+          drawHeight = height;
+          drawWidth = height * imageRatio;
+          offsetX = (width - drawWidth) * 0.5;
+        } else {
+          drawWidth = width;
+          drawHeight = width / imageRatio;
+          offsetY = (height - drawHeight) * 0.5;
+        }
+
+        ctx.filter = 'saturate(0.92) contrast(1.08) brightness(0.94)';
+        ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
+        ctx.restore();
+      };
+
+      drawImageFrame(currentImage, 1 - mix);
+      drawImageFrame(nextImage, mix);
+
+      ctx.save();
+      const vignetteOverlay = ctx.createRadialGradient(
+        width * 0.5,
+        height * 0.45,
+        width * 0.12,
+        width * 0.5,
+        height * 0.52,
+        width * 0.74,
+      );
+      vignetteOverlay.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      vignetteOverlay.addColorStop(1, 'rgba(0, 0, 0, 0.34)');
+      ctx.fillStyle = vignetteOverlay;
+      ctx.fillRect(0, 0, width, height);
+      ctx.restore();
+    } else {
+      painters[currentIndex](ctx, width, height, time, 1 - mix);
+      painters[nextIndex](ctx, width, height, time, mix);
+    }
 
     ctx.save();
     ctx.globalCompositeOperation = 'screen';
