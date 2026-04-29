@@ -1,24 +1,28 @@
 import { Suspense, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment } from '@react-three/drei/core/Environment.js';
-import {
-  Bloom,
-  ChromaticAberration,
-  EffectComposer,
-} from '@react-three/postprocessing';
-import { BlendFunction } from 'postprocessing';
-import { Vector2 } from 'three';
+import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import SuperPETModel from './SuperPETModel';
 import { useScrollProgress } from '../../hooks/useScrollProgress';
 import { prefersReducedMotion } from '../../utils/motion';
 
-function CameraController({ progress }: { progress: number }) {
+interface HeroSceneProps {
+  quality: 'high' | 'low';
+}
+
+function CameraController({
+  animated,
+  progress,
+}: {
+  animated: boolean;
+  progress: number;
+}) {
   const target = useMemo(() => new THREE.Vector3(-0.1, 0.18, 6.5), []);
   const lookAtTarget = useMemo(() => new THREE.Vector3(1.12, 0.08, 0.02), []);
 
   useFrame(({ camera }) => {
-    if (prefersReducedMotion) {
+    if (!animated || prefersReducedMotion) {
       camera.position.set(-0.1, 0.18, 6.5);
       camera.lookAt(lookAtTarget);
       return;
@@ -37,7 +41,13 @@ function CameraController({ progress }: { progress: number }) {
   return null;
 }
 
-function ScreenGlow({ progress }: { progress: number }) {
+function ScreenGlow({
+  animated,
+  progress,
+}: {
+  animated: boolean;
+  progress: number;
+}) {
   const lightRef = useRef<THREE.PointLight>(null);
 
   useFrame(() => {
@@ -45,7 +55,8 @@ function ScreenGlow({ progress }: { progress: number }) {
       return;
     }
 
-    const targetIntensity = prefersReducedMotion ? 1 : 1.5 - progress * 0.25;
+    const targetIntensity =
+      !animated || prefersReducedMotion ? 1.02 : 1.38 - progress * 0.22;
     lightRef.current.intensity = THREE.MathUtils.lerp(
       lightRef.current.intensity,
       targetIntensity,
@@ -65,62 +76,76 @@ function ScreenGlow({ progress }: { progress: number }) {
   );
 }
 
-function SceneContent() {
+function SceneContent({ quality }: HeroSceneProps) {
   const progress = useScrollProgress('#section-hero');
+  const animated = quality === 'high' && !prefersReducedMotion;
 
   return (
     <>
-      <ambientLight intensity={0.2} color="#2b2148" />
+      <ambientLight intensity={quality === 'high' ? 0.2 : 0.3} color="#2b2148" />
       <spotLight
         position={[5.6, 6.2, 4.8]}
-        intensity={3.8}
+        intensity={quality === 'high' ? 3.2 : 2.5}
         angle={0.42}
         penumbra={1}
         color="#ffaa66"
         decay={1.5}
       />
-      <pointLight position={[-4.6, 1.2, 2.4]} intensity={1.15} color="#5660ff" decay={2} />
-      <pointLight position={[2.8, -0.6, -3.8]} intensity={0.65} color="#352f90" decay={2} />
-      <pointLight position={[0.4, -3.2, 2.2]} intensity={0.45} color="#8458ff" decay={2} />
+      <pointLight
+        position={[-4.6, 1.2, 2.4]}
+        intensity={quality === 'high' ? 1.15 : 0.8}
+        color="#5660ff"
+        decay={2}
+      />
+      <pointLight
+        position={[2.8, -0.6, -3.8]}
+        intensity={quality === 'high' ? 0.65 : 0.42}
+        color="#352f90"
+        decay={2}
+      />
+      <pointLight
+        position={[0.4, -3.2, 2.2]}
+        intensity={quality === 'high' ? 0.45 : 0.28}
+        color="#8458ff"
+        decay={2}
+      />
 
-      <CameraController progress={progress} />
-      <ScreenGlow progress={progress} />
+      <CameraController animated={animated} progress={progress} />
+      <ScreenGlow animated={animated} progress={progress} />
 
       <Suspense fallback={null}>
-        <SuperPETModel />
+        <SuperPETModel animated={animated} />
       </Suspense>
 
-      <Environment preset="night" />
+      {quality === 'high' && <Environment preset="night" />}
 
-      <EffectComposer>
-        <Bloom
-          intensity={1.3}
-          luminanceThreshold={0.5}
-          luminanceSmoothing={0.85}
-          mipmapBlur
-        />
-        <ChromaticAberration
-          blendFunction={BlendFunction.NORMAL}
-          offset={new Vector2(0.0014, 0.0014)}
-          radialModulation={false}
-          modulationOffset={0}
-        />
-      </EffectComposer>
+      {quality === 'high' && (
+        <EffectComposer>
+          <Bloom
+            intensity={0.9}
+            luminanceThreshold={0.62}
+            luminanceSmoothing={0.88}
+            mipmapBlur
+          />
+        </EffectComposer>
+      )}
     </>
   );
 }
 
-function HeroScene() {
+function HeroScene({ quality }: HeroSceneProps) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const dpr: [number, number] =
-    typeof window !== 'undefined' && window.innerWidth < 768 ? [1, 1.5] : [1, 2];
+    quality === 'low' ? [1, 1] : isMobile ? [1, 1.15] : [1, 1.35];
 
   return (
     <Canvas
       dpr={dpr}
+      frameloop={quality === 'low' ? 'demand' : 'always'}
       aria-hidden="true"
       camera={{ position: [-0.1, 0.18, 6.5], fov: 34 }}
       gl={{
-        antialias: true,
+        antialias: quality === 'high',
         alpha: true,
         powerPreference: 'high-performance',
       }}
@@ -131,7 +156,7 @@ function HeroScene() {
       style={{ position: 'absolute', inset: 0 }}
     >
       <fog attach="fog" args={['#100818', 9, 24]} />
-      <SceneContent />
+      <SceneContent quality={quality} />
     </Canvas>
   );
 }

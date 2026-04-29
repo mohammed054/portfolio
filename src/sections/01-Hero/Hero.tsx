@@ -1,11 +1,12 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import HeroScene from './HeroScene';
 import { SectionAnchor } from '../../components/shared/SectionAnchor';
-import { COPY } from '../../utils/constants';
+import { COPY, FEATURES } from '../../utils/constants';
 import { prefersReducedMotion } from '../../utils/motion';
+import { heroSceneQuality, isLowPerformanceDevice } from '../../utils/performance';
 import styles from './Hero.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -34,6 +35,27 @@ function Hero() {
   const textRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLParagraphElement>(null);
   const linesRef = useRef<HTMLSpanElement[]>([]);
+  const [isSceneVisible, setIsSceneVisible] = useState(true);
+
+  useEffect(() => {
+    const section = containerRef.current;
+    if (!section) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsSceneVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.02,
+        rootMargin: '24% 0px 24% 0px',
+      },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   useGSAP(
     () => {
@@ -88,10 +110,14 @@ function Hero() {
   );
 
   return (
-    <section id="section-hero" ref={containerRef} className={styles.hero}>
+    <section
+      id="section-hero"
+      ref={containerRef}
+      className={`${styles.hero} ${isLowPerformanceDevice ? styles.heroLowPower : ''}`}
+    >
       <SectionAnchor id="home" threshold={0.3} />
       <div className={styles.scene3d} aria-hidden="true">
-        <HeroScene />
+        {FEATURES.enable3D && isSceneVisible ? <HeroScene quality={heroSceneQuality} /> : null}
       </div>
 
       <div className={styles.vignette} aria-hidden="true" />

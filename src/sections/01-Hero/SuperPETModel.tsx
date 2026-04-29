@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useGLTF } from '@react-three/drei/core/Gltf.js';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { MODEL_PATHS } from '../../utils/constants';
 
@@ -20,10 +20,10 @@ const MONITOR_IMAGE_SOURCES = [
   '/images/carousel/project-11-main.jpg',
 ];
 
-function createMonitorTexture() {
+function createMonitorTexture(animated: boolean, onUpdate?: () => void) {
   const canvas = document.createElement('canvas');
-  canvas.width = 1024;
-  canvas.height = 768;
+  canvas.width = 768;
+  canvas.height = 576;
 
   const ctx = canvas.getContext('2d');
   const texture = new THREE.CanvasTexture(canvas);
@@ -210,10 +210,11 @@ function createMonitorTexture() {
     image.src = source;
     return image;
   });
+  const cleanupCallbacks: Array<() => void> = [];
   let rafId = 0;
+  let lastRenderTime = -Infinity;
 
-  const render = (timestamp: number) => {
-    const time = timestamp * 0.001;
+  const drawFrame = (time: number) => {
     const { width, height } = canvas;
     const cycleDuration = 4.8;
     const cyclePosition = time / cycleDuration;
@@ -323,27 +324,65 @@ function createMonitorTexture() {
     ctx.restore();
 
     texture.needsUpdate = true;
-    rafId = window.requestAnimationFrame(render);
+    onUpdate?.();
   };
 
-  rafId = window.requestAnimationFrame(render);
+  const renderOnce = () => {
+    drawFrame(0);
+  };
+
+  monitorImages.forEach((image) => {
+    if (image.complete && image.naturalWidth > 0) {
+      return;
+    }
+
+    const handleLoad = () => {
+      if (!animated) {
+        renderOnce();
+      }
+    };
+
+    image.addEventListener('load', handleLoad);
+    cleanupCallbacks.push(() => image.removeEventListener('load', handleLoad));
+  });
+
+  if (animated) {
+    const render = (timestamp: number) => {
+      if (document.visibilityState === 'visible' && timestamp - lastRenderTime >= 1000 / 12) {
+        drawFrame(timestamp * 0.001);
+        lastRenderTime = timestamp;
+      }
+
+      rafId = window.requestAnimationFrame(render);
+    };
+
+    drawFrame(0);
+    rafId = window.requestAnimationFrame(render);
+  } else {
+    renderOnce();
+  }
 
   return {
     texture,
     cleanup: () => {
       window.cancelAnimationFrame(rafId);
+      cleanupCallbacks.forEach((callback) => callback());
       texture.dispose();
     },
   };
 }
 
-function SuperPETModel() {
+function SuperPETModel({ animated = true }: { animated?: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF(MODEL_PATH);
+  const invalidate = useThree((state) => state.invalidate);
 
   useEffect(() => {
     const clone = scene.clone(true);
-    const { texture: screenTexture, cleanup } = createMonitorTexture();
+    const { texture: screenTexture, cleanup } = createMonitorTexture(
+      animated,
+      animated ? undefined : invalidate,
+    );
     const disposableMaterials: THREE.Material[] = [];
 
     clone.traverse((child) => {
@@ -406,6 +445,8 @@ function SuperPETModel() {
       groupRef.current.add(clone);
     }
 
+    invalidate();
+
     return () => {
       cleanup();
       disposableMaterials.forEach((material) => material.dispose());
@@ -414,10 +455,10 @@ function SuperPETModel() {
         groupRef.current.clear();
       }
     };
-  }, [scene]);
+  }, [animated, scene]);
 
   useFrame((state) => {
-    if (!groupRef.current) {
+    if (!animated || !groupRef.current) {
       return;
     }
 
