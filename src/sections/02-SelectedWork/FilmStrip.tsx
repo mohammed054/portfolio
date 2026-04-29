@@ -1,170 +1,114 @@
-import type { CSSProperties } from 'react';
+import type { MutableRefObject } from 'react';
 import styles from './FilmStrip.module.css';
 import type { Project } from '../../types';
 
 interface FilmStripProps {
   projects: Project[];
   activeIndex: number;
+  viewportRef: MutableRefObject<HTMLDivElement | null>;
+  trackRef: MutableRefObject<HTMLDivElement | null>;
+  setFrameRef: (index: number, element: HTMLElement | null) => void;
 }
 
-function SprocketRow() {
+function SprocketRow({ count }: { count: number }) {
   return (
     <div className={styles.sprocketRow} aria-hidden="true">
-      {Array.from({ length: 12 }).map((_, i) => (
+      {Array.from({ length: count }).map((_, i) => (
         <div key={i} className={styles.sprocket} />
       ))}
     </div>
   );
 }
 
-function DesignIsFunnyArt() {
+function ProjectFallback({ project }: { project: Project }) {
   return (
-    <div className={styles.artDesignFunny}>
-      <div className={styles.designFunnyMap} />
-      <div className={`${styles.designFunnyRing} ${styles.designFunnyRingPink}`} />
-      <div className={`${styles.designFunnyRing} ${styles.designFunnyRingPearl}`} />
-      <div className={styles.designFunnyLabel}>
-        <span>Design</span>
-        <span>is Funny</span>
-      </div>
-    </div>
-  );
-}
-
-function ShowroomArt() {
-  return (
-    <div className={styles.artShowroom}>
-      <div className={styles.showroomShadow} />
-      <div className={styles.showroomWall} />
-      <div className={styles.showroomFloor} />
-      <div className={styles.showroomTable} />
-      <div className={styles.showroomShelfLeft} />
-      <div className={styles.showroomShelfCenter} />
-      <div className={styles.showroomFigure} />
-      <div className={styles.showroomRug} />
-    </div>
-  );
-}
-
-function MedicalArenaArt() {
-  return (
-    <div className={styles.artMedicalArena}>
-      <div className={styles.medicalWallLeft} />
-      <div className={styles.medicalWallRight} />
-      <div className={styles.medicalFloor} />
-      {Array.from({ length: 3 }).map((_, row) => (
-        <div key={row} className={styles.medicalShelfRow}>
-          {Array.from({ length: 7 }).map((__, cell) => (
-            <span
-              key={`${row}-${cell}`}
-              className={styles.medicalProduct}
-              style={
-                {
-                  '--product-delay': `${row * 0.05 + cell * 0.03}s`,
-                } as CSSProperties
-              }
-            />
-          ))}
-        </div>
-      ))}
-      <div className={styles.medicalPoster} />
-    </div>
-  );
-}
-
-function GenericProjectArt({ project, index }: { project: Project; index: number }) {
-  return (
-    <div
-      className={styles.artGeneric}
-      style={
-        {
-          '--tone-a': `hsl(${(index * 41) % 360} 56% 26%)`,
-          '--tone-b': `hsl(${(index * 41 + 58) % 360} 72% 18%)`,
-        } as CSSProperties
-      }
-    >
-      <div className={styles.genericGrid} />
-      <div className={styles.genericOrb} />
-      <div className={styles.genericLabel}>
-        <span className={styles.genericNumber}>{String(index + 1).padStart(2, '0')}</span>
+    <div className={styles.fallbackArt}>
+      <div className={styles.fallbackGrid} />
+      <div className={styles.fallbackLabel}>
+        <span className={styles.fallbackKicker}>Selected work</span>
         <span>{project.name}</span>
       </div>
     </div>
   );
 }
 
-function ProjectArtwork({ project, index }: { project: Project; index: number }) {
-  if (index === 0) {
-    return <DesignIsFunnyArt />;
-  }
+function FilmStrip({
+  projects,
+  activeIndex,
+  viewportRef,
+  trackRef,
+  setFrameRef,
+}: FilmStripProps) {
+  const sprocketCount = Math.max(34, projects.length * 10);
+  const leadingProject = projects[projects.length - 1];
 
-  if (index === 1) {
-    return <ShowroomArt />;
-  }
-
-  if (index === 2) {
-    return <MedicalArenaArt />;
-  }
-
-  return <GenericProjectArt project={project} index={index} />;
-}
-
-function FilmStrip({ projects, activeIndex }: FilmStripProps) {
   return (
     <div className={styles.viewport}>
-      <div className={styles.strip}>
-        {projects.map((project, index) => {
-          const offset = index - activeIndex;
-          const depth = Math.abs(offset);
-          const scale = Math.max(0.48, 1 - depth * 0.13);
-          const opacity = depth > 4 ? 0 : Math.max(0.18, 1 - depth * 0.18);
-          const translateX = `calc(-50% + ${offset * 30}vw)`;
-          const translateY = `calc(-50% + ${30 + depth * 20}px)`;
-          const translateZ = `${-depth * 260}px`;
-          const rotateY = `${offset * -26}deg`;
-          const rotateZ = `${offset * -4.8}deg`;
+      <div className={styles.reel}>
+        <SprocketRow count={sprocketCount} />
 
-          return (
-            <article
-              key={project.id}
-              className={styles.frame}
-              aria-hidden={depth > 2}
-              data-active={depth === 0}
-              style={
-                {
-                  opacity,
-                  zIndex: 50 - depth,
-                  transform: `translate3d(${translateX}, ${translateY}, ${translateZ}) rotateY(${rotateY}) rotateZ(${rotateZ}) scale(${scale})`,
-                } as CSSProperties
-              }
-            >
-              <div className={styles.frameCard}>
-                <SprocketRow />
+        <div className={styles.window} ref={viewportRef}>
+          <div className={styles.strip} ref={trackRef}>
+            {leadingProject ? (
+              <article
+                className={`${styles.frame} ${styles.framePreview}`}
+                data-active="false"
+                aria-hidden="true"
+              >
+                <div className={styles.exposure}>
+                  {leadingProject.imageAvailable && leadingProject.images?.main ? (
+                    <img
+                      src={leadingProject.images.main}
+                      alt=""
+                      className={styles.image}
+                      loading="eager"
+                      decoding="async"
+                      fetchPriority="high"
+                    />
+                  ) : (
+                    <ProjectFallback project={leadingProject} />
+                  )}
 
+                  <div className={styles.imageOverlay} aria-hidden="true" />
+                  <span className={styles.frameNumber} aria-hidden="true">
+                    {String(projects.length).padStart(2, '0')}A
+                  </span>
+                </div>
+              </article>
+            ) : null}
+
+            {projects.map((project, index) => (
+              <article
+                key={project.id}
+                ref={(element) => setFrameRef(index, element)}
+                className={styles.frame}
+                data-active={index === activeIndex}
+              >
                 <div className={styles.exposure}>
                   {project.imageAvailable && project.images?.main ? (
                     <img
                       src={project.images.main}
                       alt={project.name}
                       className={styles.image}
-                      loading="lazy"
+                      loading={index < 3 ? 'eager' : 'lazy'}
                       decoding="async"
+                      fetchPriority={index < 3 ? 'high' : 'auto'}
                     />
                   ) : (
-                    <ProjectArtwork project={project} index={index} />
+                    <ProjectFallback project={project} />
                   )}
 
-                  <div className={styles.grain} aria-hidden="true" />
+                  <div className={styles.imageOverlay} aria-hidden="true" />
                   <span className={styles.frameNumber} aria-hidden="true">
                     {String(index + 1).padStart(2, '0')}A
                   </span>
                 </div>
+              </article>
+            ))}
+          </div>
+        </div>
 
-                <SprocketRow />
-              </div>
-            </article>
-          );
-        })}
+        <SprocketRow count={sprocketCount} />
       </div>
     </div>
   );

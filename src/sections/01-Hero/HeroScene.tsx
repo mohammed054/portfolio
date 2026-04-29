@@ -18,20 +18,28 @@ function CameraController({
   animated: boolean;
   progress: number;
 }) {
-  const target = useMemo(() => new THREE.Vector3(-0.1, 0.18, 6.5), []);
-  const lookAtTarget = useMemo(() => new THREE.Vector3(1.12, 0.08, 0.02), []);
+  const target = useMemo(() => new THREE.Vector3(0.08, 0.22, 6.18), []);
+  const lookAtTarget = useMemo(() => new THREE.Vector3(1.18, 0.16, 0.08), []);
 
   useFrame(({ camera }) => {
+    const easedProgress = THREE.MathUtils.smootherstep(progress, 0, 1);
+
     if (!animated || prefersReducedMotion) {
-      camera.position.set(-0.1, 0.18, 6.5);
+      camera.position.set(0.08, 0.22, 6.18);
       camera.lookAt(lookAtTarget);
       return;
     }
 
     target.set(
-      THREE.MathUtils.lerp(-0.1, 0.72, progress),
-      THREE.MathUtils.lerp(0.18, 0.6, progress),
-      THREE.MathUtils.lerp(6.5, 3.1, progress),
+      THREE.MathUtils.lerp(0.08, 1.06, easedProgress),
+      THREE.MathUtils.lerp(0.22, 0.76, easedProgress),
+      THREE.MathUtils.lerp(6.18, 2.46, easedProgress),
+    );
+
+    lookAtTarget.set(
+      THREE.MathUtils.lerp(1.18, 1.54, easedProgress),
+      THREE.MathUtils.lerp(0.16, 0.68, easedProgress),
+      THREE.MathUtils.lerp(0.08, 0.64, easedProgress),
     );
 
     camera.position.lerp(target, 0.06);
@@ -78,35 +86,35 @@ function ScreenGlow({
 
 function SceneContent({ quality }: HeroSceneProps) {
   const progress = useScrollProgress('#section-hero');
-  const animated = quality === 'high' && !prefersReducedMotion;
+  const animated = !prefersReducedMotion;
 
   return (
     <>
-      <ambientLight intensity={quality === 'high' ? 0.2 : 0.3} color="#2b2148" />
+      <ambientLight intensity={quality === 'high' ? 0.22 : 0.26} color="#2b2148" />
       <spotLight
-        position={[5.6, 6.2, 4.8]}
-        intensity={quality === 'high' ? 3.2 : 2.5}
-        angle={0.42}
+        position={[4.9, 6.4, 4.2]}
+        intensity={quality === 'high' ? 3.7 : 2.9}
+        angle={0.46}
         penumbra={1}
-        color="#ffaa66"
+        color="#ffbc7a"
         decay={1.5}
       />
       <pointLight
-        position={[-4.6, 1.2, 2.4]}
-        intensity={quality === 'high' ? 1.15 : 0.8}
-        color="#5660ff"
+        position={[-4.8, 1.4, 2.8]}
+        intensity={quality === 'high' ? 1.05 : 0.72}
+        color="#596dff"
         decay={2}
       />
       <pointLight
-        position={[2.8, -0.6, -3.8]}
-        intensity={quality === 'high' ? 0.65 : 0.42}
-        color="#352f90"
+        position={[2.4, -0.4, -3.8]}
+        intensity={quality === 'high' ? 0.58 : 0.38}
+        color="#3f39a0"
         decay={2}
       />
       <pointLight
-        position={[0.4, -3.2, 2.2]}
-        intensity={quality === 'high' ? 0.45 : 0.28}
-        color="#8458ff"
+        position={[0.8, -2.4, 2.6]}
+        intensity={quality === 'high' ? 0.5 : 0.3}
+        color="#9272ff"
         decay={2}
       />
 
@@ -141,9 +149,9 @@ function HeroScene({ quality }: HeroSceneProps) {
   return (
     <Canvas
       dpr={dpr}
-      frameloop={quality === 'low' ? 'demand' : 'always'}
+      frameloop="always"
       aria-hidden="true"
-      camera={{ position: [-0.1, 0.18, 6.5], fov: 34 }}
+      camera={{ position: [0.08, 0.22, 6.18], fov: 34 }}
       gl={{
         antialias: quality === 'high',
         alpha: true,
