@@ -1,10 +1,10 @@
 .viewport {
   position: relative;
-  width: min(94vw, 1760px);
+  width: min(96vw, 1760px);
   height: min(64vh, 700px);
   perspective: 2600px;
-  perspective-origin: 68% 14%;
-  transform: translate3d(5vw, 1vh, 0) rotateZ(-2deg);
+  perspective-origin: 50% 18%;
+  transform: translate3d(0, 1vh, 0) rotateZ(-2deg);
 }
 
 .reel {
@@ -74,9 +74,9 @@
 .window {
   position: absolute;
   top: 62px;
-  right: 3%;
+  right: 4%;
   bottom: 62px;
-  left: 3%;
+  left: 4%;
   overflow: visible;
 }
 
@@ -94,7 +94,7 @@
 }
 
 .frame {
-  width: clamp(300px, 34vw, 640px);
+  width: clamp(420px, 46vw, 820px);
   aspect-ratio: 1.28;
   flex-shrink: 0;
   transform-style: preserve-3d;
@@ -102,7 +102,7 @@
 }
 
 .framePreview {
-  opacity: 0.62;
+  opacity: 0.72;
   margin-right: -12px;
   transform:
     translate3d(0, 38px, -200px)
@@ -121,6 +121,10 @@
   background: #080808;
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.46);
   transition: box-shadow 260ms ease;
+}
+
+.frame[data-active='true'] {
+  opacity: 1;
 }
 
 .frame[data-active='true'] .exposure {

@@ -1,0 +1,173 @@
+.section {
+  position: relative;
+  min-height: 188vh;
+  background: #2520b7;
+  z-index: calc(var(--z-navbar) + 2);
+}
+
+.screen {
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 34%, rgba(0, 0, 0, 0.18) 100%),
+    #2520b7;
+  color: var(--color-crt-text);
+  transform: scale(1.018);
+  transform-origin: center center;
+}
+
+.screen::before,
+.screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.screen::before {
+  z-index: 4;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      rgba(0, 0, 0, 0.14) 2px,
+      rgba(0, 0, 0, 0.14) 3px
+    );
+  mix-blend-mode: multiply;
+}
+
+.screen::after {
+  z-index: 5;
+  background:
+    radial-gradient(ellipse 94% 82% at 50% 50%, transparent 58%, rgba(0, 0, 0, 0.2) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.16), transparent 8%, transparent 92%, rgba(0, 0, 0, 0.16));
+  box-shadow:
+    inset 0 0 52px rgba(0, 0, 0, 0.26),
+    inset 0 0 160px rgba(0, 0, 0, 0.16);
+}
+
+.content {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.7rem, 3.4vh, 2.7rem);
+  text-align: center;
+  filter: brightness(1.06) contrast(1.08);
+}
+
+.logoLockup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 2.4vw, 2rem);
+}
+
+.logoIcon {
+  width: clamp(96px, 11vw, 178px);
+  height: auto;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 10px rgba(232, 228, 216, 0.16));
+}
+
+.logoIcon path {
+  fill: var(--color-crt-text);
+}
+
+.wordmark {
+  color: var(--color-crt-text);
+  font-family: var(--font-display);
+  font-size: clamp(56px, 8vw, 142px);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 14px rgba(232, 228, 216, 0.18);
+}
+
+.subtitle {
+  display: grid;
+  gap: 0.28rem;
+  color: var(--color-crt-text);
+  font-family: var(--font-mono);
+  font-size: clamp(0.9rem, 1.25vw, 1.24rem);
+  line-height: 1.35;
+}
+
+.progressBar {
+  width: min(52vw, 620px);
+  height: 34px;
+  border: 2px solid var(--color-crt-border);
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.progressInner {
+  height: 100%;
+  display: flex;
+  gap: 2px;
+}
+
+.segment {
+  flex: 1;
+  border: 1px solid rgba(232, 228, 216, 0.58);
+  background: var(--color-crt-text);
+  opacity: 0;
+  animation: bootFill 3.2s steps(1, end) infinite;
+  animation-delay: calc(var(--segment-index) * 0.105s);
+}
+
+.copyright {
+  position: absolute;
+  right: 1rem;
+  bottom: clamp(1.2rem, 3vh, 2rem);
+  left: 1rem;
+  z-index: 6;
+  color: var(--color-crt-text);
+  font-family: var(--font-mono);
+  font-size: clamp(0.64rem, 0.82vw, 0.82rem);
+  text-align: center;
+}
+
+@keyframes bootFill {
+  0%,
+  12% {
+    opacity: 0;
+  }
+
+  13%,
+  80% {
+    opacity: 1;
+  }
+
+  81%,
+  100% {
+    opacity: 0.32;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    min-height: 145vh;
+  }
+
+  .logoLockup {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .wordmark {
+    font-size: clamp(48px, 17vw, 96px);
+  }
+
+  .progressBar {
+    width: 80vw;
+  }
+}

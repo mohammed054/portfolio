@@ -1,6 +1,6 @@
 .section {
   position: relative;
-  min-height: 96vh;
+  min-height: 104vh;
   background: #000000;
   overflow: hidden;
 }
@@ -26,7 +26,7 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding-top: 9vh;
+  padding-top: clamp(132px, 16vh, 180px);
   text-align: center;
   padding-inline: 6vw;
 }
@@ -50,14 +50,14 @@
 
 .scene {
   position: absolute;
-  inset: 14% 0 12%;
+  inset: 20% 0 10%;
   z-index: 2;
 }
 
 .sceneCanvas {
   position: absolute;
   inset: 0;
-  opacity: 0.5;
+  opacity: 0.76;
 }
 
 .tieFallback {
@@ -121,13 +121,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 48%;
+  height: 62%;
   z-index: 4;
 }
 
 .person {
   position: absolute;
-  bottom: -2%;
+  bottom: -4%;
   opacity: 0;
 }
 
@@ -189,23 +189,46 @@
 }
 
 .pinkSuit {
-  left: 5%;
+  left: 3%;
+  bottom: 4%;
+}
+
+.tanSuit {
+  left: 15%;
+  bottom: -2%;
 }
 
 .patternDress {
-  left: 26%;
+  left: 27%;
+  bottom: 3%;
+}
+
+.brownSuit {
+  left: 38%;
+  bottom: -4%;
 }
 
 .graySuit {
-  right: 25%;
+  right: 32%;
+  bottom: -2%;
+}
+
+.blueSuit {
+  right: 17%;
+  bottom: 2%;
 }
 
 .blackDress {
-  right: 5%;
+  right: 3%;
+  bottom: 4%;
 }
 
 .pinkSuit .torso {
   background: linear-gradient(180deg, #d7a0aa, #9d5d71);
+}
+
+.tanSuit .torso {
+  background: linear-gradient(180deg, #c4aa78, #71533a);
 }
 
 .patternDress .torso {
@@ -217,6 +240,14 @@
 
 .graySuit .torso {
   background: linear-gradient(180deg, #a8abad, #5e6367);
+}
+
+.brownSuit .torso {
+  background: linear-gradient(180deg, #8b5e36, #3f2a1b);
+}
+
+.blueSuit .torso {
+  background: linear-gradient(180deg, #536d91, #19283d);
 }
 
 .blackDress .figure {
@@ -319,7 +350,9 @@
   }
 
   .patternDress,
-  .graySuit {
+  .brownSuit,
+  .graySuit,
+  .blueSuit {
     display: none;
   }
 

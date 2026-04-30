@@ -123,6 +123,7 @@ function Hero() {
         <div className={styles.fogLeft} aria-hidden="true" />
         <div className={styles.fogBloom} aria-hidden="true" />
         <div className={styles.fogBottom} aria-hidden="true" />
+        <div className={styles.particleField} aria-hidden="true" />
         <div className={styles.screenTunnel} aria-hidden="true" />
 
         <div className={styles.textColumn} ref={textRef}>
@@ -144,6 +145,11 @@ function Hero() {
 
           <p ref={ctaRef} className={styles.cta}>
             {COPY.hero.subCta}
+            <span className={styles.scrollIcons} aria-hidden="true">
+              <span className={styles.scrollIcon} />
+              <span className={styles.scrollIcon} />
+              <span className={styles.scrollIcon} />
+            </span>
           </p>
         </div>
       </div>

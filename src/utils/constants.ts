@@ -28,9 +28,10 @@ export const NAV_LINKS: NavLink[] = [
 export const SECTION_THEMES: Record<string, 'light' | 'dark'> = {
   home: 'light',
   work: 'light',
-  'about-us': 'dark',
+  'about-us': 'light',
   'about-copy': 'dark',
   'about-vintage': 'dark',
+  clients: 'dark',
   business: 'dark',
   shredder: 'dark',
   'contact-tease': 'light',
@@ -43,13 +44,13 @@ export const SECTION_THEMES: Record<string, 'light' | 'dark'> = {
 
 export const COPY = {
   preloader: {
-    line1: 'Shader Development Studio, Website /',
+    line1: 'Shader Development Studio, Website',
     line2: 'Version 1.02',
-    footer: '\u00a9 Shader Sweden AB. All Rights Reserved.',
+    footer: 'Copyright (c) Shader Development Studio AB, 2026. All Rights Reserved.',
   },
   hero: {
     headline: ['A Creative', 'Development', 'Studio, Plugged', 'into the Future'],
-    subCta: 'Scroll to Inspect Our Closed Deals +',
+    subCta: 'Scroll to Inspect Our Closed Deals',
   },
   selectedWork: {
     title: 'Selected Work',

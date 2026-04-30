@@ -25,7 +25,7 @@ function GoldenTie({ activated }: { activated: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
 
   const { geometry, basePositions } = useMemo(() => {
-    const nextGeometry = new THREE.PlaneGeometry(1.08, 3.45, 18, 58);
+    const nextGeometry = new THREE.PlaneGeometry(1.08, 3.45, 30, 88);
     const positions = nextGeometry.attributes.position as THREE.BufferAttribute;
     const widthBase = 0.54;
 
@@ -98,12 +98,15 @@ function GoldenTie({ activated }: { activated: boolean }) {
     <group ref={groupRef} position={[0, -0.65, 0]} scale={0.42}>
       <mesh geometry={geometry}>
         <meshPhysicalMaterial
-          color="#c9a84c"
-          metalness={0.92}
-          roughness={0.18}
-          clearcoat={0.8}
-          clearcoatRoughness={0.18}
+          color="#c8940a"
+          metalness={0.18}
+          roughness={0.24}
+          clearcoat={0.9}
+          clearcoatRoughness={0.16}
           reflectivity={1}
+          sheen={0.72}
+          sheenColor="#ffd36e"
+          sheenRoughness={0.32}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -111,20 +114,24 @@ function GoldenTie({ activated }: { activated: boolean }) {
       <mesh position={[0, 1.86, 0.07]} rotation={[0, 0, Math.PI * 0.25]}>
         <boxGeometry args={[0.34, 0.34, 0.12]} />
         <meshPhysicalMaterial
-          color="#d3b057"
-          metalness={0.96}
-          roughness={0.16}
+          color="#d3a118"
+          metalness={0.24}
+          roughness={0.22}
           clearcoat={0.8}
           reflectivity={1}
+          sheen={0.52}
+          sheenColor="#ffe091"
         />
       </mesh>
 
       <mesh position={[0, 1.38, -0.08]}>
         <planeGeometry args={[0.22, 1.05, 6, 12]} />
         <meshPhysicalMaterial
-          color="#a78a3d"
-          metalness={0.72}
-          roughness={0.28}
+          color="#8f6810"
+          metalness={0.16}
+          roughness={0.34}
+          sheen={0.42}
+          sheenColor="#d9a637"
           side={THREE.DoubleSide}
         />
       </mesh>

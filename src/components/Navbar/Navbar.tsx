@@ -35,17 +35,24 @@ function TelephoneIcon() {
   return (
     <svg
       className={styles.phoneIcon}
-      viewBox="0 0 24 24"
+      viewBox="0 0 32 32"
       aria-hidden="true"
       focusable="false"
     >
       <path
-        d="M7.6 3.5c.4-.4 1-.5 1.5-.2l2.1 1.2c.6.3.8 1 .6 1.6L11 8.4c-.1.4 0 .8.3 1.1l3.2 3.2c.3.3.7.4 1.1.3l2.3-.9c.6-.2 1.3 0 1.6.6l1.2 2.1c.3.5.2 1.1-.2 1.5l-1.7 1.7c-.7.7-1.7 1-2.7.8-2.7-.6-5.6-2.6-8.1-5.1S3.4 8.6 2.8 5.9c-.2-1 .1-2 .8-2.7z"
+        d="M6.4 13.8c.9-4.7 5-8.1 9.8-8.1 4.6 0 8.6 3.1 9.7 7.5.2.9-.3 1.8-1.1 2.1l-4.1 1.5c-.8.3-1.7-.1-2.1-.9l-.7-1.5c-.3-.7-1-1.1-1.8-1.1h-.5c-.8 0-1.5.5-1.8 1.2l-.6 1.5c-.3.8-1.2 1.2-2 1l-3.8-1.2c-.8-.3-1.3-1.1-1.1-2z"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.6"
+        strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+      <path
+        d="M12.2 19.4c.8 1.1 2.1 1.8 3.7 1.8 1.7 0 3-.7 3.8-1.9M10.1 22.6h11.8M13.2 25.6h5.6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
       />
     </svg>
   );

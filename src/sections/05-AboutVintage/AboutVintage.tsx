@@ -8,7 +8,7 @@ function AboutVintage() {
 
   return (
     <section id="section-about-vintage" ref={sectionRef} className={styles.section}>
-      <SectionAnchor id="about-us" threshold={0.35} />
+      <SectionAnchor id="about-vintage" threshold={0.35} />
 
       <div className={styles.photoBanner} aria-label="Retro business people standing behind old computers">
         <img

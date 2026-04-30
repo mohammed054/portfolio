@@ -1,0 +1,178 @@
+.section {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(86px, 11vh, 132px) var(--section-padding-x);
+  background: #f0e8d8;
+  color: #1a1208;
+}
+
+.texture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23noise)' opacity='0.35'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(0deg, transparent 0 44px, rgba(80, 64, 36, 0.04) 44px 45px);
+}
+
+.container {
+  position: relative;
+  z-index: 3;
+  width: min(100%, 980px);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.container h2 {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 6vw, 96px);
+  font-weight: 900;
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.container p {
+  max-width: 560px;
+  margin: 1rem auto 3.2rem;
+  color: rgba(44, 36, 22, 0.72);
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.18vw, 1.22rem);
+  line-height: 1.45;
+}
+
+.logoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid rgba(44, 36, 22, 0.18);
+  border-left: 1px solid rgba(44, 36, 22, 0.18);
+  background: rgba(246, 237, 219, 0.46);
+  box-shadow: 0 28px 52px rgba(84, 63, 34, 0.08);
+}
+
+.logoCell {
+  min-height: clamp(86px, 11vh, 124px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-right: 1px solid rgba(44, 36, 22, 0.18);
+  border-bottom: 1px solid rgba(44, 36, 22, 0.18);
+  color: rgba(26, 18, 8, 0.72);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.2vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  filter: saturate(0.84);
+}
+
+.businessman {
+  position: absolute;
+  bottom: clamp(22px, 4vh, 52px);
+  z-index: 2;
+  width: clamp(142px, 16vw, 254px);
+  height: clamp(320px, 36vw, 520px);
+  opacity: 0.92;
+  filter:
+    sepia(0.12)
+    saturate(0.8)
+    drop-shadow(0 18px 24px rgba(84, 63, 34, 0.18));
+}
+
+.left {
+  left: clamp(-58px, 2vw, 38px);
+}
+
+.right {
+  right: clamp(-58px, 2vw, 38px);
+  transform: scaleX(-1);
+}
+
+.head,
+.body,
+.tie,
+.arm {
+  position: absolute;
+  display: block;
+}
+
+.head {
+  top: 0;
+  left: 50%;
+  width: 25%;
+  aspect-ratio: 0.82;
+  border-radius: 48% 48% 42% 42%;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(circle at 36% 44%, rgba(40, 24, 16, 0.5) 0 5%, transparent 5.5%),
+    radial-gradient(circle at 64% 44%, rgba(40, 24, 16, 0.5) 0 5%, transparent 5.5%),
+    linear-gradient(180deg, #d7ad86, #a16b4a);
+}
+
+.body {
+  top: 16%;
+  left: 50%;
+  width: 56%;
+  height: 68%;
+  border-radius: 36% 36% 10% 10%;
+  transform: translateX(-50%);
+  background:
+    linear-gradient(90deg, transparent 0 46%, rgba(240, 236, 228, 0.78) 46% 54%, transparent 54%),
+    linear-gradient(180deg, #b78f57, #5c4732);
+}
+
+.tie {
+  top: 22%;
+  left: 50%;
+  width: 8%;
+  height: 34%;
+  transform: translateX(-50%);
+  clip-path: polygon(50% 0, 84% 18%, 58% 100%, 42% 100%, 16% 18%);
+  background: linear-gradient(180deg, #c9a84c, #7d4c16);
+}
+
+.arm {
+  top: 26%;
+  width: 16%;
+  height: 43%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #aa824f, #5c4732);
+  transform-origin: top center;
+}
+
+.armOne {
+  left: 10%;
+  transform: rotate(-70deg);
+}
+
+.armTwo {
+  right: 10%;
+  transform: rotate(70deg);
+}
+
+@media (max-width: 980px) {
+  .businessman {
+    opacity: 0.24;
+  }
+}
+
+@media (max-width: 720px) {
+  .section {
+    padding-inline: 6vw;
+  }
+
+  .logoGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .logoCell {
+    min-height: 78px;
+    font-size: clamp(1.1rem, 6vw, 1.8rem);
+  }
+}

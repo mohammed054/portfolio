@@ -57,6 +57,7 @@ export type SectionId =
   | 'about-us'
   | 'about-copy'
   | 'about-vintage'
+  | 'clients'
   | 'shredder'
   | 'contact'
   | 'golden-tie'

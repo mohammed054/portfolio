@@ -1,13 +1,13 @@
 .navbar {
   position: fixed;
-  top: 0;
+  top: clamp(42px, 6.2vh, 72px);
   left: 0;
   width: 100%;
   height: var(--navbar-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
+  padding: 0 clamp(42px, 6.4vw, 112px);
   z-index: var(--z-navbar);
   pointer-events: none;
   border-bottom: 1px solid var(--navbar-border);
@@ -43,12 +43,12 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 13px;
   text-decoration: none;
 }
 
 .logoIcon {
-  width: 42px;
+  width: 58px;
   height: auto;
   flex-shrink: 0;
 }
@@ -56,7 +56,7 @@
 .wordmark {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: 1.2rem;
+  font-size: 1.45rem;
   letter-spacing: 0.08em;
 }
 
@@ -66,14 +66,14 @@
 }
 
 .link {
-  margin: 0 16px;
+  margin: 0 18px;
   font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 1.16rem;
+  font-weight: 500;
   letter-spacing: 0.045em;
   text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.3px;
 }
 
 .link:hover,
@@ -88,15 +88,16 @@
 .cta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 1.16rem;
   font-style: italic;
+  font-weight: 500;
 }
 
 .phoneIcon {
-  width: 18px;
-  height: 18px;
+  width: 25px;
+  height: 25px;
   flex-shrink: 0;
 }
 
@@ -175,6 +176,7 @@
 
 @media (max-width: 768px) {
   .navbar {
+    top: 18px;
     padding: 0 24px;
   }
 

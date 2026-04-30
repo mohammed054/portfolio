@@ -78,8 +78,9 @@ function SelectedWork() {
           centerOffsets[upperIndex] ?? 0,
           mix,
         );
+        const visualPerspectiveBias = window.innerWidth > 768 ? viewport.clientWidth * 0.62 : 0;
 
-        setTrackX(nextX);
+        setTrackX(nextX - visualPerspectiveBias);
 
         frames.forEach((frame, index) => {
           const offset = index - resolvedPosition;
@@ -144,6 +145,7 @@ function SelectedWork() {
         rotationZ: -3.5,
         transformPerspective: 2400,
       });
+      applyPosition(positionRef.current.value, centerOffsets);
 
       gsap.fromTo(
         stage,

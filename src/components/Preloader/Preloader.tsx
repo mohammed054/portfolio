@@ -143,9 +143,6 @@ export function Preloader({ onComplete }: PreloaderProps) {
 
           <div className={styles.subtitle}>
             <p>{COPY.preloader.line1}</p>
-            <span className={styles.terminalCursor} aria-hidden="true">
-              ·
-            </span>
             <p>{COPY.preloader.line2}</p>
           </div>
 

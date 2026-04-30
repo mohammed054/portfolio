@@ -154,6 +154,9 @@ function createMonitorTexture(animated: boolean, onUpdate?: () => void) {
   texture.magFilter = THREE.LinearFilter;
   texture.wrapS = THREE.ClampToEdgeWrapping;
   texture.wrapT = THREE.ClampToEdgeWrapping;
+  texture.flipY = false;
+  texture.center.set(0.5, 0.5);
+  texture.rotation = Math.PI;
 
   if (!context) {
     return {
@@ -303,6 +306,118 @@ function createMonitorTexture(animated: boolean, onUpdate?: () => void) {
   };
 }
 
+function createFrontPanelTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 512;
+
+  const context = canvas.getContext('2d');
+  if (context) {
+    context.fillStyle = '#000000';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    const panel = context.createLinearGradient(0, 154, 0, 402);
+    panel.addColorStop(0, '#191919');
+    panel.addColorStop(0.54, '#0f0f10');
+    panel.addColorStop(1, '#050506');
+    context.fillStyle = panel;
+    roundRect(context, 2, 154, 508, 246, 8);
+    context.fill();
+
+    context.fillStyle = '#f1ead7';
+    context.font = '900 54px Georgia, serif';
+    context.textAlign = 'left';
+    context.textBaseline = 'middle';
+    context.fillText('SHADER', 54, 264);
+
+    context.font = '900 78px Georgia, serif';
+    context.textAlign = 'center';
+    context.fillText('SuperPET', 284, 278);
+
+    context.font = '700 22px Courier New, monospace';
+    context.fillText('SP9000', 284, 220);
+
+    context.font = '700 18px Courier New, monospace';
+    context.textAlign = 'right';
+    context.fillText('shader', 474, 246);
+    context.fillText('studio', 474, 314);
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.wrapS = THREE.ClampToEdgeWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+  texture.flipY = false;
+
+  return texture;
+}
+
+function createKeyboardTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 512;
+
+  const context = canvas.getContext('2d');
+  if (context) {
+    context.fillStyle = '#000000';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    const drawKey = (x: number, y: number, width: number, height: number, label = '') => {
+      const gradient = context.createLinearGradient(x, y, x, y + height);
+      gradient.addColorStop(0, '#191714');
+      gradient.addColorStop(1, '#030303');
+      context.fillStyle = gradient;
+      roundRect(context, x, y, width, height, Math.min(width, height) * 0.28);
+      context.fill();
+      context.strokeStyle = 'rgba(244, 233, 205, 0.18)';
+      context.lineWidth = 1.4;
+      context.stroke();
+
+      if (label) {
+        context.fillStyle = '#d4c8a8';
+        context.font = '700 18px Courier New, monospace';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(label, x + width * 0.5, y + height * 0.55);
+      }
+    };
+
+    const labels = 'QWERTYUIOPASDFGHJKLZXCVBNM'.split('');
+    let labelIndex = 0;
+
+    for (let row = 0; row < 4; row += 1) {
+      const keysInRow = row === 0 ? 12 : row === 1 ? 11 : row === 2 ? 10 : 9;
+      const y = 182 + row * 54;
+      const xOffset = 6 + row * 12;
+
+      for (let column = 0; column < keysInRow; column += 1) {
+        const isSpace = row === 3 && column === 4;
+        const width = isSpace ? 74 : 38;
+        const x = xOffset + column * 42 + (isSpace ? 0 : 0);
+        drawKey(x, y, width, 42, isSpace ? '' : labels[labelIndex] ?? '');
+        labelIndex += isSpace ? 0 : 1;
+      }
+    }
+
+    for (let row = 0; row < 4; row += 1) {
+      for (let column = 0; column < 4; column += 1) {
+        drawKey(356 + column * 38, 180 + row * 54, 31, 42);
+      }
+    }
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.wrapS = THREE.ClampToEdgeWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+
+  return texture;
+}
+
 function SuperPETModel({ animated = true }: { animated?: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF(MODEL_PATH);
@@ -332,6 +447,25 @@ function SuperPETModel({ animated = true }: { animated?: boolean }) {
         name.includes('screen') ||
         materialNames.includes('screen');
 
+      const tuneMaterial = (material: THREE.MeshStandardMaterial) => {
+        material.envMapIntensity = 1.18;
+        material.roughness = Math.min(material.roughness ?? 0.62, 0.6);
+
+        if (material.name.toLowerCase().includes('front_texture')) {
+          material.map = createFrontPanelTexture();
+          material.color = new THREE.Color('#ffffff');
+          material.roughness = 0.74;
+          material.metalness = 0.02;
+        }
+
+        if (material.name.toLowerCase() === 'material') {
+          material.map = createKeyboardTexture();
+          material.color = new THREE.Color('#ffffff');
+          material.roughness = 0.78;
+          material.metalness = 0.02;
+        }
+      };
+
       if (isScreen) {
         const screenMaterial = new THREE.MeshStandardMaterial({
           color: new THREE.Color('#eef8f4'),
@@ -349,15 +483,13 @@ function SuperPETModel({ animated = true }: { animated?: boolean }) {
       } else if (Array.isArray(mesh.material)) {
         mesh.material = mesh.material.map((material) => {
           const clonedMaterial = (material as THREE.MeshStandardMaterial).clone();
-          clonedMaterial.envMapIntensity = 1.18;
-          clonedMaterial.roughness = Math.min(clonedMaterial.roughness ?? 0.62, 0.6);
+          tuneMaterial(clonedMaterial);
           disposableMaterials.push(clonedMaterial);
           return clonedMaterial;
         });
       } else if (mesh.material) {
         const clonedMaterial = (mesh.material as THREE.MeshStandardMaterial).clone();
-        clonedMaterial.envMapIntensity = 1.18;
-        clonedMaterial.roughness = Math.min(clonedMaterial.roughness ?? 0.62, 0.6);
+        tuneMaterial(clonedMaterial);
         disposableMaterials.push(clonedMaterial);
         mesh.material = clonedMaterial;
       }
@@ -377,7 +509,11 @@ function SuperPETModel({ animated = true }: { animated?: boolean }) {
 
     return () => {
       cleanup();
-      disposableMaterials.forEach((material) => material.dispose());
+      disposableMaterials.forEach((material) => {
+        const mappedMaterial = material as THREE.Material & { map?: THREE.Texture | null };
+        mappedMaterial.map?.dispose();
+        material.dispose();
+      });
 
       if (groupRef.current) {
         groupRef.current.clear();

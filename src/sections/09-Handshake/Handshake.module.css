@@ -1,39 +1,183 @@
 .section {
   position: relative;
-  min-height: 100vh;
+  min-height: 116vh;
+  overflow: hidden;
   background: #000000;
 }
 
 .image {
+  position: sticky;
+  top: 0;
   width: 100vw;
   height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #000000;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.86) 0%, rgba(219, 226, 237, 0.4) 10%, rgba(0, 0, 0, 0) 23%),
+    radial-gradient(ellipse at 49% 50%, rgba(160, 171, 192, 0.32), rgba(0, 0, 0, 0) 42%),
+    linear-gradient(180deg, #020203 0%, #08080a 58%, #000000 100%);
 }
 
-.placeholder {
-  font: 400 1.5rem var(--font-body);
-  color: rgba(255, 255, 255, 0.3);
+.image::before,
+.image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.image::before {
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 20%),
+    radial-gradient(circle at 36% 42%, rgba(155, 170, 204, 0.22), transparent 24%),
+    radial-gradient(circle at 67% 56%, rgba(216, 198, 170, 0.18), transparent 28%);
+  mix-blend-mode: screen;
+  animation: pulse 2.8s ease-in-out infinite alternate;
+}
+
+.image::after {
+  background:
+    radial-gradient(ellipse 88% 74% at 50% 52%, transparent 36%, rgba(0, 0, 0, 0.72) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.82), transparent 28%, transparent 72%, rgba(0, 0, 0, 0.82));
+}
+
+.hand {
+  position: absolute;
+  top: 48%;
+  width: min(44vw, 760px);
+  height: min(28vh, 290px);
+  border-radius: 999px 46% 42% 999px;
+  background:
+    radial-gradient(circle at 82% 42%, rgba(255, 255, 255, 0.5), transparent 12%),
+    linear-gradient(180deg, #d2b28a 0%, #9a6a48 40%, #34231b 100%);
+  filter:
+    saturate(0.5)
+    contrast(1.08)
+    drop-shadow(0 0 44px rgba(255, 255, 255, 0.12));
+  opacity: 0.9;
+}
+
+.hand::before {
+  content: '';
+  position: absolute;
+  top: 22%;
+  width: 46%;
+  height: 32%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #d9b98f, #805337);
+  box-shadow:
+    0 18px 0 -2px rgba(118, 78, 52, 0.86),
+    0 36px 0 -5px rgba(95, 63, 43, 0.74);
+}
+
+.handLeft {
+  left: -7vw;
+  transform: translateY(-50%) rotate(6deg);
+}
+
+.handLeft::before {
+  right: 4%;
+  transform: rotate(-2deg);
+}
+
+.handRight {
+  right: -8vw;
+  transform: translateY(-50%) scaleX(-1) rotate(6deg);
+}
+
+.handRight::before {
+  right: 4%;
+  transform: rotate(-2deg);
+}
+
+.flash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(38vw, 620px);
+  height: min(38vw, 620px);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.92) 0%, rgba(235, 239, 248, 0.42) 15%, rgba(235, 239, 248, 0.08) 38%, transparent 66%);
+  filter: blur(2px);
+  mix-blend-mode: screen;
+  animation: flare 2.6s ease-in-out infinite alternate;
+}
+
+.particles {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.8) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(190, 202, 226, 0.5) 0 1px, transparent 1.8px);
+  background-size: 86px 74px, 142px 118px;
+  background-position: 14px 18px, 32px 44px;
+  opacity: 0.32;
+  mask-image: radial-gradient(circle at 50% 50%, black 0%, rgba(0, 0, 0, 0.72) 26%, transparent 68%);
+  animation: particleFloat 10s ease-in-out infinite alternate;
+}
+
+.fadeTop,
+.fadeBottom {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 18%;
+  pointer-events: none;
+  z-index: 4;
 }
 
 .fadeTop {
-  position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
-  height: 15%;
   background: linear-gradient(to bottom, #000000 0%, transparent 100%);
-  pointer-events: none;
 }
 
 .fadeBottom {
-  position: absolute;
   bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 15%;
   background: linear-gradient(to top, var(--color-bg-dark) 0%, transparent 100%);
-  pointer-events: none;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.72;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes flare {
+  from {
+    opacity: 0.72;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+@keyframes particleFloat {
+  to {
+    transform: translate3d(-2vw, -1vh, 0);
+  }
+}
+
+@media (max-width: 768px) {
+  .hand {
+    width: 62vw;
+    height: 20vh;
+  }
+
+  .handLeft {
+    left: -24vw;
+  }
+
+  .handRight {
+    right: -26vw;
+  }
 }

@@ -11,8 +11,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 const AUDIENCE = [
   { key: 'pinkSuit', side: 'left', scale: 0.96, pose: 'raised' },
+  { key: 'tanSuit', side: 'left', scale: 0.9, pose: 'clapping' },
   { key: 'patternDress', side: 'left', scale: 1.02, pose: 'raised' },
+  { key: 'brownSuit', side: 'left', scale: 0.86, pose: 'raised' },
   { key: 'graySuit', side: 'right', scale: 1, pose: 'clapping' },
+  { key: 'blueSuit', side: 'right', scale: 0.9, pose: 'raised' },
   { key: 'blackDress', side: 'right', scale: 0.94, pose: 'turned' },
 ] as const;
 
