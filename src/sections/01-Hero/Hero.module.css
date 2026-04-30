@@ -55,16 +55,21 @@
   inset: -8%;
   z-index: 4;
   pointer-events: none;
-  opacity: var(--portal-progress);
+  opacity: calc(var(--portal-progress) * 0.86);
   background:
     radial-gradient(
       ellipse 28vw 24vh at 69% 43%,
-      rgba(163, 255, 242, 0.92) 0%,
-      rgba(65, 174, 170, 0.7) 22%,
-      rgba(13, 34, 43, 0.88) 48%,
-      rgba(0, 0, 0, 0.98) 74%
+      rgba(174, 255, 244, 0.8) 0%,
+      rgba(65, 174, 170, 0.42) 22%,
+      rgba(13, 42, 50, 0.16) 48%,
+      rgba(0, 0, 0, 0) 72%
     ),
-    radial-gradient(ellipse 66vw 60vh at 68% 48%, rgba(123, 103, 167, 0.34), rgba(0, 0, 0, 0.96) 70%);
+    radial-gradient(
+      ellipse 88vw 72vh at 68% 48%,
+      rgba(82, 196, 189, 0.1) 0%,
+      rgba(123, 103, 167, 0.24) 44%,
+      rgba(0, 0, 0, 0.46) 100%
+    );
   filter: saturate(1.06) contrast(1.08);
   transform: scale(calc(0.84 + var(--portal-progress) * 0.22));
   transform-origin: 69% 43%;
@@ -92,8 +97,13 @@
 
 .screenTunnel::after {
   background:
-    radial-gradient(ellipse 34vw 28vh at 69% 43%, transparent 26%, rgba(0, 0, 0, 0.5) 66%, #000 100%);
-  opacity: calc(var(--portal-progress) * 0.84);
+    radial-gradient(
+      ellipse 38vw 32vh at 69% 43%,
+      rgba(166, 255, 242, 0.08) 0%,
+      rgba(0, 0, 0, 0.04) 42%,
+      rgba(0, 0, 0, 0.48) 100%
+    );
+  opacity: calc(var(--portal-progress) * 0.58);
 }
 
 .fogLeft,
@@ -256,12 +266,12 @@
     background:
       radial-gradient(
         ellipse 62vw 30vh at 50% 44%,
-        rgba(163, 255, 242, 0.86) 0%,
-        rgba(65, 174, 170, 0.58) 24%,
-        rgba(13, 34, 43, 0.88) 50%,
-        rgba(0, 0, 0, 0.98) 78%
+        rgba(163, 255, 242, 0.72) 0%,
+        rgba(65, 174, 170, 0.38) 24%,
+        rgba(13, 34, 43, 0.16) 50%,
+        rgba(0, 0, 0, 0) 78%
       ),
-      radial-gradient(ellipse 100vw 62vh at 50% 48%, rgba(123, 103, 167, 0.28), rgba(0, 0, 0, 0.96) 72%);
+      radial-gradient(ellipse 100vw 62vh at 50% 48%, rgba(123, 103, 167, 0.2), rgba(0, 0, 0, 0.44) 100%);
     transform-origin: 50% 44%;
   }
 }

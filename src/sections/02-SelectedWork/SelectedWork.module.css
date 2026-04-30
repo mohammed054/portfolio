@@ -2,7 +2,8 @@
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background: #040405;
+  background:
+    linear-gradient(180deg, #081016 0%, #040405 28%, #060608 100%);
 }
 
 .section::before,
@@ -32,10 +33,11 @@
   position: absolute;
   inset: 8px;
   overflow: hidden;
-  border-radius: 34px;
+  border-radius: 24px;
   background:
-    radial-gradient(circle at 50% 12%, rgba(183, 203, 255, 0.12) 0%, rgba(183, 203, 255, 0) 24%),
-    linear-gradient(180deg, #0c0b12 0%, #12132b 28%, #20388f 58%, #98b7ed 100%);
+    radial-gradient(ellipse at 66% 18%, rgba(107, 244, 231, 0.18) 0%, rgba(107, 244, 231, 0) 34%),
+    radial-gradient(ellipse at 24% 72%, rgba(255, 175, 104, 0.12) 0%, rgba(255, 175, 104, 0) 36%),
+    linear-gradient(180deg, #09090e 0%, #10162a 32%, #214d78 64%, #9bb9e7 100%);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.05),
     inset 0 24px 80px rgba(0, 0, 0, 0.22);
@@ -99,12 +101,16 @@
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-end;
   padding:
-    clamp(12.75rem, 24vh, 15.75rem)
-    clamp(0.75rem, 2.6vw, 2.8rem)
-    clamp(4.4rem, 8vh, 6.5rem);
+    clamp(10rem, 18vh, 13.5rem)
+    clamp(1.15rem, 5vw, 6.25rem)
+    clamp(4.4rem, 8vh, 6.5rem)
+    clamp(0.75rem, 2vw, 2.5rem);
+  cursor: ew-resize;
+  touch-action: pan-y;
+  user-select: none;
 }
 
 .nav {
@@ -196,7 +202,7 @@
 @media (max-width: 768px) {
   .stage {
     inset: 4px;
-    border-radius: 24px;
+    border-radius: 18px;
   }
 
   .meta {
@@ -214,8 +220,11 @@
   }
 
   .stripShell {
+    justify-content: center;
     padding-top: clamp(12rem, 22vh, 15rem);
     padding-bottom: 6.5rem;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
   }
 
   .nav {

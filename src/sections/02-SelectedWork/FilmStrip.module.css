@@ -1,9 +1,10 @@
 .viewport {
   position: relative;
-  width: min(96vw, 1880px);
-  height: min(63vh, 690px);
-  perspective: 2200px;
-  perspective-origin: 50% 24%;
+  width: min(94vw, 1760px);
+  height: min(64vh, 700px);
+  perspective: 2600px;
+  perspective-origin: 68% 14%;
+  transform: translate3d(5vw, 1vh, 0) rotateZ(-2deg);
 }
 
 .reel {
@@ -17,8 +18,13 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     inset 0 -1px 0 rgba(255, 255, 255, 0.04);
   overflow: hidden;
-  transform: rotateX(6deg) rotateZ(-4deg);
+  transform:
+    rotateX(12deg)
+    rotateY(-10deg)
+    rotateZ(-6deg)
+    translate3d(0, -1.5vh, 0);
   transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .reel::before {
@@ -81,14 +87,14 @@
   height: 100%;
   display: flex;
   align-items: center;
-  gap: 42px;
-  padding: 0 23vw;
+  gap: clamp(28px, 3vw, 58px);
+  padding: 0 28vw;
   transform-style: preserve-3d;
   will-change: transform;
 }
 
 .frame {
-  width: clamp(330px, 37vw, 680px);
+  width: clamp(300px, 34vw, 640px);
   aspect-ratio: 1.28;
   flex-shrink: 0;
   transform-style: preserve-3d;
@@ -197,6 +203,16 @@
     width: 100%;
     height: min(58vh, 580px);
     perspective: 1400px;
+    perspective-origin: 50% 22%;
+    transform: translate3d(0, 0, 0) rotateZ(-1deg);
+  }
+
+  .reel {
+    border-radius: 22px;
+    transform:
+      rotateX(8deg)
+      rotateY(-4deg)
+      rotateZ(-3deg);
   }
 
   .strip {

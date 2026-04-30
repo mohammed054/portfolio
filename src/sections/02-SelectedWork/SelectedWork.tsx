@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type PointerEvent } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -38,9 +38,10 @@ function SelectedWork() {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const frameRefs = useRef<Array<HTMLElement | null>>([]);
-  const triggerRef = useRef<ScrollTrigger | null>(null);
   const activeIndexRef = useRef(0);
-  const positionRef = useRef(0);
+  const positionRef = useRef({ value: 0 });
+  const targetPositionRef = useRef(0);
+  const isDraggingRef = useRef(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
   useGSAP(
@@ -68,9 +69,10 @@ function SelectedWork() {
       };
 
       const applyPosition = (rawPosition: number, centerOffsets: number[]) => {
-        const lowerIndex = Math.floor(rawPosition);
-        const upperIndex = Math.min(PROJECTS.length - 1, Math.ceil(rawPosition));
-        const mix = rawPosition - lowerIndex;
+        const resolvedPosition = gsap.utils.clamp(0, PROJECTS.length - 1, rawPosition);
+        const lowerIndex = Math.floor(resolvedPosition);
+        const upperIndex = Math.min(PROJECTS.length - 1, Math.ceil(resolvedPosition));
+        const mix = resolvedPosition - lowerIndex;
         const nextX = gsap.utils.interpolate(
           centerOffsets[lowerIndex] ?? 0,
           centerOffsets[upperIndex] ?? 0,
@@ -80,18 +82,23 @@ function SelectedWork() {
         setTrackX(nextX);
 
         frames.forEach((frame, index) => {
-          const offset = index - rawPosition;
+          const offset = index - resolvedPosition;
           const distance = Math.abs(offset);
-          const scale = gsap.utils.clamp(0.74, 1 - distance * 0.16, 1);
-          const y = Math.min(132, distance * 24) - offset * 28;
-          const rotationY = gsap.utils.clamp(-54, offset * -18, 54);
-          const z = -Math.min(420, Math.pow(distance, 1.14) * 140);
-          const opacity = gsap.utils.clamp(0.18, 1 - distance * 0.24, 1);
+          const directionLift = offset * -34;
+          const scale = gsap.utils.clamp(0.68, 1 - distance * 0.14, 1);
+          const y = -Math.min(170, Math.pow(distance, 1.05) * 26) + directionLift;
+          const rotationX = gsap.utils.clamp(-28, -8 - distance * 3.2, -8);
+          const rotationY = gsap.utils.clamp(-68, offset * -22, 68);
+          const rotationZ = gsap.utils.clamp(-18, offset * -5.5, 18);
+          const z = -Math.min(560, Math.pow(distance, 1.18) * 160);
+          const opacity = gsap.utils.clamp(0.16, 1 - distance * 0.22, 1);
 
           gsap.set(frame, {
             y,
             z,
+            rotationX,
             rotationY,
+            rotationZ,
             scale,
             opacity,
             zIndex: 200 - Math.round(distance * 10),
@@ -109,7 +116,7 @@ function SelectedWork() {
         const nextIndex = gsap.utils.clamp(
           0,
           PROJECTS.length - 1,
-          Math.round(rawPosition),
+          Math.round(resolvedPosition),
         );
 
         if (nextIndex !== activeIndexRef.current) {
@@ -121,26 +128,21 @@ function SelectedWork() {
       let centerOffsets = getCenterOffsets();
       applyPosition(0, centerOffsets);
 
-      const scrollDistance =
-        Math.abs(centerOffsets[0] - centerOffsets[centerOffsets.length - 1]) +
-        window.innerHeight * 1.55;
-
-      triggerRef.current = ScrollTrigger.create({
+      const pinTrigger = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: `+=${scrollDistance}`,
+        end: () => `+=${Math.max(window.innerHeight * 1.15, 820)}`,
         pin: true,
-        scrub: 0.9,
+        pinSpacing: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
-        onRefresh: () => {
-          centerOffsets = getCenterOffsets();
-          applyPosition(positionRef.current, centerOffsets);
-        },
-        onUpdate: (self) => {
-          positionRef.current = self.progress * (PROJECTS.length - 1);
-          applyPosition(positionRef.current, centerOffsets);
-        },
+      });
+
+      gsap.set(track, {
+        rotationX: 8,
+        rotationY: -8,
+        rotationZ: -3.5,
+        transformPerspective: 2400,
       });
 
       gsap.fromTo(
@@ -152,15 +154,37 @@ function SelectedWork() {
           ease: 'none',
           scrollTrigger: {
             trigger: section,
-            start: 'top 90%',
-            end: 'top 20%',
+            start: 'top 94%',
+            end: 'top 36%',
             scrub: true,
           },
         },
       );
 
+      const syncPosition = () => {
+        const current = positionRef.current.value;
+        const target = targetPositionRef.current;
+        const delta = target - current;
+        const next = Math.abs(delta) < 0.002 ? target : current + delta * 0.085;
+
+        if (next !== current) {
+          positionRef.current.value = next;
+          applyPosition(next, centerOffsets);
+        }
+      };
+
+      const resizeObserver = new ResizeObserver(() => {
+        centerOffsets = getCenterOffsets();
+        applyPosition(positionRef.current.value, centerOffsets);
+      });
+
+      resizeObserver.observe(viewport);
+      gsap.ticker.add(syncPosition);
+
       return () => {
-        triggerRef.current?.kill();
+        pinTrigger.kill();
+        gsap.ticker.remove(syncPosition);
+        resizeObserver.disconnect();
         exposureElements.forEach((exposure) => {
           if (exposure) {
             exposure.style.filter = '';
@@ -175,29 +199,47 @@ function SelectedWork() {
     frameRefs.current[index] = element;
   };
 
+  const setTargetPosition = (rawPosition: number) => {
+    const clampedPosition = Math.max(0, Math.min(PROJECTS.length - 1, rawPosition));
+    targetPositionRef.current = clampedPosition;
+  };
+
   const goTo = (targetIndex: number) => {
-    const trigger = triggerRef.current;
-    if (!trigger) {
+    setTargetPosition(targetIndex);
+  };
+
+  const navigateFromPointer = (event: PointerEvent<HTMLDivElement>) => {
+    const viewport = viewportRef.current;
+    if (!viewport) {
       return;
     }
 
-    const clampedIndex = Math.max(0, Math.min(PROJECTS.length - 1, targetIndex));
-    const totalSteps = Math.max(1, PROJECTS.length - 1);
-    const progress = clampedIndex / totalSteps;
-    const scrollY = trigger.start + progress * (trigger.end - trigger.start);
+    const bounds = viewport.getBoundingClientRect();
+    if (bounds.width <= 0) {
+      return;
+    }
 
-    setActiveIndex(clampedIndex);
-    activeIndexRef.current = clampedIndex;
-    positionRef.current = clampedIndex;
+    const progress = gsap.utils.clamp(0, 1, (event.clientX - bounds.left) / bounds.width);
+    setTargetPosition(progress * (PROJECTS.length - 1));
+  };
 
-    gsap.to(window, {
-      duration: 0.6,
-      ease: 'power3.inOut',
-      scrollTo: {
-        y: scrollY,
-        autoKill: false,
-      },
-    });
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    isDraggingRef.current = true;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    navigateFromPointer(event);
+  };
+
+  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse' || isDraggingRef.current) {
+      navigateFromPointer(event);
+    }
+  };
+
+  const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    isDraggingRef.current = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
   };
 
   const activeProject = PROJECTS[activeIndex] ?? PROJECTS[0];
@@ -222,7 +264,13 @@ function SelectedWork() {
           </p>
         </div>
 
-        <div className={styles.stripShell}>
+        <div
+          className={styles.stripShell}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+        >
           <FilmStrip
             projects={PROJECTS}
             activeIndex={activeIndex}
