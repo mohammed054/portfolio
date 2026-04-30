@@ -10,11 +10,10 @@ import styles from './GoldenTie.module.css';
 gsap.registerPlugin(ScrollTrigger);
 
 const AUDIENCE = [
-  { key: 'left', side: 'left', scale: 0.9 },
-  { key: 'centerLeft', side: 'left', scale: 1.05 },
-  { key: 'center', side: 'left', scale: 1.15 },
-  { key: 'centerRight', side: 'right', scale: 1 },
-  { key: 'right', side: 'right', scale: 0.92 },
+  { key: 'pinkSuit', side: 'left', scale: 0.96, pose: 'raised' },
+  { key: 'patternDress', side: 'left', scale: 1.02, pose: 'raised' },
+  { key: 'graySuit', side: 'right', scale: 1, pose: 'clapping' },
+  { key: 'blackDress', side: 'right', scale: 0.94, pose: 'turned' },
 ] as const;
 
 function GoldenTie() {
@@ -177,7 +176,7 @@ function GoldenTie() {
         {AUDIENCE.map((person) => (
           <div
             key={person.key}
-            className={`${styles.person} ${styles[person.key]}`}
+            className={`${styles.person} ${styles[person.key]} ${styles[person.pose]}`}
             data-side={person.side}
             style={{ '--person-scale': person.scale } as CSSProperties}
             aria-hidden="true"

@@ -7,7 +7,6 @@ import Hero from '@sections/01-Hero/Hero';
 import SelectedWork from '@sections/02-SelectedWork/SelectedWork';
 import { FEATURES } from '@utils/constants';
 
-const AboutHero = lazy(() => import('@sections/03-AboutHero/AboutHero'));
 const AboutCopy = lazy(() => import('@sections/04-AboutCopy/AboutCopy'));
 const AboutVintage = lazy(() => import('@sections/05-AboutVintage/AboutVintage'));
 const Shredder = lazy(() => import('@sections/06-Shredder/Shredder'));
@@ -70,14 +69,13 @@ export default function App() {
             {(!soloTarget || soloTarget === 'home') && <Hero />}
             {(!soloTarget || soloTarget === 'work') && <SelectedWork />}
             <Suspense fallback={null}>
-              {(!soloTarget || soloTarget === 'about-us') && <AboutHero />}
-              {(!soloTarget || soloTarget === 'about-copy') && <AboutCopy />}
-              {(!soloTarget || soloTarget === 'about-vintage') && <AboutVintage />}
+              {(!soloTarget || soloTarget === 'about-us' || soloTarget === 'about-vintage') && <AboutVintage />}
+              {(!soloTarget || soloTarget === 'about-copy' || soloTarget === 'business') && <AboutCopy />}
               {soloTarget === 'shredder' && <Shredder />}
-              {soloTarget === 'contact-tease' && <ContactTease />}
-              {soloTarget === 'golden-tie' && <GoldenTie />}
+              {(!soloTarget || soloTarget === 'contact-tease') && <ContactTease />}
+              {(!soloTarget || soloTarget === 'golden-tie') && <GoldenTie />}
               {soloTarget === 'handshake' && <Handshake />}
-              {soloTarget === 'good-buy' && <GoodBuy />}
+              {(!soloTarget || soloTarget === 'good-buy') && <GoodBuy />}
               {(!soloTarget || soloTarget === 'contact' || soloTarget === 'footer') && <Footer />}
             </Suspense>
           </main>

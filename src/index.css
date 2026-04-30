@@ -16,10 +16,10 @@
   --color-accent-gold: #c9a84c;
   --color-purple-mid: #2a1f5e;
   --color-blue-deep: #0e1b6e;
-  --color-crt-bg: #1a1aff;
+  --color-crt-bg: #2520b7;
   --color-crt-text: #e8e4d8;
-  --color-crt-bar: #e8e4d8;
-  --color-crt-border: #e8e4d8;
+  --color-crt-bar: #ffffff;
+  --color-crt-border: #ffffff;
 
   --section-padding-x: clamp(24px, 8vw, 120px);
   --section-padding-y: clamp(64px, 10vh, 140px);

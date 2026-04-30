@@ -17,7 +17,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     inset 0 -1px 0 rgba(255, 255, 255, 0.04);
   overflow: hidden;
-  transform: rotateX(5deg);
+  transform: rotateX(6deg) rotateZ(-4deg);
   transform-style: preserve-3d;
 }
 

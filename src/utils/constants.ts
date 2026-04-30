@@ -28,10 +28,12 @@ export const NAV_LINKS: NavLink[] = [
 export const SECTION_THEMES: Record<string, 'light' | 'dark'> = {
   home: 'light',
   work: 'light',
-  'about-us': 'light',
+  'about-us': 'dark',
   'about-copy': 'dark',
   'about-vintage': 'dark',
+  business: 'dark',
   shredder: 'dark',
+  'contact-tease': 'light',
   contact: 'light',
   'golden-tie': 'light',
   handshake: 'light',
@@ -47,7 +49,7 @@ export const COPY = {
   },
   hero: {
     headline: ['A Creative', 'Development', 'Studio, Plugged', 'into the Future'],
-    subCta: 'Scroll to Inspect Our Closed Deals',
+    subCta: 'Scroll to Inspect Our Closed Deals +',
   },
   selectedWork: {
     title: 'Selected Work',
@@ -64,6 +66,13 @@ export const COPY = {
       "This modular approach means we can scale and adapt to each challenge. Whether it's a WebGL experiment, an interactive product visualization, a mobile app, or an AI-driven experience, we help bold brands stand out across every screen. We build storytelling platforms that demand attention and reward curiosity. We push digital mediums to places you haven't seen before, and have fun doing it. Beyond code, we offer 3D design and animation, UI and motion design, concepts and digital strategy, full-stack development, and creative consulting.",
     col3:
       "Whether it's prototyping an idea, launching an augmented reality experience, or bringing high-fidelity visuals to life, Shader bridges the gap between creative ambition and technical execution. Our process is hands-on, collaborative, and tailored for teams that value both craft and innovation. We combine technical expertise with a designer's eye, ensuring that every interaction feels natural and every pixel is perfectly placed. We're not your regular IT department. We don't troubleshoot printers.",
+  },
+  business: {
+    headline: 'For Companies Serious About Technology',
+    col1:
+      'We build interactive web experiences, 3D product tools, and AI-assisted interfaces for teams that need the internet to feel less ordinary. The work is playful on the surface, but the delivery is buttoned up where it counts.',
+    col2:
+      'Bring us a launch, a campaign, a prototype, or a strange digital problem with commercial consequences. We will help shape the idea, build the thing, and make sure it holds together when real customers arrive.',
   },
   shredder: {
     headline: "Had Enough Reading? Let's Shred This Thing.",

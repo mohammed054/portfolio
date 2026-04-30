@@ -1,34 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import HeroScene from './HeroScene';
 import { SectionAnchor } from '../../components/shared/SectionAnchor';
+import { useScrollProgress } from '../../hooks/useScrollProgress';
 import { COPY, FEATURES } from '../../utils/constants';
 import { prefersReducedMotion } from '../../utils/motion';
 import { heroSceneQuality, isLowPerformanceDevice } from '../../utils/performance';
 import styles from './Hero.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
-
-function ScrollArrowIcon() {
-  return (
-    <svg
-      className={styles.icon}
-      viewBox="0 0 16 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M8 3V18M8 18L3 13M8 18L13 13"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 function Hero() {
   const containerRef = useRef<HTMLElement>(null);
@@ -37,6 +19,8 @@ function Hero() {
   const ctaRef = useRef<HTMLParagraphElement>(null);
   const linesRef = useRef<HTMLSpanElement[]>([]);
   const [isSceneVisible, setIsSceneVisible] = useState(true);
+  const heroProgress = useScrollProgress('#section-hero', 'top top', 'bottom bottom');
+  const portalProgress = Math.max(0, Math.min(1, (heroProgress - 0.64) / 0.36));
 
   useEffect(() => {
     const section = containerRef.current;
@@ -127,6 +111,7 @@ function Hero() {
       id="section-hero"
       ref={containerRef}
       className={`${styles.hero} ${isLowPerformanceDevice ? styles.heroLowPower : ''}`}
+      style={{ '--portal-progress': portalProgress.toFixed(3) } as CSSProperties}
     >
       <SectionAnchor id="home" threshold={0.3} />
       <div className={styles.heroViewport} ref={viewportRef}>
@@ -138,6 +123,7 @@ function Hero() {
         <div className={styles.fogLeft} aria-hidden="true" />
         <div className={styles.fogBloom} aria-hidden="true" />
         <div className={styles.fogBottom} aria-hidden="true" />
+        <div className={styles.screenTunnel} aria-hidden="true" />
 
         <div className={styles.textColumn} ref={textRef}>
           <h1 className={styles.headline}>
@@ -158,11 +144,6 @@ function Hero() {
 
           <p ref={ctaRef} className={styles.cta}>
             {COPY.hero.subCta}
-            <span className={styles.scrollIcons} aria-hidden="true">
-              <ScrollArrowIcon />
-              <ScrollArrowIcon />
-              <ScrollArrowIcon />
-            </span>
           </p>
         </div>
       </div>

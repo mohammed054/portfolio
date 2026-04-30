@@ -69,8 +69,11 @@
   margin: 0 16px;
   font-family: var(--font-body);
   font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.045em;
   text-decoration: underline;
   text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
 }
 
 .link:hover,
@@ -79,7 +82,7 @@
 }
 
 .linkActive {
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .cta {

@@ -39,8 +39,10 @@ function CameraController({
   const introStartLookAt = useMemo(() => new THREE.Vector3(3.06, 0.66, -1.64), []);
   const landingPosition = useMemo(() => new THREE.Vector3(8.25, 0.98, 2.64), []);
   const landingLookAt = useMemo(() => new THREE.Vector3(0.48, -0.08, -0.82), []);
-  const scrollEndPosition = useMemo(() => new THREE.Vector3(3.58, 0.69, -1.14), []);
+  const scrollEndPosition = useMemo(() => new THREE.Vector3(3.72, 0.72, -0.94), []);
   const scrollEndLookAt = useMemo(() => new THREE.Vector3(3.06, 0.66, -1.64), []);
+  const portalPosition = useMemo(() => new THREE.Vector3(3.08, 0.67, -1.5), []);
+  const portalLookAt = useMemo(() => new THREE.Vector3(3.02, 0.66, -2.52), []);
 
   useEffect(() => {
     if (!animated || prefersReducedMotion) {
@@ -63,10 +65,14 @@ function CameraController({
   }, [animated]);
 
   useFrame(({ camera }) => {
-    const focusProgress = THREE.MathUtils.clamp((progress - 0.02) / 0.88, 0, 1);
+    const focusProgress = THREE.MathUtils.clamp((progress - 0.02) / 0.7, 0, 1);
+    const portalProgress = THREE.MathUtils.clamp((progress - 0.64) / 0.34, 0, 1);
     const resolvedFocusProgress =
       debugState === 'focus' ? 1 : debugState === 'intro' || debugState === 'landing' ? 0 : focusProgress;
+    const resolvedPortalProgress =
+      debugState === 'focus' ? 1 : debugState === 'intro' || debugState === 'landing' ? 0 : portalProgress;
     const easedProgress = THREE.MathUtils.smootherstep(resolvedFocusProgress, 0, 1);
+    const easedPortalProgress = THREE.MathUtils.smootherstep(resolvedPortalProgress, 0, 1);
     const easedLookProgress = THREE.MathUtils.smootherstep(
       THREE.MathUtils.clamp(resolvedFocusProgress / 0.42, 0, 1),
       0,
@@ -83,9 +89,18 @@ function CameraController({
 
     target.copy(introStartPosition).lerp(landingPosition, intro);
     target.lerp(scrollEndPosition, easedProgress);
+    target.lerp(portalPosition, easedPortalProgress);
 
     lookAtTarget.copy(introStartLookAt).lerp(landingLookAt, intro);
     lookAtTarget.lerp(scrollEndLookAt, easedLookProgress);
+    lookAtTarget.lerp(portalLookAt, easedPortalProgress);
+
+    const perspectiveCamera = camera as THREE.PerspectiveCamera;
+    const nextFov = THREE.MathUtils.lerp(34, 20, easedPortalProgress);
+    if (Number.isFinite(perspectiveCamera.fov) && Math.abs(perspectiveCamera.fov - nextFov) > 0.01) {
+      perspectiveCamera.fov = nextFov;
+      perspectiveCamera.updateProjectionMatrix();
+    }
 
     if (debugState) {
       camera.position.copy(target);
@@ -114,8 +129,9 @@ function ScreenGlow({
       return;
     }
 
+    const portalProgress = THREE.MathUtils.clamp((progress - 0.64) / 0.34, 0, 1);
     const targetIntensity =
-      !animated || prefersReducedMotion ? 0.48 : 0.62 - progress * 0.1;
+      !animated || prefersReducedMotion ? 0.48 : 0.62 - progress * 0.08 + portalProgress * 1.28;
     lightRef.current.intensity = THREE.MathUtils.lerp(
       lightRef.current.intensity,
       targetIntensity,
@@ -128,7 +144,7 @@ function ScreenGlow({
       ref={lightRef}
       position={[3.1, 0.66, -1.42]}
       intensity={0.58}
-      distance={4.4}
+      distance={5.4}
       decay={1.8}
       color="#8de8e1"
     />

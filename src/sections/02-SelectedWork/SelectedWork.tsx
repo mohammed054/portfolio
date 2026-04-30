@@ -83,7 +83,7 @@ function SelectedWork() {
           const offset = index - rawPosition;
           const distance = Math.abs(offset);
           const scale = gsap.utils.clamp(0.74, 1 - distance * 0.16, 1);
-          const y = Math.min(148, distance * 26);
+          const y = Math.min(132, distance * 24) - offset * 28;
           const rotationY = gsap.utils.clamp(-54, offset * -18, 54);
           const z = -Math.min(420, Math.pow(distance, 1.14) * 140);
           const opacity = gsap.utils.clamp(0.18, 1 - distance * 0.24, 1);
@@ -123,14 +123,14 @@ function SelectedWork() {
 
       const scrollDistance =
         Math.abs(centerOffsets[0] - centerOffsets[centerOffsets.length - 1]) +
-        window.innerHeight * 2.2;
+        window.innerHeight * 1.55;
 
       triggerRef.current = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
         end: `+=${scrollDistance}`,
         pin: true,
-        scrub: 1.2,
+        scrub: 0.9,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onRefresh: () => {

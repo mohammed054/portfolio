@@ -1,10 +1,10 @@
 .section {
   position: relative;
-  min-height: 100vh;
+  min-height: 94vh;
   padding: 0 6vw;
   background:
-    radial-gradient(circle at 50% 45%, rgba(39, 39, 62, 0.55) 0%, rgba(22, 22, 37, 0.2) 24%, transparent 58%),
-    var(--color-bg-contact);
+    radial-gradient(circle at 50% 52%, rgba(44, 36, 95, 0.22) 0%, rgba(44, 36, 95, 0) 36%),
+    linear-gradient(180deg, #020203 0%, #070711 58%, #171257 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,83 +14,59 @@
 .vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.5) 100%);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.46), transparent 26%, transparent 70%, rgba(19, 15, 68, 0.28)),
+    radial-gradient(ellipse at center, transparent 38%, rgba(0, 0, 0, 0.56) 100%);
   pointer-events: none;
 }
 
 .content {
   position: relative;
-  max-width: 920px;
-  text-align: center;
   z-index: 2;
+  max-width: 940px;
+  text-align: center;
 }
 
 .headline {
   display: flex;
   flex-direction: column;
-  gap: 0.08em;
+  gap: 0.06em;
+  min-height: 4em;
   font-family: var(--font-display);
-  font-size: clamp(42px, 7.5vw, 122px);
-  font-weight: 700;
+  font-size: clamp(42px, 7.5vw, 120px);
+  font-weight: 900;
   line-height: 0.96;
-  color: var(--color-text-light);
-  text-shadow: 0 0 60px rgba(240, 236, 228, 0.15);
+  color: #ffffff;
+  letter-spacing: 0;
+  text-shadow:
+    2px 0 rgba(255, 42, 80, 0.14),
+    -2px 0 rgba(45, 92, 255, 0.14),
+    0 0 60px rgba(240, 236, 228, 0.13);
 }
 
 .line {
   display: block;
 }
 
-.word {
-  display: inline-block;
-  margin: 0 0.12em;
-}
-
 .subtext {
   margin-top: 2rem;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.9);
   font-family: var(--font-body);
-  font-size: 1.1rem;
+  font-size: 1.08rem;
   font-weight: 400;
-}
-
-.stars {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.star {
-  position: absolute;
-  left: 0;
-  top: 0;
-  opacity: 0;
-  transform: translate(-50%, -50%);
-  filter:
-    drop-shadow(0 10px 24px rgba(201, 168, 76, 0.32))
-    drop-shadow(0 0 22px rgba(255, 215, 0, 0.12));
-}
-
-.star svg {
-  width: 100%;
-  height: 100%;
 }
 
 @media (max-width: 768px) {
   .section {
+    min-height: 88vh;
     padding: 0 5vw;
   }
 
   .headline {
-    font-size: clamp(36px, 9vw, 72px);
+    font-size: clamp(36px, 10vw, 72px);
   }
 
   .subtext {
     font-size: 1rem;
-  }
-
-  .star:nth-child(n + 5) {
-    display: none;
   }
 }

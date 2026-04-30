@@ -2,7 +2,9 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-preloader);
-  background: var(--color-crt-bg);
+  background:
+    radial-gradient(circle at 50% 48%, rgba(33, 29, 57, 0.5), rgba(3, 3, 8, 0.96) 70%),
+    #050508;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,12 +14,50 @@
 
 .crtScreen {
   position: absolute;
-  inset: 0;
+  width: min(88vw, 980px);
+  height: min(74vh, 620px);
   display: flex;
   align-items: center;
   justify-content: center;
   perspective: 800px;
+  padding: clamp(20px, 3.3vw, 34px);
+  border-radius: clamp(48px, 7vw, 88px);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 16%),
+    linear-gradient(180deg, #17121f 0%, #07070e 54%, #030306 100%);
+  box-shadow:
+    0 34px 90px rgba(0, 0, 0, 0.56),
+    inset 0 3px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -14px 34px rgba(0, 0, 0, 0.64);
   transform: scale(1.02);
+}
+
+.crtScreen::before,
+.crtScreen::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+.crtScreen::before {
+  inset: clamp(20px, 3.3vw, 34px);
+  border-radius: clamp(34px, 5.4vw, 66px);
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.025) 42%, rgba(0, 0, 0, 0.12) 100%),
+    #2520b7;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.06),
+    inset 0 0 36px rgba(0, 0, 0, 0.24),
+    0 0 0 1px rgba(0, 0, 0, 0.72);
+}
+
+.crtScreen::after {
+  inset: clamp(29px, 4.05vw, 45px);
+  z-index: 1;
+  border-radius: clamp(28px, 4.4vw, 54px);
+  box-shadow:
+    inset 0 0 18px rgba(255, 255, 255, 0.08),
+    inset 0 0 56px rgba(0, 0, 0, 0.14);
 }
 
 .scanlines {
@@ -35,25 +75,28 @@
 }
 
 .content {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2rem;
   color: var(--color-crt-text);
   text-align: center;
-  filter: brightness(1.05) contrast(1.08);
+  filter: brightness(1.04) contrast(1.04);
 }
 
 .logoLockup {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 0.75rem;
+  gap: clamp(0.8rem, 2vw, 1.5rem);
 }
 
 .logoIcon {
-  width: min(60vw, 320px);
+  width: clamp(72px, 12vw, 128px);
   height: auto;
+  flex-shrink: 0;
 }
 
 .wordmark {
@@ -66,7 +109,16 @@
 .subtitle {
   font-family: var(--font-mono);
   font-size: 1.05rem;
-  line-height: 1.7;
+  line-height: 1.45;
+}
+
+.terminalCursor {
+  display: block;
+  height: 1.15rem;
+  color: #ffffff;
+  font-size: 1.05rem;
+  line-height: 1;
+  animation: terminalBlink 0.5s steps(1, end) infinite;
 }
 
 .progressBar {
@@ -84,15 +136,30 @@
 
 .segment {
   flex: 1;
-  background: var(--color-crt-bar);
+  border: 1px solid rgba(255, 255, 255, 0.46);
+  background: transparent;
 }
 
 .empty {
-  opacity: 0;
+  opacity: 1;
 }
 
 .filled {
+  border-color: #ffffff;
+  background: #ffffff;
   opacity: 1;
+}
+
+@keyframes terminalBlink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes segmentFlicker {
@@ -140,7 +207,17 @@
 
 @media (max-width: 768px) {
   .logoIcon {
-    width: 70vw;
+    width: clamp(60px, 18vw, 92px);
+  }
+
+  .logoLockup {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .crtScreen {
+    width: 92vw;
+    height: min(72vh, 560px);
   }
 
   .subtitle {

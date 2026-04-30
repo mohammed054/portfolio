@@ -165,7 +165,7 @@ function Footer() {
         <div className={styles.ceoVisual} aria-hidden="true">
           {!imageMissing ? (
             <img
-              src="/images/ceo-phone-portrait.png"
+              src="/textures/simon_calling.webp"
               alt=""
               className={styles.ceoImage}
               loading="lazy"

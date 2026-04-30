@@ -401,7 +401,7 @@ function SuperPETModel({ animated = true }: { animated?: boolean }) {
       ref={groupRef}
       position={[3.3, -1.18, -1.5]}
       rotation={[0.02, -0.62, 0]}
-      scale={[1.06, 1.06, 1.06]}
+      scale={[0.9, 0.9, 0.9]}
     />
   );
 }

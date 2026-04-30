@@ -1,6 +1,6 @@
 .section {
   position: relative;
-  min-height: 100vh;
+  min-height: 96vh;
   background: #000000;
   overflow: hidden;
 }
@@ -26,23 +26,18 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding-top: 12vh;
+  padding-top: 9vh;
   text-align: center;
   padding-inline: 6vw;
 }
 
 .headline {
-  background: linear-gradient(90deg, #c9a84c 0%, #ffd700 45%, #fff5cc 50%, #ffd700 55%, #c9a84c 100%);
-  background-size: 200% auto;
-  color: transparent;
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: #ffffff;
   font-family: var(--font-display);
-  font-size: clamp(34px, 5.1vw, 86px);
-  font-weight: 700;
+  font-size: clamp(38px, 5.4vw, 92px);
+  font-weight: 900;
   line-height: 0.98;
-  text-shadow: 0 0 40px rgba(200, 160, 60, 0.25);
-  animation: shimmer 4s linear infinite;
+  text-shadow: 0 0 32px rgba(255, 255, 255, 0.18);
 }
 
 .subtext {
@@ -55,14 +50,14 @@
 
 .scene {
   position: absolute;
-  inset: 16% 0 15%;
+  inset: 14% 0 12%;
   z-index: 2;
 }
 
 .sceneCanvas {
   position: absolute;
   inset: 0;
-  opacity: 0.18;
+  opacity: 0.5;
 }
 
 .tieFallback {
@@ -96,8 +91,8 @@
 }
 
 .tieBlade {
-  width: clamp(90px, 7vw, 132px);
-  height: clamp(300px, 34vh, 430px);
+  width: clamp(104px, 8vw, 154px);
+  height: clamp(350px, 48vh, 560px);
   margin-top: -10px;
   clip-path: polygon(50% 100%, 82% 18%, 62% 0, 38% 0, 18% 18%);
   animation: tieSwing 3s ease-in-out infinite;
@@ -126,7 +121,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 38%;
+  height: 48%;
   z-index: 4;
 }
 
@@ -139,8 +134,8 @@
 .figure {
   position: relative;
   display: block;
-  width: clamp(86px, 9vw, 154px);
-  height: clamp(176px, 19vw, 288px);
+  width: clamp(92px, 9.4vw, 164px);
+  height: clamp(210px, 22vw, 330px);
   transform: scale(var(--person-scale));
   transform-origin: bottom center;
   animation: sway 1.6s ease-in-out infinite alternate;
@@ -154,8 +149,7 @@
 .arm {
   position: absolute;
   display: block;
-  background:
-    linear-gradient(180deg, rgba(255, 239, 186, 0.84), rgba(72, 55, 30, 0.96));
+  background: linear-gradient(180deg, #d9a981, #916245);
 }
 
 .head {
@@ -174,6 +168,7 @@
   height: 54%;
   border-radius: 36% 36% 16% 16%;
   transform: translateX(-50%);
+  background: linear-gradient(180deg, #888f94, #4b5054);
 }
 
 .arm {
@@ -186,39 +181,77 @@
 .armLeft {
   left: 18%;
   transform-origin: top center;
-  animation: clapLeft 0.5s steps(1) infinite alternate;
 }
 
 .armRight {
   right: 18%;
   transform-origin: top center;
+}
+
+.pinkSuit {
+  left: 5%;
+}
+
+.patternDress {
+  left: 26%;
+}
+
+.graySuit {
+  right: 25%;
+}
+
+.blackDress {
+  right: 5%;
+}
+
+.pinkSuit .torso {
+  background: linear-gradient(180deg, #d7a0aa, #9d5d71);
+}
+
+.patternDress .torso {
+  border-radius: 46% 46% 10% 10%;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.72) 0 2px, transparent 2.5px) 0 0 / 16px 16px,
+    linear-gradient(180deg, #c1a173, #6f4936);
+}
+
+.graySuit .torso {
+  background: linear-gradient(180deg, #a8abad, #5e6367);
+}
+
+.blackDress .figure {
+  transform: scale(var(--person-scale)) rotateY(12deg);
+}
+
+.blackDress .torso {
+  width: 50%;
+  height: 66%;
+  border-radius: 42% 42% 6% 6%;
+  background: linear-gradient(180deg, #202020, #070707);
+}
+
+.raised .armLeft {
+  transform: rotate(-138deg) translateY(-5px);
+}
+
+.raised .armRight {
+  transform: rotate(138deg) translateY(-5px);
+}
+
+.clapping .armLeft {
+  animation: clapLeft 0.5s steps(1) infinite alternate;
+}
+
+.clapping .armRight {
   animation: clapRight 0.5s steps(1) infinite alternate;
 }
 
-.left {
-  left: 2%;
+.turned .armLeft {
+  transform: rotate(18deg);
 }
 
-.centerLeft {
-  left: 18%;
-}
-
-.center {
-  left: 36%;
-}
-
-.centerRight {
-  right: 20%;
-}
-
-.right {
-  right: 4%;
-}
-
-@keyframes shimmer {
-  to {
-    background-position: 200% center;
-  }
+.turned .armRight {
+  transform: rotate(-46deg);
 }
 
 @keyframes tieSwing {
@@ -281,24 +314,20 @@
   }
 
   .tieBlade {
-    width: clamp(72px, 14vw, 104px);
-    height: clamp(220px, 30vh, 320px);
+    width: clamp(76px, 14vw, 108px);
+    height: clamp(240px, 34vh, 340px);
   }
 
-  .center,
-  .centerRight {
+  .patternDress,
+  .graySuit {
     display: none;
   }
 
-  .left {
+  .pinkSuit {
     left: -2%;
   }
 
-  .centerLeft {
-    left: 26%;
-  }
-
-  .right {
+  .blackDress {
     right: -1%;
   }
 }

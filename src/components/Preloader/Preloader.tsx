@@ -8,14 +8,7 @@ interface PreloaderProps {
   onComplete: () => void;
 }
 
-const RAINBOW = [
-  '#e63946',
-  '#f4a261',
-  '#e9c46a',
-  '#2a9d8f',
-  '#457b9d',
-  '#6a0572',
-];
+const BOOT_LOGO_STRIPE = '#f3ecd7';
 const SEGMENTS = 20;
 
 export function Preloader({ onComplete }: PreloaderProps) {
@@ -101,15 +94,9 @@ export function Preloader({ onComplete }: PreloaderProps) {
 
     timeline
       .to(wrapperRef.current, {
-        delay: 0.4,
-        scaleY: 0.02,
-        duration: 0.2,
-        ease: 'power3.in',
-        transformOrigin: 'center center',
-      })
-      .to(wrapperRef.current, {
-        scaleX: 0,
-        duration: 0.15,
+        delay: 0.18,
+        opacity: 0,
+        duration: 0.18,
         ease: 'power2.in',
       })
       .to(
@@ -137,20 +124,28 @@ export function Preloader({ onComplete }: PreloaderProps) {
       <div className={styles.crtScreen}>
         <div className={styles.content}>
           <div className={styles.logoLockup}>
-            <svg className={styles.logoIcon} viewBox="0 0 320 80" aria-hidden="true">
-              {RAINBOW.map((color, index) => (
-                <path
-                  key={color}
-                  d={`M10 ${10 + index * 10} H${170 + index * 18} L${300 - index * 4} ${18 + index * 10} H10 Z`}
-                  fill={color}
-                />
-              ))}
+            <svg className={styles.logoIcon} viewBox="0 0 80 80" aria-hidden="true">
+              <clipPath id="boot-logo-clip">
+                <circle cx="40" cy="40" r="34" />
+              </clipPath>
+              <g clipPath="url(#boot-logo-clip)">
+                {Array.from({ length: 7 }).map((_, index) => (
+                  <path
+                    key={index}
+                    d={`M-4 ${13 + index * 8.2} H${64 + index * 4.5} L${88 - index * 2.1} ${18 + index * 8.2} H-4 Z`}
+                    fill={BOOT_LOGO_STRIPE}
+                  />
+                ))}
+              </g>
             </svg>
             <div className={styles.wordmark}>SHADER</div>
           </div>
 
           <div className={styles.subtitle}>
             <p>{COPY.preloader.line1}</p>
+            <span className={styles.terminalCursor} aria-hidden="true">
+              ·
+            </span>
             <p>{COPY.preloader.line2}</p>
           </div>
 
