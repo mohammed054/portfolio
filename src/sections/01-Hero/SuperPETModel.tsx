@@ -42,8 +42,8 @@ function drawCoverImage(
   const imageRatio = image.naturalWidth / image.naturalHeight;
   const boxRatio = width / height;
 
-  let drawWidth = width;
-  let drawHeight = height;
+  let drawWidth: number;
+  let drawHeight: number;
   let offsetX = x;
   let offsetY = y;
 
@@ -328,7 +328,7 @@ function createFrontPanelTexture() {
     context.font = '900 54px Georgia, serif';
     context.textAlign = 'left';
     context.textBaseline = 'middle';
-    context.fillText('SHADER', 54, 264);
+    context.fillText('HASSOUN', 54, 264);
 
     context.font = '900 78px Georgia, serif';
     context.textAlign = 'center';
@@ -339,8 +339,8 @@ function createFrontPanelTexture() {
 
     context.font = '700 18px Courier New, monospace';
     context.textAlign = 'right';
-    context.fillText('shader', 474, 246);
-    context.fillText('studio', 474, 314);
+    context.fillText('mohamed', 474, 246);
+    context.fillText('portfolio', 474, 314);
   }
 
   const texture = new THREE.CanvasTexture(canvas);
@@ -498,11 +498,12 @@ function SuperPETModel({ animated = true }: { animated?: boolean }) {
       mesh.receiveShadow = false;
     });
 
-    if (groupRef.current) {
-      while (groupRef.current.children.length > 0) {
-        groupRef.current.remove(groupRef.current.children[0]);
+    const group = groupRef.current;
+    if (group) {
+      while (group.children.length > 0) {
+        group.remove(group.children[0]);
       }
-      groupRef.current.add(clone);
+      group.add(clone);
     }
 
     invalidate();
@@ -515,8 +516,8 @@ function SuperPETModel({ animated = true }: { animated?: boolean }) {
         material.dispose();
       });
 
-      if (groupRef.current) {
-        groupRef.current.clear();
+      if (group) {
+        group.clear();
       }
     };
   }, [animated, invalidate, scene]);

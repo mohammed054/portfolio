@@ -3,6 +3,12 @@ import { SectionAnchor } from '../../components/shared/SectionAnchor';
 import { COPY } from '../../utils/constants';
 import styles from './AboutVintage.module.css';
 
+const BUILD_LINES = [
+  'profile.load("Mohamed Hassoun")',
+  'stack.use(["React", "Python", "Node", "Android"])',
+  'workflow.clean(messyInput).ship(usefulSoftware)',
+];
+
 function AboutVintage() {
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -10,17 +16,24 @@ function AboutVintage() {
     <section id="section-about-vintage" ref={sectionRef} className={styles.section}>
       <SectionAnchor id="about-vintage" threshold={0.35} />
 
-      <div className={styles.photoBanner} aria-label="Retro business people standing behind old computers">
-        <img
-          src="/textures/group_3x2.webp"
-          alt=""
-          className={styles.photo}
-          loading="lazy"
-          decoding="async"
-        />
+      <div className={styles.photoBanner} aria-label="Portfolio code board">
+        <div className={styles.codeBoard}>
+          <div className={styles.codeHeader}>
+            <span>MOHAMED.EXE</span>
+            <span>READY</span>
+          </div>
+          <div className={styles.codeLines}>
+            {BUILD_LINES.map((line) => (
+              <p key={line}>
+                <span>&gt;</span>
+                {line}
+              </p>
+            ))}
+          </div>
+        </div>
         <div className={styles.photoGrain} aria-hidden="true" />
         <span className={styles.watermark} aria-hidden="true">
-          SHADER
+          HASSOUN
         </span>
       </div>
 

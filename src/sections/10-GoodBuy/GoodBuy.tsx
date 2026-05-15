@@ -9,7 +9,7 @@ function GoodBuy() {
       <div className={styles.scene}>
         <PhonesScene />
       </div>
-      <h2 className={styles.headline}>Good buy.</h2>
+      <h2 className={styles.headline}>Good build.</h2>
     </section>
   );
 }

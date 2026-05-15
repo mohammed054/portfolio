@@ -23,17 +23,17 @@ function BootLogo() {
 
 function BootTransition() {
   return (
-    <section id="section-boot" className={styles.section} aria-label="Shader boot sequence">
+    <section id="section-boot" className={styles.section} aria-label="Mohamed Hassoun portfolio boot sequence">
       <div className={styles.screen}>
         <div className={styles.content}>
           <div className={styles.logoLockup}>
             <BootLogo />
-            <span className={styles.wordmark}>SHADER</span>
+            <span className={styles.wordmark}>HASSOUN</span>
           </div>
 
           <div className={styles.subtitle}>
-            <p>Shader Development Studio, Website</p>
-            <p>Version 1.02</p>
+            <p>Mohamed Hassoun, Portfolio</p>
+            <p>Build 2026.05</p>
           </div>
 
           <div className={styles.progressBar} aria-hidden="true">
@@ -50,7 +50,7 @@ function BootTransition() {
         </div>
 
         <p className={styles.copyright}>
-          Copyright (c) Shader Development Studio AB, 2026. All Rights Reserved.
+          Copyright (c) Mohamed Hassoun, 2026. All Rights Reserved.
         </p>
       </div>
     </section>

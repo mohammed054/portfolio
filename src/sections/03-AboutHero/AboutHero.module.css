@@ -86,10 +86,10 @@
   text-align: center;
   text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
   font-family: var(--font-display);
-  font-size: clamp(72px, 15vw, 220px);
+  font-size: clamp(64px, 12vw, 178px);
   font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   filter:
     drop-shadow(2px 0 0 rgba(255, 60, 60, 0.3))
     drop-shadow(-2px 0 0 rgba(60, 60, 255, 0.3));
@@ -101,7 +101,7 @@
   }
 
   .title {
-    font-size: clamp(60px, 18vw, 120px);
+    font-size: clamp(48px, 15vw, 96px);
     filter: none;
   }
 }

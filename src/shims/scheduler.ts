@@ -39,7 +39,7 @@ const unstable_cancelCallback = (handle?: SchedulerHandle | null) => {
 
 const unstable_shouldYield = () => false;
 const unstable_requestPaint = () => {};
-const unstable_forceFrameRate = (_fps: number) => {};
+const unstable_forceFrameRate = () => {};
 const unstable_getCurrentPriorityLevel = () => unstable_NormalPriority;
 const unstable_runWithPriority = <T,>(_: number, callback: () => T) => callback();
 const unstable_next = <T,>(callback: () => T) => callback();

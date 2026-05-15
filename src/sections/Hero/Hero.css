@@ -64,7 +64,7 @@
   font-size: clamp(2.8rem, 7vw, 6rem);
   line-height: 0.96;
   color: #f0ece4;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   margin-bottom: 3rem;
 }
 

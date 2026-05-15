@@ -3,6 +3,8 @@ export interface Project {
   name: string;
   category: string;
   url: string;
+  description?: string;
+  tech?: string[];
   imageAvailable?: boolean;
   image?: string;
   images?: {
@@ -32,6 +34,7 @@ export interface ContactInfo {
     country: string;
   };
   social?: {
+    github?: string;
     linkedin: string;
     instagram: string;
     twitter: string;

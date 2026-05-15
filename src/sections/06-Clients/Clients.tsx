@@ -1,19 +1,19 @@
 import { SectionAnchor } from '../../components/shared/SectionAnchor';
 import styles from './Clients.module.css';
 
-const CLIENTS = [
-  'ICA',
-  'Region Ostergotland',
-  'Pepsi',
-  'hi.se',
-  'spp',
-  'Suicide Zero',
-  'Scandic',
-  'Cloetta',
-  'SON',
-  'oooo',
-  'stadium',
-  'Garageport',
+const STACK = [
+  'React',
+  'Next.js',
+  'TypeScript',
+  'Python',
+  'Node/Express',
+  'MongoDB',
+  'Android Kotlin',
+  'Chrome MV3',
+  'Three.js',
+  'GSAP',
+  'OCR',
+  'AI APIs',
 ];
 
 function Businessman({ side }: { side: 'left' | 'right' }) {
@@ -38,15 +38,15 @@ function Clients() {
       <Businessman side="right" />
 
       <div className={styles.container}>
-        <h2>A Showcase of Valued Clients</h2>
+        <h2>Stack and Strengths</h2>
         <p>
-          A selection of partnerships, campaigns, launches, and strange little internet machines.
+          The tools Mohamed uses to turn automation, data, web, mobile, and AI ideas into working software.
         </p>
 
-        <div className={styles.logoGrid} aria-label="Client logos">
-          {CLIENTS.map((client) => (
-            <div key={client} className={styles.logoCell}>
-              {client}
+        <div className={styles.logoGrid} aria-label="Technology stack">
+          {STACK.map((tool) => (
+            <div key={tool} className={styles.logoCell}>
+              {tool}
             </div>
           ))}
         </div>

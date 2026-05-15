@@ -31,28 +31,21 @@ function LogoIcon() {
   );
 }
 
-function TelephoneIcon() {
+function GithubIcon() {
   return (
     <svg
       className={styles.phoneIcon}
-      viewBox="0 0 32 32"
+      viewBox="0 0 24 24"
       aria-hidden="true"
       focusable="false"
     >
       <path
-        d="M6.4 13.8c.9-4.7 5-8.1 9.8-8.1 4.6 0 8.6 3.1 9.7 7.5.2.9-.3 1.8-1.1 2.1l-4.1 1.5c-.8.3-1.7-.1-2.1-.9l-.7-1.5c-.3-.7-1-1.1-1.8-1.1h-.5c-.8 0-1.5.5-1.8 1.2l-.6 1.5c-.3.8-1.2 1.2-2 1l-3.8-1.2c-.8-.3-1.3-1.1-1.1-2z"
+        d="M12 2.6c-5.2 0-9.4 4.2-9.4 9.4 0 4.1 2.7 7.7 6.5 8.9.5.1.7-.2.7-.5v-1.8c-2.7.6-3.2-1.1-3.2-1.1-.4-1.1-1-1.4-1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .8 1.5 2.2 1 2.7.8.1-.6.3-1 .6-1.3-2.1-.2-4.4-1.1-4.4-4.7 0-1 .4-1.9 1-2.6-.1-.2-.4-1.2.1-2.5 0 0 .8-.3 2.7 1 .8-.2 1.6-.3 2.5-.3.8 0 1.7.1 2.5.3 1.8-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.5.6.7 1 1.5 1 2.6 0 3.6-2.2 4.5-4.4 4.7.4.3.7.9.7 1.8v2.6c0 .3.2.6.7.5 3.8-1.3 6.5-4.8 6.5-8.9 0-5.2-4.2-9.4-9.4-9.4z"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.8"
+        strokeWidth="1.45"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />
-      <path
-        d="M12.2 19.4c.8 1.1 2.1 1.8 3.7 1.8 1.7 0 3-.7 3.8-1.9M10.1 22.6h11.8M13.2 25.6h5.6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
       />
     </svg>
   );
@@ -107,14 +100,14 @@ export function Navbar() {
         <a
           href="#home"
           className={styles.logo}
-          aria-label="Shader home"
+          aria-label="Mohamed Hassoun home"
           onClick={(event) => {
             event.preventDefault();
             scrollToHash('#home');
           }}
         >
           <LogoIcon />
-          <span className={styles.wordmark}>SHADER</span>
+          <span className={styles.wordmark}>HASSOUN</span>
         </a>
 
         <nav className={styles.links} aria-label="Main navigation">
@@ -141,13 +134,13 @@ export function Navbar() {
         </nav>
 
         <a
-          href={CONTACT.calUrl}
+          href={CONTACT.social.github}
           className={styles.cta}
           target="_blank"
           rel="noopener noreferrer"
         >
-          <TelephoneIcon />
-          <span>Book a call</span>
+          <GithubIcon />
+          <span>GitHub</span>
         </a>
 
         <button
@@ -199,13 +192,13 @@ export function Navbar() {
           })}
 
           <a
-            href={CONTACT.calUrl}
+            href={CONTACT.social.github}
             className={styles.mobileCta}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setMenuOpen(false)}
           >
-            Book a call
+            GitHub
           </a>
         </div>
       </div>

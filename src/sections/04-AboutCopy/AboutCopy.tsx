@@ -8,11 +8,11 @@ import styles from './AboutCopy.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function PhoneIcon() {
+function ExternalLinkIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path
-        d="M7.6 3.5c.4-.4 1-.5 1.5-.2l2.1 1.2c.6.3.8 1 .6 1.6L11 8.4c-.1.4 0 .8.3 1.1l3.2 3.2c.3.3.7.4 1.1.3l2.3-.9c.6-.2 1.3 0 1.6.6l1.2 2.1c.3.5.2 1.1-.2 1.5l-1.7 1.7c-.7.7-1.7 1-2.7.8-2.7-.6-5.6-2.6-8.1-5.1S3.4 8.6 2.8 5.9c-.2-1 .1-2 .8-2.7z"
+        d="M8 16L16 8M11 8H16V13M7.4 4.5H5.8C4.8 4.5 4 5.3 4 6.3V18.2C4 19.2 4.8 20 5.8 20H17.7C18.7 20 19.5 19.2 19.5 18.2V16.6"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.6"
@@ -68,26 +68,26 @@ function AboutCopy() {
           </div>
         </div>
 
-        <div ref={couponRef} className={styles.coupon} aria-label="Book a Consultation coupon">
+        <div ref={couponRef} className={styles.coupon} aria-label="Contact Mohamed Hassoun">
           <img src="/textures/scissors.png" alt="" className={styles.scissors} aria-hidden="true" />
           <div className={styles.couponHeader}>
-            <p>Act now!</p>
-            <h3>Book a Consultation.</h3>
+            <p>Available for</p>
+            <h3>Freelance Builds.</h3>
           </div>
 
-          <label className={styles.emailLine}>
+          <div className={styles.emailLine}>
             <span>Email:</span>
-            <input type="email" aria-label="Email" />
-          </label>
+            <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+          </div>
 
           <a
-            href={CONTACT.calUrl}
+            href={CONTACT.social.github}
             className={styles.bookButton}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <PhoneIcon />
-            <span>Book a Call Today</span>
+            <ExternalLinkIcon />
+            <span>Open GitHub</span>
           </a>
         </div>
       </div>

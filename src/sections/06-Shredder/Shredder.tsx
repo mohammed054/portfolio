@@ -112,12 +112,12 @@ function Shredder() {
       <div className={styles.paperWorld} aria-hidden="true">
         <div className={styles.paperSheet}>
           <div className={styles.paperHeader}>
-            <span>SHADER CORPORATE BROCHURE</span>
-            <span>VERSION 1.02</span>
+            <span>MOHAMED HASSOUN PORTFOLIO</span>
+            <span>BUILD 2026.05</span>
           </div>
 
           <div className={styles.paperColumns}>
-            {['Studio', 'Capabilities', 'Delivery'].map((label) => (
+            {['Automation', 'Full-stack', 'AI tools'].map((label) => (
               <div key={label} className={styles.paperColumn}>
                 <span className={styles.paperLabel}>{label}</span>
                 {Array.from({ length: 8 }).map((_, line) => (

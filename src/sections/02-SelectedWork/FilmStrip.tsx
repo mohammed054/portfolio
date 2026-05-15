@@ -25,7 +25,7 @@ function ProjectFallback({ project }: { project: Project }) {
     <div className={styles.fallbackArt}>
       <div className={styles.fallbackGrid} />
       <div className={styles.fallbackLabel}>
-        <span className={styles.fallbackKicker}>Selected work</span>
+        <span className={styles.fallbackKicker}>GitHub project</span>
         <span>{project.name}</span>
       </div>
     </div>

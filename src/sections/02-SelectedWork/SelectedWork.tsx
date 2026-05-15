@@ -264,6 +264,16 @@ function SelectedWork() {
               View project
             </a>
           </p>
+          {activeProject.description ? (
+            <p className={styles.projectDescription}>{activeProject.description}</p>
+          ) : null}
+          {activeProject.tech?.length ? (
+            <ul className={styles.projectTags} aria-label={`${activeProject.name} technologies`}>
+              {activeProject.tech.map((tech) => (
+                <li key={tech}>{tech}</li>
+              ))}
+            </ul>
+          ) : null}
         </div>
 
         <div

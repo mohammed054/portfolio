@@ -106,20 +106,19 @@
   font-size: 1.15rem;
 }
 
-.emailLine input {
+.emailLine a {
   min-width: 0;
   flex: 1;
-  height: 1.55rem;
-  border: 0;
   border-bottom: 1px solid rgba(26, 18, 8, 0.72);
   border-radius: 0;
   background: transparent;
   color: #1a1208;
   font: inherit;
-  outline: none;
+  text-decoration: none;
+  overflow-wrap: anywhere;
 }
 
-.emailLine input:focus {
+.emailLine a:hover {
   border-bottom-color: #000000;
 }
 

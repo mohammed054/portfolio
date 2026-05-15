@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -39,7 +39,6 @@ function Laurel({ mirrored = false }: { mirrored?: boolean }) {
 
 function Footer() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [imageMissing, setImageMissing] = useState(false);
 
   useGSAP(
     () => {
@@ -123,61 +122,45 @@ function Footer() {
 
       <div className={styles.contactGrid}>
         <div className={styles.column} data-footer-col>
-          <h3>General Enquiries</h3>
+          <h3>Email</h3>
           <p>
             <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
           </p>
           <p>
-            <a href={CONTACT.calUrl} target="_blank" rel="noopener noreferrer">
-              Book a call
+            <a href={CONTACT.calUrl}>
+              Start a project inquiry
             </a>
           </p>
         </div>
 
         <div className={styles.column} data-footer-col>
-          <h3>Visit us</h3>
+          <h3>Location</h3>
           <p>{CONTACT.address.street}</p>
           <p>{CONTACT.address.city}</p>
           <p>{CONTACT.address.country}</p>
         </div>
 
         <div className={styles.column} data-footer-col>
-          <h3>Social</h3>
+          <h3>Code</h3>
           <p>
-            <a href={CONTACT.social.linkedin} target="_blank" rel="noopener noreferrer">
-              LinkedIn
+            <a href={CONTACT.social.github} target="_blank" rel="noopener noreferrer">
+              GitHub
             </a>
           </p>
           <p>
-            <a href={CONTACT.social.instagram} target="_blank" rel="noopener noreferrer">
-              Instagram
+            <a href="https://github.com/mohammed054/portfolio" target="_blank" rel="noopener noreferrer">
+              This portfolio repo
             </a>
           </p>
           <p>
-            <a href={CONTACT.social.twitter} target="_blank" rel="noopener noreferrer">
-              X (Twitter)
-            </a>
+            <span>mohammed054</span>
           </p>
         </div>
       </div>
 
       <div className={styles.ceoCard}>
         <div className={styles.ceoVisual} aria-hidden="true">
-          {!imageMissing ? (
-            <img
-              src="/textures/simon_calling.webp"
-              alt=""
-              className={styles.ceoImage}
-              loading="lazy"
-              decoding="async"
-              onError={() => setImageMissing(true)}
-            />
-          ) : null}
-          <div className={styles.ceoFallback} hidden={!imageMissing}>
-            <span className={styles.receiver} />
-            <span className={styles.head} />
-            <span className={styles.body} />
-          </div>
+          <div className={styles.profileMonogram}>MH</div>
         </div>
 
         <div className={styles.ceoText}>
@@ -194,7 +177,7 @@ function Footer() {
           <div className={styles.iconWrap}>
             <GlobeIcon />
           </div>
-          <p>WORLDWIDE BUSINESS CERTIFIED COMPANY</p>
+          <p>REMOTE-FRIENDLY SOFTWARE DEVELOPMENT</p>
         </div>
 
         <div className={styles.center} data-footer-bar>
@@ -206,7 +189,7 @@ function Footer() {
               <rect x="0" y="19" width="40" height="4" fill="var(--color-rainbow-4)" />
               <rect x="0" y="25" width="40" height="4" fill="var(--color-rainbow-5)" />
             </svg>
-            <span>SHADER</span>
+            <span>HASSOUN</span>
           </div>
           <p className={styles.tagline}>{CONTACT.tagline}</p>
           <p className={styles.copyright}>{CONTACT.copyright}</p>

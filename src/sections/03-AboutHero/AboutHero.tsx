@@ -14,6 +14,7 @@ import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SectionAnchor } from '../../components/shared/SectionAnchor';
+import { COPY } from '../../utils/constants';
 import styles from './AboutHero.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -67,7 +68,7 @@ function AboutHero() {
 
       {/* Title */}
       <h2 ref={titleRef} className={styles.title}>
-        About Us
+        {COPY.aboutHero.title}
       </h2>
     </section>
   );

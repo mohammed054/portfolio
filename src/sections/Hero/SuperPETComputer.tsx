@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useMemo, useRef } from 'react';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -8,9 +8,7 @@ const MODEL_PATH = '/models/70s_retro_computer_asset_-_old_commodore_pet.glb';
 export function SuperPETComputer() {
   const groupRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF(MODEL_PATH);
-  const clonedScene = useRef<THREE.Group | null>(null);
-
-  useEffect(() => {
+  const clonedScene = useMemo(() => {
     const clone = scene.clone(true) as THREE.Group;
     clone.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
@@ -19,7 +17,8 @@ export function SuperPETComputer() {
         mesh.receiveShadow = true;
       }
     });
-    clonedScene.current = clone;
+
+    return clone;
   }, [scene]);
 
   // Idle float + subtle sway
@@ -32,10 +31,7 @@ export function SuperPETComputer() {
 
   return (
     <group ref={groupRef} position={[0.7, -0.5, 0]} scale={1.2}>
-      {clonedScene.current
-        ? <primitive object={clonedScene.current} />
-        : <primitive object={scene} />
-      }
+      <primitive object={clonedScene} />
       {/* Screen glow */}
       <pointLight position={[0, 0.9, 0.9]} color="#33ff88" intensity={1.0} distance={3} decay={2} />
     </group>

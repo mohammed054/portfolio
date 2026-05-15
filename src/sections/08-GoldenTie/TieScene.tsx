@@ -3,6 +3,8 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useScrollProgress } from '../../hooks/useScrollProgress';
 
+/* eslint-disable react-hooks/immutability -- Three.js BufferGeometry is intentionally mutated inside the render loop. */
+
 interface TieSceneProps {
   activated: boolean;
 }

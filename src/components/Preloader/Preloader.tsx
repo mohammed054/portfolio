@@ -138,7 +138,7 @@ export function Preloader({ onComplete }: PreloaderProps) {
                 ))}
               </g>
             </svg>
-            <div className={styles.wordmark}>SHADER</div>
+            <div className={styles.wordmark}>HASSOUN</div>
           </div>
 
           <div className={styles.subtitle}>
