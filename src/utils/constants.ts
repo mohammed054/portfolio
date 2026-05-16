@@ -1,20 +1,21 @@
 import type { NavLink, Project } from '../types';
+import { CONTACT as PORTFOLIO_CONTACT, PROFILE } from '../content/portfolio';
 
 export const CONTACT = {
-  name: 'Mohamed Hassoun',
-  email: 'mohammed.hassoun054@gmail.com',
-  ceoEmail: 'mohammed.hassoun054@gmail.com',
-  calUrl: 'mailto:mohammed.hassoun054@gmail.com?subject=Portfolio%20project%20inquiry',
+  name: PROFILE.name,
+  email: PORTFOLIO_CONTACT.email,
+  ceoEmail: PORTFOLIO_CONTACT.email,
+  calUrl: PORTFOLIO_CONTACT.emailHref,
   address: {
     street: 'United Arab Emirates',
     city: 'Dubai',
     country: 'Remote-friendly',
   },
   social: {
-    github: 'https://github.com/mohammed054',
-    linkedin: 'https://github.com/mohammed054',
-    instagram: 'https://github.com/mohammed054',
-    twitter: 'https://github.com/mohammed054',
+    github: PORTFOLIO_CONTACT.githubUrl,
+    linkedin: PORTFOLIO_CONTACT.githubUrl,
+    instagram: PORTFOLIO_CONTACT.githubUrl,
+    twitter: PORTFOLIO_CONTACT.githubUrl,
   },
   copyright: '(c) Mohamed Hassoun, 2026. All Rights Reserved.',
   tagline: 'Full-stack software developer for automation, AI workflows, and useful web systems',
@@ -22,15 +23,20 @@ export const CONTACT = {
 
 export const NAV_LINKS: NavLink[] = [
   { label: 'Home', href: '#home', sectionId: 'home' },
-  { label: 'Projects', href: '#work', sectionId: 'work' },
-  { label: 'Profile', href: '#about-vintage', sectionId: 'about-vintage' },
-  { label: 'Stack', href: '#clients', sectionId: 'clients' },
+  { label: 'Services', href: '#services', sectionId: 'services' },
+  { label: 'Work', href: '#work', sectionId: 'work' },
+  { label: 'Process', href: '#process', sectionId: 'process' },
   { label: 'Contact', href: '#contact', sectionId: 'contact' },
 ];
 
 export const SECTION_THEMES: Record<string, 'light' | 'dark'> = {
-  home: 'light',
-  work: 'light',
+  home: 'dark',
+  services: 'dark',
+  proof: 'dark',
+  work: 'dark',
+  process: 'dark',
+  about: 'dark',
+  contact: 'dark',
   'about-us': 'light',
   'about-copy': 'dark',
   'about-vintage': 'dark',
@@ -38,7 +44,6 @@ export const SECTION_THEMES: Record<string, 'light' | 'dark'> = {
   business: 'dark',
   shredder: 'dark',
   'contact-tease': 'light',
-  contact: 'light',
   'golden-tie': 'light',
   handshake: 'light',
   'good-buy': 'light',

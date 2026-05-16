@@ -1,0 +1,565 @@
+.section {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 96px 0;
+}
+
+.hero {
+  min-height: 88svh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.72fr);
+  align-items: center;
+  gap: 64px;
+  padding-top: 140px;
+  padding-bottom: 72px;
+}
+
+.heroContent {
+  max-width: 760px;
+}
+
+.eyebrow {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 18px;
+  text-transform: uppercase;
+}
+
+.hero h1,
+.sectionHeader h2,
+.aboutLayout h2,
+.contactBox h2 {
+  color: var(--color-text-strong);
+  font-family: var(--font-display);
+  font-weight: 760;
+  letter-spacing: 0;
+  line-height: 1.02;
+}
+
+.hero h1 {
+  font-size: 4.65rem;
+  max-width: 780px;
+}
+
+.heroCopy {
+  color: var(--color-text);
+  font-size: 1.28rem;
+  line-height: 1.7;
+  margin-top: 28px;
+  max-width: 720px;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 34px;
+}
+
+.linkButton {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  display: inline-flex;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 760;
+  justify-content: center;
+  line-height: 1;
+  min-height: 48px;
+  padding: 0 18px;
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.linkButton:hover {
+  transform: translateY(-1px);
+}
+
+.primary {
+  background: var(--color-accent);
+  color: #ffffff;
+}
+
+.primary:hover {
+  background: var(--color-accent-dark);
+}
+
+.secondary {
+  background: #ffffff;
+  border-color: var(--color-border-strong);
+  color: var(--color-text-strong);
+}
+
+.secondary:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-dark);
+}
+
+.text {
+  color: var(--color-accent-dark);
+  padding: 0;
+}
+
+.proofLine {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  margin-top: 28px;
+  max-width: 720px;
+}
+
+.workflowPanel {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(19, 27, 36, 0.08);
+  padding: 22px;
+}
+
+.panelTopline {
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  display: flex;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+}
+
+.panelTopline span:last-child {
+  background: var(--color-accent-soft);
+  border-radius: 4px;
+  color: var(--color-accent-dark);
+  font-weight: 700;
+  padding: 6px 8px;
+}
+
+.workflowRows {
+  display: grid;
+  gap: 14px;
+  padding-top: 18px;
+}
+
+.workflowRows div {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.workflowRows span,
+.cardCopy span,
+.snippetCard span {
+  color: var(--color-accent-dark);
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.workflowRows strong {
+  color: var(--color-text-strong);
+  display: block;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.sectionHeader {
+  max-width: 720px;
+  margin-bottom: 36px;
+}
+
+.sectionHeader h2,
+.aboutLayout h2,
+.contactBox h2 {
+  font-size: 2.7rem;
+}
+
+.sectionHeader p:last-child,
+.aboutCopy p,
+.contactBox > p {
+  color: var(--color-text);
+  font-size: 1.08rem;
+  line-height: 1.75;
+  margin-top: 16px;
+}
+
+.serviceGrid,
+.workGrid,
+.stackGrid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.serviceCard,
+.snippetCard,
+.workCard,
+.stackGroup,
+.processStep {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.serviceCard h3,
+.proofGroup h3,
+.workCard h3,
+.stackGroup h3,
+.processStep h3,
+.snippetCard h4 {
+  color: var(--color-text-strong);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.cardCopy {
+  display: grid;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.cardCopy p,
+.snippetCard p,
+.workCard > p,
+.processStep p {
+  color: var(--color-text);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.proofList,
+.tags,
+.serviceTags,
+.stackGroup ul {
+  list-style: none;
+}
+
+.proofList {
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+  padding-top: 18px;
+}
+
+.proofList li,
+.tags li,
+.serviceTags li {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.3;
+  padding: 6px 8px;
+}
+
+.proofSection {
+  width: min(1280px, calc(100% - 48px));
+}
+
+.proofGroups {
+  display: grid;
+  gap: 42px;
+}
+
+.proofGroup h3 {
+  border-bottom: 1px solid var(--color-border-strong);
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+}
+
+.snippetGrid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.snippetCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tags,
+.serviceTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 2px;
+}
+
+.inlineLink {
+  color: var(--color-accent-dark);
+  display: inline-flex;
+  font-weight: 760;
+  margin-top: auto;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.workGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.workCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 100%;
+}
+
+.workCardTop p {
+  color: var(--color-accent-dark);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.processSection {
+  border-bottom: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border);
+  width: 100%;
+}
+
+.processSection > * {
+  width: min(1180px, calc(100% - 48px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.processGrid {
+  counter-reset: process;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  list-style: none;
+}
+
+.processStep span {
+  color: var(--color-accent);
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.processStep h3 {
+  margin-bottom: 12px;
+}
+
+.aboutLayout {
+  display: grid;
+  gap: 54px;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+}
+
+.aboutCopy {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.stackGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.stackGroup ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.stackGroup li {
+  background: var(--color-surface);
+  border-radius: 4px;
+  color: var(--color-text);
+  font-size: 0.92rem;
+  line-height: 1.4;
+  padding: 7px 9px;
+}
+
+.contactSection {
+  padding-bottom: 120px;
+}
+
+.contactBox {
+  background: var(--color-text-strong);
+  border-radius: 8px;
+  color: #ffffff;
+  max-width: 860px;
+  padding: 44px;
+}
+
+.contactBox .eyebrow {
+  color: #7fd7c0;
+}
+
+.contactBox h2,
+.contactBox > p {
+  color: #ffffff;
+}
+
+.contactBox .secondary {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.36);
+  color: #ffffff;
+}
+
+.contactBox .secondary:hover {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.emailText {
+  color: #ffffff;
+  display: inline-flex;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  margin-top: 26px;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 1080px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    min-height: auto;
+  }
+
+  .workflowPanel {
+    max-width: 640px;
+  }
+
+  .snippetGrid,
+  .workGrid,
+  .processGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aboutLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .section,
+  .proofSection {
+    width: min(100% - 32px, 1180px);
+    padding: 72px 0;
+  }
+
+  .hero {
+    padding-top: 112px;
+  }
+
+  .workflowPanel {
+    display: none;
+  }
+
+  .hero h1 {
+    font-size: 3.1rem;
+  }
+
+  .sectionHeader h2,
+  .aboutLayout h2,
+  .contactBox h2 {
+    font-size: 2rem;
+  }
+
+  .heroCopy {
+    font-size: 1.08rem;
+  }
+
+  .serviceGrid,
+  .snippetGrid,
+  .workGrid,
+  .processGrid,
+  .stackGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .processSection > * {
+    width: min(100% - 32px, 1180px);
+  }
+
+  .contactBox {
+    padding: 28px;
+  }
+}
+
+@media (max-width: 440px) {
+  .hero {
+    padding-bottom: 36px;
+    padding-top: 96px;
+  }
+
+  .hero h1 {
+    font-size: 2.25rem;
+  }
+
+  .heroCopy {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-top: 22px;
+  }
+
+  .ctaRow {
+    flex-direction: column;
+    margin-top: 26px;
+  }
+
+  .linkButton {
+    min-height: 44px;
+    width: 100%;
+  }
+
+  .proofLine {
+    font-size: 0.82rem;
+    margin-top: 20px;
+  }
+
+  .panelTopline {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero h1 {
+    font-size: 2.08rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .linkButton,
+  .linkButton:hover {
+    transform: none;
+  }
+}

@@ -1,191 +1,191 @@
 .navbar {
-  position: fixed;
-  top: clamp(42px, 6.2vh, 72px);
-  left: 0;
-  width: 100%;
-  height: var(--navbar-height);
-  display: flex;
   align-items: center;
+  background: rgba(250, 249, 245, 0.9);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 14px 50px rgba(20, 30, 38, 0.08);
+  display: flex;
+  gap: 22px;
   justify-content: space-between;
-  padding: 0 clamp(42px, 6.4vw, 112px);
+  left: 50%;
+  max-width: 1180px;
+  min-height: 64px;
+  padding: 10px 12px 10px 18px;
+  position: fixed;
+  top: 16px;
+  transform: translateX(-50%);
+  width: min(1180px, calc(100% - 32px));
   z-index: var(--z-navbar);
-  pointer-events: none;
-  border-bottom: 1px solid var(--navbar-border);
-  transition: border-color var(--transition-base);
-}
-
-.navbar > * {
-  pointer-events: auto;
-}
-
-.logo,
-.wordmark,
-.link,
-.cta,
-.hamburger span {
-  color: var(--navbar-text-color);
-  transition:
-    color var(--transition-base),
-    background-color var(--transition-base);
-}
-
-.navbar[data-theme='dark'] .logo,
-.navbar[data-theme='dark'] .wordmark,
-.navbar[data-theme='dark'] .link,
-.navbar[data-theme='dark'] .cta {
-  color: var(--color-text-dark);
-}
-
-.navbar[data-theme='dark'] .hamburger span {
-  background: var(--color-text-dark);
 }
 
 .logo {
-  display: flex;
   align-items: center;
-  gap: 13px;
+  color: var(--color-text-strong);
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 10px;
+  min-width: 0;
   text-decoration: none;
 }
 
-.logoIcon {
-  width: 58px;
-  height: auto;
-  flex-shrink: 0;
+.logoMark {
+  align-items: center;
+  background: var(--color-text-strong);
+  border-radius: 6px;
+  color: #ffffff;
+  display: inline-flex;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  height: 34px;
+  justify-content: center;
+  letter-spacing: 0;
+  width: 38px;
 }
 
 .wordmark {
   font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 1.45rem;
-  letter-spacing: 0.08em;
+  font-size: 1rem;
+  font-weight: 760;
+  letter-spacing: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .links {
-  display: flex;
   align-items: center;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
 }
 
-.link {
-  margin: 0 18px;
-  font-family: var(--font-body);
-  font-size: 1.16rem;
-  font-weight: 500;
-  letter-spacing: 0.045em;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  text-decoration-thickness: 1.3px;
+.link,
+.cta {
+  border-radius: 6px;
+  color: var(--color-text);
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 11px 12px;
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
 }
 
 .link:hover,
-.cta:hover {
-  color: var(--navbar-text-hover);
-}
-
 .linkActive {
-  font-weight: 500;
+  background: var(--color-accent-soft);
+  color: var(--color-accent-dark);
 }
 
 .cta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-body);
-  font-size: 1.16rem;
-  font-style: italic;
-  font-weight: 500;
+  background: var(--color-accent);
+  color: #ffffff;
+  flex: 0 0 auto;
+  padding-left: 14px;
+  padding-right: 14px;
 }
 
-.phoneIcon {
-  width: 25px;
-  height: 25px;
-  flex-shrink: 0;
+.cta:hover {
+  background: var(--color-accent-dark);
+  color: #ffffff;
 }
 
 .hamburger {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  cursor: pointer;
   display: none;
   flex-direction: column;
-  gap: 5px;
-  padding: 8px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
+  gap: 4px;
+  height: 42px;
+  justify-content: center;
+  width: 44px;
 }
 
 .hamburger span {
-  width: 24px;
-  height: 2px;
-  background: var(--navbar-text-color);
+  background: var(--color-text-strong);
   display: block;
+  height: 2px;
+  width: 18px;
 }
 
 .mobileMenu {
-  position: fixed;
-  inset: 0;
-  z-index: calc(var(--z-navbar) + 1);
-  display: flex;
-  justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.96);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--transition-base);
-}
-
-.mobileMenuOpen {
-  opacity: 1;
-  pointer-events: auto;
+  background: rgba(250, 249, 245, 0.98);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 28px;
+  position: fixed;
+  z-index: calc(var(--z-navbar) + 1);
 }
 
 .mobileClose {
-  position: absolute;
-  top: 24px;
-  right: 32px;
-  border: none;
   background: transparent;
-  color: var(--color-text-muted);
-  font-family: var(--font-body);
-  font-size: 1.3rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  color: var(--color-text);
   cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 10px 12px;
+  position: absolute;
+  right: 24px;
+  top: 24px;
 }
 
 .mobileLinks {
+  align-items: stretch;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 24px;
+  gap: 10px;
+  max-width: 360px;
+  width: 100%;
 }
 
-.mobileLink {
-  color: var(--color-text-muted);
-  font-family: var(--font-body);
-  font-size: 2rem;
+.mobileLink,
+.mobileCta {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text-strong);
+  font-size: 1.2rem;
+  font-weight: 760;
+  padding: 16px;
+  text-align: center;
+  text-decoration: none;
 }
 
-.mobileLinkActive,
-.mobileLink:hover {
-  color: var(--color-text-light);
+.mobileLinkActive {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+  color: var(--color-accent-dark);
 }
 
 .mobileCta {
-  margin-top: 8px;
-  color: var(--color-accent-gold);
-  font-family: var(--font-body);
-  font-size: 1.2rem;
-  font-style: italic;
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #ffffff;
 }
 
-@media (max-width: 768px) {
-  .navbar {
-    top: 18px;
-    padding: 0 24px;
-  }
-
+@media (max-width: 860px) {
   .links,
   .cta {
     display: none;
   }
 
   .hamburger {
-    display: flex;
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 420px) {
+  .wordmark {
+    max-width: 180px;
   }
 }
