@@ -258,6 +258,43 @@
   margin-bottom: var(--spacing-3xl);
 }
 
+/* About Contact CTA */
+.about-contact-cta {
+  padding: var(--spacing-3xl) 0;
+  text-align: center;
+}
+
+/* About Portfolio Item Overlay */
+.about-portfolio__item-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-md);
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+  color: white;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.about-portfolio__item:hover .about-portfolio__item-overlay {
+  opacity: 1;
+}
+
+.about-portfolio__item-category {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  opacity: 0.8;
+}
+
+.about-portfolio__item-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+
 /* Responsive */
 @media (max-width: 1279px) {
   .about-hero__inner {
