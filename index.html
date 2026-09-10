@@ -1,25 +1,239 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta
-    name="description"
-    content="Mohamed Hassoun builds practical software for messy workflows: automation tools, AI/OCR pipelines, full-stack web apps, browser extensions, and mobile utilities."
-  />
-  <title>Mohamed Hassoun | Freelance Software Developer</title>
-
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta property="og:title" content="Mohamed Hassoun | Freelance Software Developer" />
-  <meta
-    property="og:description"
-    content="Automation tools, AI/OCR workflows, full-stack web systems, browser extensions, and mobile utilities from Mohamed Hassoun."
-  />
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SND Design — Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <a href="#main-content" class="skip-to-content">Skip to content</a>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
+
+  <!-- GLOBAL HEADER -->
+  <header class="header" id="GLOBAL-HEADER">
+    <div class="header__logo" id="GLOBAL-LOGO">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <rect x="4" y="4" width="16" height="16" fill="#F85D40"/>
+        <rect x="20" y="4" width="16" height="16" fill="#3646E4"/>
+        <rect x="4" y="20" width="16" height="16" fill="#3646E4"/>
+        <rect x="20" y="20" width="16" height="16" fill="#F85D40"/>
+      </svg>
+      <span class="header__logo-text">DESIGN</span>
+    </div>
+    <nav class="header__nav">
+      <a href="index.html" class="header__nav-link active">Home</a>
+      <a href="about.html" class="header__nav-link">About Us</a>
+      <a href="#" class="header__nav-link">Our Portfolio</a>
+      <a href="#" class="header__nav-link">Contact Us</a>
+    </nav>
+    <div class="header__nav-icons" id="GLOBAL-NAV-ICONS">
+      <button class="header__icon-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="header__icon-btn" aria-label="Menu">
+        <svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="18" cy="6" r="1.5" fill="currentColor" stroke="none"/><circle cx="6" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="18" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="6" cy="18" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="18" r="1.5" fill="currentColor" stroke="none"/><circle cx="18" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- GLOBAL SOCIAL SIDEBAR -->
+  <aside class="social-sidebar" id="GLOBAL-SIDEBAR-SOCIAL">
+    <div class="social-sidebar__item">
+      <span class="social-sidebar__label">Email</span>
+      <div class="social-sidebar__icon"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,4 12,13 2,4"/></svg></div>
+    </div>
+    <div class="social-sidebar__item">
+      <span class="social-sidebar__label">Phone</span>
+      <div class="social-sidebar__icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+    </div>
+    <div class="social-sidebar__item">
+      <span class="social-sidebar__label">Whatsapp</span>
+      <div class="social-sidebar__icon"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></div>
+    </div>
+    <div class="social-sidebar__item">
+      <span class="social-sidebar__label">Facebook</span>
+      <div class="social-sidebar__icon"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div>
+    </div>
+  </aside>
+
+  <!-- 4.1 HERO -->
+  <section class="hero" id="section-hero">
+    <div class="hero__content">
+      <h1>Build Innovative<br>Digital Projects</h1>
+      <p>Saber is a digital agency consists of strategists, creative minds, technologists, designers, marketers, storytellers, and inventors. 🤘</p>
+      <a href="#" class="link-underline">Discover More</a>
+      <div class="hero__actions">
+        <div class="hero__watch-intro" id="HOME-HERO-WATCHINTRO-ICON" onclick="openIntroModal()">
+          <button class="hero__play-btn">
+            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+          </button>
+          <span class="hero__watch-label">Watch Intro</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero__image-area">
+      <div class="hero__decor-blkring" id="HOME-HERO-DECOR-BLUERING"></div>
+      <div class="hero__decor-redring" id="HOME-HERO-DECOR-REDRING"></div>
+      <div class="hero__decor-xmarks" id="HOME-HERO-DECOR-XMARKS"><div class="x-mark"></div><div class="x-mark"></div></div>
+      <div class="hero__decor-dotcluster placeholder-box" id="HOME-HERO-DECOR-DOTCLUSTER" data-label="DECORATIVE — white dot cluster"></div>
+      <div class="hero__decor-dotgrid placeholder-box" id="HOME-HERO-DECOR-DOTGRID" data-label="DECORATIVE — dot grid pattern"></div>
+      <div class="hero__portrait placeholder-box" id="HOME-HERO-PORTRAIT" data-label="HERO PORTRAIT — man in navy vest, professional headshot-style photo"></div>
+    </div>
+  </section>
+
+  <!-- 4.2 WHY CHOOSE US -->
+  <section class="why-choose-us" id="section-why-us">
+    <div class="container">
+      <div class="why-choose-us__header">
+        <p class="eyebrow eyebrow--coral">CREATIVE VISION</p>
+        <h2>Why Choose Us!</h2>
+      </div>
+      <div class="why-choose-us__cards">
+        <div class="why-choose-us__card" id="HOME-WHYUS-ICON-1">
+          <div class="why-choose-us__card-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+          </div>
+          <h3>High Quality</h3>
+        </div>
+        <div class="why-choose-us__card" id="HOME-WHYUS-ICON-2">
+          <div class="why-choose-us__card-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><circle cx="12" cy="10" r="3" stroke-dasharray="4 2"/></svg>
+          </div>
+          <h3>Fast Support</h3>
+        </div>
+        <div class="why-choose-us__card" id="HOME-WHYUS-ICON-3">
+          <div class="why-choose-us__card-icon">
+            <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1" transform="rotate(45 12 12)"/><rect x="7" y="7" width="10" height="10" rx="1" transform="rotate(45 12 12)"/><rect x="10" y="10" width="4" height="4" rx="0.5" transform="rotate(45 12 12)"/></svg>
+          </div>
+          <h3>100% Satisfaction</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4.3 ABOUT PREVIEW -->
+  <section class="about-preview" id="section-about-preview">
+    <div class="container">
+      <div class="about-preview__inner">
+        <div class="about-preview__text">
+          <p class="eyebrow eyebrow--coral">MORE EFFECTIVE</p>
+          <h2>We develop & create digital future.</h2>
+          <p>We appreciate your trust greatly. Our clients choose us and our products because they know we are the best.</p>
+          <a href="about.html" class="btn btn--coral">About Us</a>
+        </div>
+        <div class="about-preview__illustration">
+          <div class="placeholder-box" id="HOME-ABOUTPREVIEW-ILLUSTRATION" data-label="ILLUSTRATION — person painting colorful abstract splash, flat vector style" style="width:530px;height:450px;"></div>
+        </div>
+      </div>
+      <div class="about-preview__logos">
+        <div class="about-preview__logo-card placeholder-box" data-label="Fiverr logo"></div>
+        <div class="about-preview__logo-card placeholder-box" data-label="Upwork logo"></div>
+        <div class="about-preview__logo-card placeholder-box" data-label="Freelancer logo"></div>
+        <div class="about-preview__logo-card placeholder-box" data-label="SND Design logo"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4.4 SERVICES 4-PANEL GALLERY -->
+  <section class="services-gallery" id="section-services">
+    <div class="services-gallery__panel" id="HOME-SERVICES-PANEL-1" style="background:#c9a96e;" data-label="SERVICE IMAGE — desk flat-lay, iMac, pink box, warm lighting">
+      <div class="services-gallery__panel-content"><div class="services-gallery__panel-num">01.</div><div class="services-gallery__panel-title">Graphic Designs</div></div>
+    </div>
+    <div class="services-gallery__panel" id="HOME-SERVICES-PANEL-2" style="background:#2d2d2d;" data-label="SERVICE IMAGE — dark-mode Svelte code editor screenshot">
+      <div class="services-gallery__panel-content"><div class="services-gallery__panel-num">02.</div><div class="services-gallery__panel-title">Web Development</div></div>
+    </div>
+    <div class="services-gallery__panel" id="HOME-SERVICES-PANEL-3" style="background:#1a3a4a;" data-label="SERVICE IMAGE — video editing software, audio waveforms">
+      <div class="services-gallery__panel-content"><div class="services-gallery__panel-num">03.</div><div class="services-gallery__panel-title">Creative Video</div></div>
+    </div>
+    <div class="services-gallery__panel" id="HOME-SERVICES-PANEL-4" style="background:#3a5a3a;" data-label="SERVICE IMAGE — MacBook analytics dashboard, French UI">
+      <div class="services-gallery__panel-content"><div class="services-gallery__panel-num">04.</div><div class="services-gallery__panel-title">SEO</div></div>
+    </div>
+  </section>
+
+  <!-- 4.5 FUN FACTS -->
+  <section class="fun-facts" id="section-fun-facts">
+    <div class="container">
+      <div class="fun-facts__header">
+        <p class="eyebrow eyebrow--coral">FUN FACTS</p>
+        <h2>An original team of creators designers & dreamers.</h2>
+      </div>
+      <div class="fun-facts__stats">
+        <div class="fun-facts__stat" id="HOME-FUNFACTS-ICON-1">
+          <div class="fun-facts__stat-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="fun-facts__stat-number" data-target="2000">0</div>
+          <div class="fun-facts__stat-label">Total Clients</div>
+        </div>
+        <div class="fun-facts__stat" id="HOME-FUNFACTS-ICON-2">
+          <div class="fun-facts__stat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/></svg></div>
+          <div class="fun-facts__stat-number" data-target="3000">0</div>
+          <div class="fun-facts__stat-label">Total Projects</div>
+        </div>
+        <div class="fun-facts__stat" id="HOME-FUNFACTS-ICON-3">
+          <div class="fun-facts__stat-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 2v4"/><path d="M16 2v4"/><circle cx="12" cy="13" r="3"/><path d="M9 17l1-2h4l1 2"/></svg></div>
+          <div class="fun-facts__stat-number" data-target="1000">0</div>
+          <div class="fun-facts__stat-label">Total Reviews</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4.6 PORTFOLIO PREVIEW GRID -->
+  <section class="portfolio-preview" id="section-portfolio">
+    <div class="container">
+      <div class="portfolio-preview__grid">
+        <div class="portfolio-preview__item portfolio-preview__item--large placeholder-box" id="HOME-PORTFOLIO-IMG-1" data-label="PORTFOLIO — Mustadeem e-commerce site mockup on laptop" style="min-height:690px;background:#8a7a6a;"></div>
+        <div class="portfolio-preview__item placeholder-box" id="HOME-PORTFOLIO-IMG-2" data-label="PORTFOLIO — Arabic food delivery site mockup on laptop" style="min-height:330px;background:#6a7a8a;"></div>
+        <div class="portfolio-preview__item placeholder-box" id="HOME-PORTFOLIO-IMG-3" data-label="PORTFOLIO — Helix brand brochure mockup on desk" style="min-height:330px;background:#5a3a5a;"></div>
+      </div>
+      <div class="portfolio-preview__cta">
+        <a href="#" class="btn btn--coral">All Portfolios →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- GLOBAL FOOTER -->
+  <footer class="footer" id="GLOBAL-FOOTER">
+    <div class="footer__copyright">© 2026 All Rights Reserved to Template</div>
+    <div class="footer__logo">
+      <svg width="32" height="32" viewBox="0 0 40 40" fill="none"><rect x="4" y="4" width="16" height="16" fill="#F85D40"/><rect x="20" y="4" width="16" height="16" fill="#3646E4"/><rect x="4" y="20" width="16" height="16" fill="#3646E4"/><rect x="20" y="20" width="16" height="16" fill="#F85D40"/></svg>
+      <span class="footer__logo-text">DESIGN</span>
+    </div>
+    <div class="footer__social-icons">
+      <a href="#" class="footer__social-icon" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+      <a href="#" class="footer__social-icon" aria-label="Whatsapp"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></a>
+      <a href="#" class="footer__social-icon" aria-label="Phone"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></a>
+      <a href="#" class="footer__social-icon" aria-label="Email"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,4 12,13 2,4"/></svg></a>
+    </div>
+  </footer>
+
+  <!-- GLOBAL CHAT WIDGET -->
+  <div class="chat-widget" id="GLOBAL-CHAT-WIDGET">
+    <span class="chat-widget__tooltip">Contact us.</span>
+    <button class="chat-widget__btn" aria-label="Chat with us">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    </button>
+  </div>
+
+  <!-- GLOBAL GO TO TOP -->
+  <div class="go-to-top" id="GLOBAL-GOTOTOP" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg class="go-to-top__arrow" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+    <span class="go-to-top__text">Go to Top</span>
+  </div>
+
+  <!-- GLOBAL CUSTOM CURSOR (candidate — disabled until confirmed live) -->
+  <div id="GLOBAL-DOT-MARKER" style="position:fixed;width:12px;height:12px;border-radius:50%;background:#1B1F29;pointer-events:none;z-index:9999;mix-blend-mode:difference;transform:translate(-50%,-50%);display:none;"></div>
+
+  <!-- INTRO VIDEO MODAL -->
+  <div id="intro-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;" onclick="closeIntroModal()">
+    <div style="background:#fff;border-radius:16px;padding:60px 80px;text-align:center;max-width:600px;position:relative;" onclick="event.stopPropagation()">
+      <h3 style="margin-bottom:16px;">INTRO VIDEO</h3>
+      <p style="color:#6B7280;">Video source unknown — placeholder modal.</p>
+      <button onclick="closeIntroModal()" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;">&times;</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
