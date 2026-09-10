@@ -16,6 +16,43 @@
   transform: translateX(-50%);
   width: min(1180px, calc(100% - 32px));
   z-index: var(--z-navbar);
+  transition: background var(--transition-base), border-color var(--transition-base);
+}
+
+.navbar[data-theme='dark'] {
+  background: rgba(13, 13, 13, 0.85);
+  border-color: rgba(240, 236, 228, 0.12);
+}
+
+.navbar[data-theme='dark'] .logo {
+  color: var(--color-text-light);
+}
+
+.navbar[data-theme='dark'] .wordmark {
+  color: var(--color-text-light);
+}
+
+.navbar[data-theme='dark'] .logoMark {
+  background: var(--color-text-light);
+  color: var(--color-bg-dark);
+}
+
+.navbar[data-theme='dark'] .link {
+  color: var(--color-text-light);
+}
+
+.navbar[data-theme='dark'] .link:hover,
+.navbar[data-theme='dark'] .linkActive {
+  background: rgba(240, 236, 228, 0.1);
+  color: #ffffff;
+}
+
+.navbar[data-theme='dark'] .hamburger span {
+  background: var(--color-text-light);
+}
+
+.navbar[data-theme='dark'] .hamburger {
+  border-color: rgba(240, 236, 228, 0.2);
 }
 
 .logo {

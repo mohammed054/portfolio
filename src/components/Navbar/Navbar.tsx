@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CONTACT, NAV_LINKS } from '../../utils/constants';
+import { CONTACT, NAV_LINKS, SECTION_THEMES } from '../../utils/constants';
 import styles from './Navbar.module.css';
 
 function scrollToHash(href: string) {
@@ -24,6 +24,8 @@ function scrollToHash(href: string) {
 export function Navbar() {
   const [activeSection, setActiveSection] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const theme = SECTION_THEMES[activeSection] ?? 'dark';
 
   useEffect(() => {
     const sections = NAV_LINKS.map((link) => ({
@@ -73,7 +75,7 @@ export function Navbar() {
 
   return (
     <>
-      <header className={styles.navbar}>
+      <header className={styles.navbar} data-theme={theme}>
         <a
           href="#home"
           className={styles.logo}
