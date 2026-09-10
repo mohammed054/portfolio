@@ -1,0 +1,83 @@
+/* DESIGN TOKENS - sabernasr.com */
+/* Source: Live site CSS custom properties */
+
+:root {
+  /* Colors - Primary */
+  --color-primary-accent: #FF5B4A;
+  --color-primary-hover: #FD4431;
+  --color-secondary-blue: #2F39D3;
+  --color-secondary-hover: #222BB7;
+  --color-tertiary-warm: #C5A48E;
+  --color-tertiary-hover: #AB8E7A;
+
+  /* Colors - Backgrounds */
+  --color-bg-white: #FFFFFF;
+  --color-bg-light: #F6F6F6;
+  --color-bg-dark: #171A21;
+  --color-bg-page-transition: #FFBC7D;
+
+  /* Colors - Text */
+  --color-text-dark: #222733;
+  --color-text-light: #A5A6AA;
+  --color-text-muted: #6B7280;
+  --color-text-footer: #D2D3D5;
+
+  /* Colors - Borders */
+  --color-border: #E2E2E2;
+  --color-border-footer: #DDDDDD;
+
+  /* Colors - Chat Widget */
+  --color-chat-purple: #A886CD;
+
+  /* Typography */
+  --font-heading: 'sofia-pro', sans-serif;
+  --font-body: 'europa', sans-serif;
+  --font-serif: 'Lora', sans-serif;
+  --font-ui: 'Roboto', sans-serif;
+
+  /* Font Sizes */
+  --font-size-xs: 13px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: clamp(22.041px, 1.378rem + ((1vw - 3.2px) * 1.439), 36px);
+  --font-size-xl: clamp(25.014px, 1.563rem + ((1vw - 3.2px) * 1.751), 42px);
+  --font-size-hero: clamp(32px, 2rem + ((1vw - 3.2px) * 2), 72px);
+
+  /* Spacing */
+  --spacing-xs: 0.44rem;
+  --spacing-sm: 0.67rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2.25rem;
+  --spacing-2xl: 3.38rem;
+  --spacing-3xl: 5.06rem;
+  --spacing-section: clamp(80px, 10vw, 160px);
+
+  /* Layout */
+  --container-max: 1320px;
+  --container-wide: 1290px;
+  --container-content: 840px;
+  --container-padding: clamp(20px, 4vw, 50px);
+
+  /* Header */
+  --header-height: 80px;
+  --header-padding: 20px 50px;
+
+  /* Footer */
+  --footer-padding: 25px 0;
+
+  /* Border Radius */
+  --radius-sm: 3px;
+  --radius-md: 8px;
+  --radius-lg: 20px;
+  --radius-full: 50%;
+
+  /* Shadows */
+  --shadow-natural: 6px 6px 9px rgba(0, 0, 0, 0.2);
+  --shadow-deep: 12px 12px 50px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0px 3px 16px 0px rgba(0, 0, 0, 0.08);
+
+  /* Transitions */
+  --transition-fast: 0.3s ease;
+  --transition-medium: 0.5s ease;
+}
