@@ -8,9 +8,9 @@ const services = [
 
 function ServicesPanel() {
   return (
-    <section className="py-[140px] bg-dark-bg">
+    <section className="section-padding bg-dark-bg">
       <div className="container-main">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {services.map((service) => (
             <div key={service.id} className="relative h-[400px] overflow-hidden group cursor-pointer">
               <PlaceholderBox
@@ -19,11 +19,11 @@ function ServicesPanel() {
                 width="100%"
                 height="100%"
                 label={`${service.title} — workspace photo`}
-                className="absolute inset-0"
+                className="absolute inset-0 transition-transform duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-colors" />
-              <div className="absolute bottom-8 left-8 text-white">
-                <h3 className="text-xl font-bold">{service.title}</h3>
+              <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-colors duration-500 z-[1]" />
+              <div className="absolute bottom-8 left-8 text-white z-[2]">
+                <h3 className="text-xl font-bold font-[Poppins]">{service.title}</h3>
               </div>
             </div>
           ))}

@@ -15,10 +15,13 @@ function GoToTop() {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      className="fixed right-6 bottom-1/4 z-40 flex flex-col items-center gap-2 group"
+      className="fixed right-6 bottom-1/4 z-40 flex flex-col items-center gap-2 group max-sm:right-3"
+      aria-label="Go to top"
     >
-      <ArrowUp size={20} className="text-text-dark group-hover:text-primary transition-colors" />
-      <span className="text-[10px] text-text-muted -rotate-90 origin-center whitespace-nowrap">
+      <div className="w-10 h-10 border border-card-border rounded-full flex items-center justify-center bg-white shadow-sm group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300">
+        <ArrowUp size={16} />
+      </div>
+      <span className="text-[9px] font-semibold text-text-muted tracking-wider uppercase -rotate-90 origin-center whitespace-nowrap mt-1">
         Go to Top
       </span>
     </button>

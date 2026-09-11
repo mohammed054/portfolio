@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
 
 function Button({ to, children, variant = 'primary', className = '' }) {
-  const baseStyles = 'inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold transition-all duration-300'
+  const baseStyles = 'btn-pill'
   const variants = {
-    primary: 'bg-primary text-white hover:bg-primary-hover',
-    outline: 'border-2 border-primary text-primary hover:bg-primary hover:text-white',
+    primary: 'btn-pill-primary',
+    outline: 'btn-pill-outline',
   }
 
   if (to) {

@@ -27,27 +27,44 @@
     box-sizing: border-box;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    font-family: 'europa', 'Segoe UI', Roboto, sans-serif;
+    font-family: 'DM Sans', 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
     color: #222733;
     background-color: #F6F6F6;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'sofia-pro', 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Poppins', 'Segoe UI', Roboto, sans-serif;
     font-weight: 700;
     color: #222733;
+    line-height: 1.1;
   }
 
   a {
     text-decoration: none;
     color: inherit;
+    transition: color 0.3s ease;
   }
 
   img {
     max-width: 100%;
     height: auto;
+    display: block;
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
   }
 
   .container-main {
@@ -68,5 +85,128 @@
       max-width: 100%;
       padding: 0 20px;
     }
+  }
+
+  /* Section vertical padding matching reference (120-160px) */
+  .section-padding {
+    padding: 120px 0;
+  }
+
+  @media (max-width: 767px) {
+    .section-padding {
+      padding: 80px 0;
+    }
+  }
+
+  /* Pill button base */
+  .btn-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 40px;
+    border-radius: 9999px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-pill-primary {
+    background-color: #FF5B4A;
+    color: white;
+  }
+
+  .btn-pill-primary:hover {
+    background-color: #FD4431;
+  }
+
+  .btn-pill-outline {
+    background-color: transparent;
+    color: #FF5B4A;
+    border: 2px solid #FF5B4A;
+  }
+
+  .btn-pill-outline:hover {
+    background-color: #FF5B4A;
+    color: white;
+  }
+
+  /* Eyebrow label */
+  .eyebrow {
+    display: inline-block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #A5A6AA;
+    margin-bottom: 16px;
+  }
+
+  /* Card border style */
+  .card-bordered {
+    border: 1px solid #E2E2E2;
+    padding: 40px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .card-bordered:hover {
+    border-color: #FF5B4A;
+    box-shadow: 0 4px 20px rgba(255, 91, 74, 0.1);
+  }
+
+  /* Dark section overlay */
+  .dark-overlay {
+    position: relative;
+  }
+
+  .dark-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+    z-index: 1;
+  }
+
+  /* Footer social icon circle */
+  .footer-social-icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #DDDDDD;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .footer-social-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Progress bar */
+  .progress-track {
+    width: 100%;
+    height: 6px;
+    background-color: #E5E7EB;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background-color: #FF5B4A;
+    border-radius: 9999px;
+    transition: width 1.5s ease-out;
+  }
+
+  /* Star rating */
+  .star-filled {
+    color: #FF5B4A;
+    fill: #FF5B4A;
   }
 }

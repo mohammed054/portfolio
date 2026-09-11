@@ -10,24 +10,24 @@ const platforms = [
 
 function AboutPlatforms() {
   return (
-    <section className="py-[140px] bg-section-bg">
+    <section className="section-padding bg-section-bg">
       <div className="container-main">
         <SectionHeading eyebrow="HUGE HONOR" title="Our Platforms" className="mb-16" />
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
           {platforms.map((platform) => (
             <a
               key={platform.id}
               href={platform.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="border border-card-border p-6 flex items-center justify-center hover:opacity-70 transition-opacity"
+              className="border border-card-border p-6 flex items-center justify-center hover:opacity-60 transition-opacity duration-300 bg-white"
             >
               <PlaceholderBox
                 id={platform.id}
                 type="[LOGO]"
-                width="200px"
-                height="80px"
+                width="180px"
+                height="60px"
                 label={platform.label}
               />
             </a>

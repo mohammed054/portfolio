@@ -1,6 +1,6 @@
 function EyebrowLabel({ children, className = '' }) {
   return (
-    <span className={`inline-block text-sm font-semibold tracking-[2px] uppercase text-text-muted mb-4 ${className}`}>
+    <span className={`eyebrow ${className}`}>
       {children}
     </span>
   )

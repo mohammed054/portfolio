@@ -9,7 +9,7 @@ const features = [
 
 function AboutHero() {
   return (
-    <section className="py-[140px] bg-white relative overflow-hidden">
+    <section className="section-padding bg-white relative overflow-hidden">
       <div className="container-main">
         <div className="grid grid-cols-1 lg:grid-cols-[31.5%_17.8%_50%] gap-8 items-center">
           {/* Left column - workspace image */}
@@ -44,25 +44,25 @@ function AboutHero() {
 
           {/* Right column - text + features */}
           <div>
-            <span className="inline-block text-sm font-semibold tracking-[2px] uppercase text-text-muted mb-4">
+            <span className="eyebrow">
               Get to Know Us
             </span>
-            <h1 className="text-[clamp(36px,2.5rem+1.5vw,52px)] font-bold leading-[1.1] mb-6 text-text-dark">
+            <h1 className="text-[clamp(32px,2rem+1.5vw,48px)] font-bold leading-[1.1] mb-6 text-text-dark font-[Poppins]">
               We build the future.
             </h1>
-            <p className="text-text-muted leading-relaxed mb-10">
+            <p className="text-text-muted leading-[1.7] mb-10 text-[16px]">
               Saber is a digital agency consists of strategists, creative minds, technologists, designers, marketers, storytellers, and inventors. 🤘
             </p>
 
             <div className="space-y-8">
               {features.map((feature, i) => (
-                <div key={i} className="flex gap-4">
+                <div key={i} className="flex gap-5">
                   <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center text-secondary">
                     <feature.icon size={40} strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-text-dark mb-2">{feature.title}</h3>
-                    <p className="text-text-muted text-sm leading-relaxed">{feature.description}</p>
+                    <h3 className="font-bold text-text-dark mb-2 font-[Poppins]">{feature.title}</h3>
+                    <p className="text-text-muted text-[15px] leading-[1.7]">{feature.description}</p>
                   </div>
                 </div>
               ))}

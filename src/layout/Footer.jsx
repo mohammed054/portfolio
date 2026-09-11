@@ -1,4 +1,5 @@
 import { Phone, Mail, MessageCircle } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 function FacebookIcon({ size = 16 }) {
   return (
@@ -10,30 +11,30 @@ function FacebookIcon({ size = 16 }) {
 
 function Footer() {
   return (
-    <footer className="bg-dark-bg text-footer-text py-6">
-      <div className="container-main flex items-center justify-between max-md:flex-col max-md:gap-4">
-        <div className="text-sm">
+    <footer className="bg-dark-bg text-footer-text">
+      <div className="container-main flex items-center justify-between py-7 max-md:flex-col max-md:gap-5">
+        <div className="text-sm font-medium">
           &copy; 2026 All Rights Reserved to Saber Nasr.
         </div>
 
-        <div className="flex items-center gap-1">
-          <div className="w-10 h-10 bg-secondary rounded-sm flex items-center justify-center text-white font-bold text-lg">
+        <Link to="/" className="flex items-center gap-1.5">
+          <div className="w-9 h-9 bg-secondary rounded flex items-center justify-center text-white font-bold text-base font-[Poppins]">
             S
           </div>
-          <span className="font-bold text-lg text-white tracking-tight">DESIGN</span>
-        </div>
+          <span className="font-bold text-[17px] text-white tracking-tight font-[Poppins]">DESIGN</span>
+        </Link>
 
-        <div className="flex items-center gap-4">
-          <a href="https://www.facebook.com/Saber.Nasr.Elbendary/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-footer-border rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
+        <div className="flex items-center gap-3">
+          <a href="https://www.facebook.com/Saber.Nasr.Elbendary/" target="_blank" rel="noopener noreferrer" className="footer-social-icon">
             <FacebookIcon size={16} />
           </a>
-          <a href="https://wa.me/201055544244" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-footer-border rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
+          <a href="https://wa.me/201055544244" target="_blank" rel="noopener noreferrer" className="footer-social-icon">
             <MessageCircle size={16} />
           </a>
-          <a href="tel:+201055544244" className="w-10 h-10 border border-footer-border rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
+          <a href="tel:+201055544244" className="footer-social-icon">
             <Phone size={16} />
           </a>
-          <a href="mailto:info@sabernasr.com" className="w-10 h-10 border border-footer-border rounded-full flex items-center justify-center hover:bg-white/10 transition-colors">
+          <a href="mailto:info@sabernasr.com" className="footer-social-icon">
             <Mail size={16} />
           </a>
         </div>

@@ -17,19 +17,19 @@ function SidebarSocial() {
   ]
 
   return (
-    <div className="fixed left-0 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-center gap-6 pl-4">
+    <div className="fixed left-0 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-center gap-7 pl-5">
       {items.map((item, i) => (
         <a
           key={i}
           href={item.href}
           target={item.href.startsWith('http') ? '_blank' : undefined}
           rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-          className="flex flex-col items-center gap-2 group"
+          className="flex flex-col items-center gap-2.5 group"
         >
-          <span className="text-[10px] text-text-muted -rotate-90 origin-center whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+          <span className="text-[10px] font-medium text-text-muted -rotate-90 origin-center whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             {item.label}
           </span>
-          <item.icon size={16} className="text-text-muted group-hover:text-primary transition-colors" />
+          <item.icon size={15} className="text-text-muted group-hover:text-primary transition-colors duration-300" />
         </a>
       ))}
     </div>

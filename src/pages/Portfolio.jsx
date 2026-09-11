@@ -27,7 +27,7 @@ function Portfolio() {
   const activeCategory = category || ''
 
   return (
-    <section className="py-[140px] bg-white">
+    <section className="section-padding bg-white">
       <div className="container-main">
         <SectionHeading
           eyebrow="PORTFOLIO"
@@ -35,12 +35,12 @@ function Portfolio() {
           className="mb-12"
         />
 
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        <div className="flex flex-wrap justify-center gap-3 mb-14">
           {categories.map((cat) => (
             <a
               key={cat.slug}
               href={cat.slug ? `/our-portfolio/${cat.slug}/` : '/our-portfolio/'}
-              className={`px-6 py-3 rounded-full text-sm font-semibold transition-all ${
+              className={`px-6 py-2.5 rounded-full text-sm font-semibold font-[Poppins] transition-all duration-300 ${
                 activeCategory === cat.slug
                   ? 'bg-primary text-white'
                   : 'bg-light-bg text-text-dark hover:bg-primary hover:text-white'
@@ -51,15 +51,16 @@ function Portfolio() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {portfolioItems.map((item, i) => (
-            <div key={i} className="aspect-[4/3] overflow-hidden group cursor-pointer">
+            <div key={i} className="aspect-[4/3] overflow-hidden group cursor-pointer bg-light-bg border border-card-border">
               <PlaceholderBox
                 id={`PORTFOLIO-ITEM-${i + 1}`}
                 type="[IMAGE]"
                 width="100%"
                 height="100%"
                 label={item}
+                className="transition-transform duration-700 group-hover:scale-110"
               />
             </div>
           ))}
