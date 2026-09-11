@@ -5,9 +5,9 @@ function PortfolioGrid() {
   return (
     <section className="section-padding bg-light-bg">
       <div className="container-main">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-14">
+        <div className="grid grid-cols-1 lg:grid-cols-2 grid-rows-[auto_auto] gap-4 mb-14">
           <div className="row-span-2">
-            <div className="h-[690px] overflow-hidden group cursor-pointer">
+            <div className="h-full min-h-[690px] overflow-hidden group cursor-pointer">
               <PlaceholderBox
                 id="HOME-PORTFOLIO-IMG-1"
                 type="[IMAGE]"
@@ -25,7 +25,7 @@ function PortfolioGrid() {
                 type="[IMAGE]"
                 width="100%"
                 height="100%"
-                label="Mkayn Store — Arabic food-delivery site"
+                label="food-delivery site — brand name unconfirmed, verify live"
                 className="transition-transform duration-700 group-hover:scale-105"
               />
             </div>

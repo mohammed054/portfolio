@@ -1,16 +1,6 @@
 import { Link } from 'react-router-dom'
 import PlaceholderBox from './shared/PlaceholderBox'
 import { Play } from 'lucide-react'
-import ReactCountUp from 'react-countup'
-
-const CountUp = ReactCountUp.default || ReactCountUp
-
-const stats = [
-  { end: 15, suffix: '+', label: 'Years of Experience' },
-  { end: 500, suffix: '+', label: 'Completed Projects' },
-  { end: 99, suffix: '%', label: 'Client Satisfaction' },
-  { end: 30, suffix: '+', label: 'Team Members' },
-]
 
 function Hero() {
   return (
@@ -41,69 +31,34 @@ function Hero() {
                 </span>
               </div>
             </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-14 max-lg:justify-center">
-              {stats.map((stat, i) => (
-                <div key={i} className="text-center lg:text-left">
-                  <div className="text-[clamp(28px,2rem+1vw,40px)] font-bold text-text-dark font-[Poppins]">
-                    <CountUp end={stat.end} duration={2.5} enableScrollSpy scrollSpyOnce />{stat.suffix}
-                  </div>
-                  <p className="text-text-muted text-[14px] mt-1">{stat.label}</p>
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className="relative max-lg:hidden">
             <img
               src="/images/hero-saber.webp"
               alt="Saber Nasr — Professional portrait"
-              className="max-w-[850px] w-full ml-auto object-contain"
+              className="max-w-[850px] w-full ml-auto object-contain relative z-[2]"
               width="555"
               height="1000"
             />
 
-            {/* Decorative elements */}
-            <PlaceholderBox
-              id="HOME-HERO-DECOR-DOTGRID"
-              type="[DECORATIVE_GRAPHIC]"
-              width="140px"
-              height="130px"
-              label="DOT GRID"
-              className="absolute top-10 right-[20%]"
-            />
-            <PlaceholderBox
-              id="HOME-HERO-DECOR-BLUERING"
-              type="[DECORATIVE_GRAPHIC]"
-              width="230px"
-              height="230px"
-              label="BLUE RING"
-              className="absolute top-0 right-[10%] rounded-full"
-            />
-            <PlaceholderBox
-              id="HOME-HERO-DECOR-REDRING"
-              type="[DECORATIVE_GRAPHIC]"
-              width="250px"
-              height="250px"
-              label="RED RING"
-              className="absolute -bottom-20 left-0 rounded-full"
-            />
-            <PlaceholderBox
-              id="HOME-HERO-DECOR-XMARKS"
-              type="[DECORATIVE_GRAPHIC]"
-              width="50px"
-              height="50px"
-              label="X MARKS — two white cross marks on hero photo"
-              className="absolute top-[40%] left-[30%]"
-            />
-            <PlaceholderBox
-              id="HOME-HERO-DECOR-DOTCLUSTER"
-              type="[DECORATIVE_GRAPHIC]"
-              width="150px"
-              height="150px"
-              label="DOT CLUSTER — white dots on lower-right of hero photo"
-              className="absolute bottom-[10%] right-[5%]"
-            />
+            {/* Decorative elements — outline-only, behind portrait */}
+            <div className="absolute top-10 right-[20%] w-[140px] h-[130px] border border-dashed border-text-muted/20 z-[1]" aria-hidden="true" />
+            <div className="absolute top-0 right-[10%] w-[230px] h-[230px] border-2 border-secondary/30 rounded-full z-[1]" aria-hidden="true" />
+            <div className="absolute -bottom-20 left-0 w-[250px] h-[250px] border-2 border-primary/30 rounded-full z-[1]" aria-hidden="true" />
+            <div className="absolute top-[40%] left-[30%] z-[3]" aria-hidden="true">
+              <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="10" y1="10" x2="40" y2="40" stroke="white" strokeWidth="2" opacity="0.6"/>
+                <line x1="40" y1="10" x2="10" y2="40" stroke="white" strokeWidth="2" opacity="0.6"/>
+              </svg>
+            </div>
+            <div className="absolute bottom-[10%] right-[5%] z-[3]" aria-hidden="true">
+              <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {[...Array(25)].map((_, i) => (
+                  <circle key={i} cx={15 + (i % 5) * 30} cy={15 + Math.floor(i / 5) * 30} r="2" fill="white" opacity="0.5"/>
+                ))}
+              </svg>
+            </div>
           </div>
         </div>
       </div>

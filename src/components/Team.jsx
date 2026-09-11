@@ -30,7 +30,7 @@ function Team() {
                 id="ABOUT-TEAM-PHOTO-1"
                 type="[IMAGE]"
                 width="100%"
-                height="280px"
+                height="300px"
                 label="Saber Nasr — Project Manager"
                 className="transition-transform duration-700 group-hover:scale-105"
               />
@@ -40,7 +40,7 @@ function Team() {
                 id="ABOUT-TEAM-PHOTO-2"
                 type="[IMAGE]"
                 width="100%"
-                height="280px"
+                height="300px"
                 label="Mohamed Maksoud — Graphic Designer"
                 className="transition-transform duration-700 group-hover:scale-105"
               />

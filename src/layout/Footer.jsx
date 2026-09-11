@@ -39,20 +39,6 @@ function Footer() {
           </a>
         </div>
       </div>
-
-      <div className="container-main border-t border-footer-border py-6">
-        <div className="flex items-center gap-4 max-md:flex-col max-md:gap-3">
-          <label className="text-sm font-medium text-footer-text whitespace-nowrap">Newsletter</label>
-          <input
-            type="email"
-            placeholder="Enter your email"
-            className="flex-1 bg-ch-charcoal border border-ch-border text-white placeholder-ch-muted px-4 py-2.5 text-sm rounded outline-none focus:border-secondary transition-colors"
-          />
-          <button className="btn-pill btn-pill-primary text-sm px-6 py-2.5">
-            Subscribe
-          </button>
-        </div>
-      </div>
     </footer>
   )
 }

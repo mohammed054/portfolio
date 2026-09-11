@@ -21,7 +21,7 @@ const floatingIcons = [
 
 function Skills() {
   return (
-    <section className="section-padding bg-white relative overflow-hidden">
+    <section className="section-padding bg-secondary text-white relative overflow-hidden">
       <div className="container-main">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div>
@@ -31,12 +31,12 @@ function Skills() {
               {skills.map((skill) => (
                 <div key={skill.name}>
                   <div className="flex justify-between mb-3">
-                    <span className="font-semibold text-text-dark text-[15px]">{skill.name}</span>
-                    <span className="text-text-muted text-[15px]">{skill.percentage}%</span>
+                    <span className="font-semibold text-white text-[15px]">{skill.name}</span>
+                    <span className="text-white/70 text-[15px]">{skill.percentage}%</span>
                   </div>
-                  <div className="progress-track">
+                  <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden">
                     <div
-                      className="progress-fill"
+                      className="h-full bg-primary rounded-full"
                       style={{ width: `${skill.percentage}%` }}
                     />
                   </div>

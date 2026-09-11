@@ -3,7 +3,7 @@ import PlaceholderBox from './shared/PlaceholderBox'
 
 function CreativeApproach() {
   return (
-    <section className="section-padding bg-dark-bg text-white relative overflow-hidden">
+    <section className="section-padding bg-secondary text-white relative overflow-hidden">
       <div className="container-main">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="relative">

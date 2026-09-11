@@ -723,3 +723,57 @@ For the team/agent with access to the live site (`sabernasr.com`), before Phase 
 - ✅ DO implement each animated/interactive element with the specific library named in Section 2.4 (Framer Motion, GSAP+ScrollTrigger, Swiper/Embla, react-countup, etc.) rather than approximating it with CSS-only tricks, wherever true JS-driven behavior was identified.
 - ❌ DO NOT ship this as flat static HTML pages with no component framework — the observed persistent-chrome + routing + stateful-animation combination cannot be faithfully reproduced that way.
 - ❌ DO NOT introduce a second animation engine for an effect one library already handles (e.g., don't add GSAP for something Framer Motion's `whileInView` already covers cleanly) — see Section 2.1 for which tool owns which effect.
+
+---
+
+## 11. IMPLEMENTATION QA — ROUND 1 CORRECTIONS
+*(Logged against 6 build screenshots submitted for review, compared section-by-section against the original 11 reference screenshots. Severity: 🔴 Critical bug — fix immediately. ⚠️ Deviation from spec — fix before calling this "1:1". ✅ Matches reference — no action.)*
+
+### 11.1 Home — Hero (`HOME-HERO-*`)
+
+- 🔴 **Fabricated stats row added.** A row reading "15+ Years of Experience / 500+ Completed Projects / 99% Client Satisfaction / 30+ Team Members" was added under the hero CTAs. **This does not exist anywhere in the 11 reference screenshots.** The only stats block in the entire reference site is the Fun Facts section (`HOME-FUNFACTS-*`: 2,000+ Total Clients / 3,000+ Total Projects / 1,000+ Total Reviews), further down the page. **Delete this hero stats row entirely** — it's invented content, not a placeholder gap.
+- 🔴 **Decorative graphics are covering the subject instead of framing him.** `HOME-HERO-DECOR-BLUERING`, `-REDRING`, `-XMARKS`, and `-DOTCLUSTER` are rendering as large, opaque, captioned dev-boxes stacked directly on top of the portrait, obscuring his face and torso. In the reference (see original Section 5.1 descriptions): the rings are **outline-only, no fill**, sitting at the photo's edges (blue ring upper-right, red ring lower-left, both mostly *behind* the photo); the X marks are small (~50×50px) accents directly on the vest fabric, not label cards; the dot cluster is a small corner accent (~150×150px) tucked at the lower-right over the sleeve. Fix: shrink all four to their spec'd approximate sizes, remove fill, correct z-index (photo subject on top, rings behind), and stop rendering full dev-caption cards over the face — use a small unobtrusive corner tag instead if a label is needed during dev.
+- 🔴 **Hero portrait has a visible transparency checkerboard.** Per Section 2.3, `PlaceholderBox` must render a **neutral flat fill**, never a raw alpha checkerboard. Either the placeholder isn't using the shared component, or a real PNG with no background layer is being dropped in raw. Fix the fill (or add a solid backing layer behind the transparent asset).
+- ✅ Heading, paragraph copy, "Discover More," "WATCH INTRO" button, header nav, and sidebar icon order all match the reference correctly.
+
+### 11.2 Home — Why Choose Us (`HOME-WHYUS-*`)
+
+- ✅ Eyebrow, heading, and all 3 cards (icon + label) match position and copy correctly. Good.
+- ⚠️ Double-check the "Fast Support" icon — spec describes a browser-window-with-loading-spinner; the current icon reads closer to a layout/sidebar-panel icon. Swap for a closer lucide-react match if available.
+
+### 11.3 Home — About Preview (`HOME-ABOUTPREVIEW-*`)
+
+- ✅ Text block, "About Us" button, and 4-logo strip all correctly placed and labeled.
+- ⚠️ `HOME-ABOUTPREVIEW-ILLUSTRATION` placeholder is **oversized** — spec calls for roughly a 5:4 box (~530×450px) sitting beside the text column. Current build stretches it to nearly double the text column's height, unbalancing the section. Resize and vertically align to the left column.
+
+### 11.4 Home — Fun Facts + Portfolio (`HOME-FUNFACTS-*`, `HOME-PORTFOLIO-*`)
+
+- ✅ "Fun Facts" heading and all 3 stat blocks (icons + 2,000+/3,000+/1,000+ figures) match the reference exactly.
+- ⚠️ Portfolio grid is built as **two equal-width side-by-side boxes**. Spec calls for an **asymmetric grid**: one large image (`HOME-PORTFOLIO-IMG-1`) spanning the full column height on the left, with two smaller images (`-IMG-2`, `-IMG-3`) stacked on the right. Rebuild as a 2-column CSS grid where the left cell spans both rows.
+- ⚠️ Dev-label on the food-delivery portfolio image reads "Mkayn Store" as if confirmed. The spec explicitly flagged that client name as **partially obscured/unconfirmed** — don't lock in an invented specific name. Relabel as "food-delivery site — brand name unconfirmed, verify live" until sourced.
+
+### 11.5 About — Hero (`ABOUT-HERO-*`)
+
+- 🔴 **Wrong background color.** This section is rendering **dark navy/near-black**. The reference background is the site's **royal/indigo blue** token (`--color-primary-blue`, ~`#3646E4`, Section 3.1) — this is the single biggest visual miss in the whole build. Find where this section's background got set to a dark/near-black value instead of the blue token and correct it.
+- 🔴 **Heading and eyebrow are nearly invisible.** "CREATIVE APPROACH" and "We develop & create digital future." are rendering at very low opacity/dark-on-dark, barely legible in the screenshot. This is **real shipped copy, not a placeholder** — it must be solid white and fully legible per spec. This looks like a leftover low-opacity/muted-text style got applied to live heading content instead of `--color text-white`. Fix and re-verify the body paragraph isn't affected too.
+- ✅ Once the two bugs above are fixed, the structural layout (desk-photo placeholder left, rotating-badge placeholder overlapping its top-right corner, text column right) is positioned correctly and matches spec.
+
+### 11.6 About — Services Strip, Platforms, Team, CTA, Footer
+
+- 🔴 **Background drops to white for the services strip.** The reference keeps the section blue continuing straight through from the hero into the services-strip section. The current build switches to white here, breaking the continuous blue treatment. Extend the blue background through this section (flag remains open per Section 9 item 11 on the exact section boundary — but as built now it visibly contradicts every reference screenshot).
+- ✅ 3-column services strip (Graphic Design / Web Development / Creative Video) — correct copy and structure.
+- ✅ "Our Platforms" heading — correct.
+- ⚠️ "Our Platforms" is showing **4** logo placeholder cards. Per the reference, the **About page** platforms row has only **3** logos (Fiverr/Upwork/Freelancer) — the 4th own-brand logo card belongs to the *Home* "About Preview" strip only. Check whether the Home component was reused as-is here and trim to 3.
+- ✅ "Suggestions & Feedback" testimonial block with prev/next controls — good structural match.
+- ⚠️ "Meet Our Team" photo placeholders are rendering noticeably smaller/thinner than the ~300×250px called for in spec — enlarge to match.
+- ✅ Countdown timer is **live and ticking** (visibly decrementing across the two screenshots) — confirms the `useCountdown` hook is correctly implemented. Nice work here.
+- 🔴 **Footer has an invented newsletter signup** (email field + "Subscribe" button). This does not appear anywhere in the 11 reference screenshots — the real footer is only: copyright text, centered logo, and 4 circular social icons. Remove it, or explicitly confirm with the client this is an intentional addition on top of the 1:1 rebuild (in which case, document it as a deliberate deviation rather than something the spec called for).
+- ✅ Footer logo + social icon row positioning otherwise looks correct.
+
+### 11.7 Priority order for next pass
+
+1. Fix the two 🔴 About-hero bugs (background color + invisible text) — these make an entire section unusable/unreadable right now.
+2. Remove the two fabricated additions (hero stats row, footer newsletter field) — these actively pull the build away from "1:1."
+3. Fix the hero decorative-graphics layering/sizing and the checkerboard placeholder fill.
+4. Fix the services-strip background continuity.
+5. Then work through the ⚠️ sizing/count deviations (illustration size, portfolio grid asymmetry, platforms logo count, team photo size).
