@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #FF5B4A;
+  --color-primary-hover: #FD4431;
+  --color-secondary: #2F39D3;
+  --color-secondary-hover: #222BB7;
+  --color-tertiary: #C5A48E;
+  --color-tertiary-hover: #AB8E7A;
+  --color-dark-bg: #171A21;
+  --color-light-bg: #F6F6F6;
+  --color-section-bg: #F9F9F9;
+  --color-border: #E2E2E2;
+  --color-text-dark: #222733;
+  --color-text-muted: #A5A6AA;
+  --color-footer-text: #D2D3D5;
+  --color-footer-border: #DDDDDD;
+  --color-chat-purple: #A886CD;
+  --color-page-transition: #FFBC7D;
+  --color-card-border: #E2E2E2;
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'europa', 'Segoe UI', Roboto, sans-serif;
+    color: #222733;
+    background-color: #F6F6F6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'sofia-pro', 'Segoe UI', Roboto, sans-serif;
+    font-weight: 700;
+    color: #222733;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .container-main {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 80px;
+  }
+
+  @media (max-width: 1279px) {
+    .container-main {
+      max-width: 1024px;
+      padding: 0 40px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .container-main {
+      max-width: 100%;
+      padding: 0 20px;
+    }
+  }
+}
