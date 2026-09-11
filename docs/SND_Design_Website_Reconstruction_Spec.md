@@ -18,6 +18,7 @@ This document is written for an implementing agent (AI or human) who did **not**
 4. **Where a color, font, or spacing value is marked "ESTIMATE" or "UNKNOWN — verify live," do not treat it as final.** Use it as a working value only.
 5. **Do not merge sections that look similar.** For example, the "We develop & create digital future." heading appears twice (once on Home, once on About) with different supporting copy, different background color, and different supporting media. They are two separate components — build them separately.
 6. **This document does not contain any code.** It is a structural/content/visual spec only. Phase 2 (implementation) is a separate pass.
+7. **This is not a static-HTML site.** The source material shows scroll-triggered reveals, a color-adaptive custom cursor, a rotating badge, a carousel, a live countdown, animated counters, and shared persistent chrome across routed pages. A flat HTML/CSS/jQuery build will not reproduce this faithfully. Build with the framework/library stack defined in **Section 2** — do not substitute your own stack choice without a documented reason.
 
 ---
 
@@ -33,9 +34,93 @@ Primary nav (visible in header, screenshot 1): **Home / About Us / Our Portfolio
 
 ---
 
-## 2. GLOBAL DESIGN TOKENS (all values are ESTIMATES from visual inspection — verify against live site before finalizing)
+## 2. TECH STACK & ANIMATION ARCHITECTURE (mandatory — read before building anything)
 
-### 2.1 Color Palette
+### 2.0 Why this can't be static HTML
+
+The source screenshots show more than static layout: a color-adaptive element that tracks the cursor across every screenshot (`GLOBAL-DOT-MARKER`), a circular rotating-text badge (`ABOUT-HERO-BADGE`), a testimonial carousel with a partially-visible "next" card (`ABOUT-TESTIMONIAL...`), a live countdown timer (`ABOUT-CTA-COUNTDOWN`), animated stat counters (`HOME-FUNFACTS-*`), a scroll-triggered "Go to Top" control, and two routed pages (Home, About) that share identical fixed-position global chrome (header, sidebar, chat widget, footer) without remounting. This combination — shared persistent layout + client-side routing + stateful, scroll- and pointer-driven animation — needs a component framework with real state and lifecycle, not hand-written HTML pages stitched together with jQuery snippets. **Build this as a React application.**
+
+### 2.1 Core Stack
+
+| Layer | Recommendation | Why |
+|---|---|---|
+| **Framework** | **React 18+**, bootstrapped with **Vite** (not Create React App — faster dev server, better for an animation-heavy component tree) | Component state + lifecycle needed for cursor tracking, carousel state, countdown ticking, scroll-in-view triggers |
+| **Routing** | **React Router v6** (`createBrowserRouter`) with a shared root layout route wrapping an `<Outlet />` | Home (`/`) and About (`/about/`) must render inside one persistent `Layout` so `GLOBAL-*` components (header, sidebar, chat widget, go-to-top, cursor dot, footer) mount **once** and never flicker/remount on navigation — this matches their identical fixed-position appearance across every screenshot regardless of page |
+| **Styling** | **Tailwind CSS**, with the Section 3 design tokens mapped into `tailwind.config.js` theme (`colors`, `fontFamily`, `spacing`) as the single source of truth | Utility-first speeds up matching the observed pill-buttons, generous section padding, and edge-to-edge image panels; keeps all "ESTIMATE" values centralized so Phase 2 color corrections are a one-file change. CSS Modules or styled-components are acceptable substitutes if the team prefers — but pick one and use it consistently. |
+| **Primary animation engine** | **Framer Motion** (`whileInView`, `useInView`, `AnimatePresence`, `useMotionValue`/`useSpring`) | Declarative, integrates with React state naturally — recommended for section fade/slide-ins, card hover states, the count-up trigger, and the cursor-dot's smooth trailing motion |
+| **Scroll-linked/parallax animation (supplementary, only if confirmed live)** | **GSAP + ScrollTrigger** | Use *only* for effects Framer Motion can't cleanly express — e.g., if live investigation (Section 9) confirms `HOME-HERO-DECOR-DOTGRID`/`-BLUERING`/`-REDRING` actually parallax on scroll or mouse-move. Don't run two animation engines for the same effect. |
+| **Carousel** | **Swiper.js** (`swiper/react`) or **Embla Carousel** (`embla-carousel-react`) | Both natively support the observed "next slide peeking in from the edge" layout via `slidesPerView: 'auto'` / partial-view config — needed for `ABOUT-TESTIMONIAL...` |
+| **Countdown timer** | Small custom `useCountdown(targetDate)` hook (`setInterval`, cleaned up on unmount) | Lightweight, no need for a dependency; target date is a TODO pending live investigation (Section 9, item 13) |
+| **Animated counters** | **react-countup**, fired by Framer Motion's `useInView` (or `react-intersection-observer`) | Matches the very common "count up once scrolled into view" pattern `HOME-FUNFACTS-*` resembles |
+| **Icons** | **lucide-react** | Clean line-icon set, closest visual match to the observed blue/gray outline icons (Why Choose Us cards, Fun Facts, nav, sidebar) — use as the default source for every `[ICON]` placeholder until exact original SVGs are sourced live |
+| **Video modal (for "WATCH INTRO")** | Lightweight custom `AnimatePresence` modal, or `react-modal-video` if live investigation confirms a YouTube/Vimeo source | Exact video host is unknown — see Section 9, item 9 |
+| **Chat widget** | Integrate the **actual third-party embed** once identified (Section 9, item 5) — do not build a custom chat UI/backend | This is almost certainly a drop-in script (e.g., Tawk.to/Crisp/WhatsApp widget), not something to reimplement |
+| **Custom cursor** | Standalone component in the root layout; `mousemove` listener (or Framer Motion `useMotionValue` + `useSpring` for smooth trailing), `mix-blend-mode: difference` for the observed color-adaptive look; disable on `(pointer: coarse)` (touch) devices | Matches `GLOBAL-DOT-MARKER`'s behavior across all 11 screenshots |
+| **State management** | React Context only where needed (e.g., countdown target date, mobile-menu open/close) | This site does not need Redux/Zustand — no complex shared app state observed |
+| **Package manager / build** | npm or pnpm + Vite (`npm run dev`, `npm run build`) | Standard |
+
+### 2.2 Recommended Project/Component Structure
+
+```
+/src
+  /layout
+    PersistentLayout.jsx     — renders Header, SidebarSocial, ChatWidget, CursorDot, GoToTop, Footer + <Outlet/>
+  /pages
+    Home.jsx
+    About.jsx
+    Portfolio.jsx            — stub, content not captured (see Section 1)
+    Contact.jsx              — stub, content not captured (see Section 1)
+  /components
+    HeroSection.jsx           WhyChooseUs.jsx          AboutPreview.jsx
+    ServicesGallery.jsx       FunFacts.jsx              PortfolioGrid.jsx
+    AboutHero.jsx             ServicesStrip.jsx         PlatformsAndTestimonials.jsx
+    TeamSection.jsx           CTACountdown.jsx
+  /components/shared
+    Button.jsx  EyebrowLabel.jsx  SectionHeading.jsx
+    PlaceholderBox.jsx        — dev-only component, see 2.3 below
+  /hooks
+    useCountdown.js  useCursorDot.js  useInViewOnce.js (or use react-intersection-observer directly)
+  /assets                     — currently empty; destination for sourced media (see Section 7 registry)
+```
+
+**Routing/persistence rule (ties back to Section 4):** because every `GLOBAL-*` component was confirmed — by its identical fixed position across every single screenshot on both pages — to be page-independent, it **must** live inside `PersistentLayout.jsx`, never duplicated inside `Home.jsx` or `About.jsx`.
+
+### 2.3 `PlaceholderBox` — required dev component
+
+Build **one** reusable placeholder component and use it for every entry in the Section 7 registry, rather than one-off markup per placeholder:
+
+```jsx
+<PlaceholderBox
+  id="HOME-HERO-PORTRAIT"
+  type="[HERO_IMAGE]"
+  width="820px"
+  height="900px"
+  label="HERO PORTRAIT — man in navy vest, professional headshot-style photo"
+/>
+```
+
+It should render a neutral, dashed-border, flat-fill box at the exact given size, with the `id`, `type`, and `label` printed visibly inside — so any reviewer can see instantly what's real content vs. what's still pending sourcing, without opening this spec side-by-side.
+
+### 2.4 Animation/interaction → placeholder cross-reference
+
+| Observed behavior | Placeholder ID(s) | Recommended tool (Section 2.1) |
+|---|---|---|
+| Cursor-tracking, color-adaptive dot | `GLOBAL-DOT-MARKER` | Custom component + Framer Motion `useMotionValue`/`useSpring` + `mix-blend-mode` |
+| Scroll-triggered "Go to Top" visibility | `GLOBAL-GOTOTOP` | Framer Motion `useScroll`/`useInView` or a scroll-position listener |
+| Rotating circular text badge | `ABOUT-HERO-BADGE` | Inline SVG `<textPath>` + CSS `@keyframes` infinite rotate (or `react-circular-text`) |
+| Testimonial carousel w/ partial next-slide | `ABOUT-TESTIMONIAL-*` | Swiper.js or Embla Carousel |
+| Live countdown | `ABOUT-CTA-COUNTDOWN` | Custom `useCountdown` hook |
+| Animated stat count-up | `HOME-FUNFACTS-ICON-1/2/3` | react-countup + `useInView` |
+| "WATCH INTRO" video trigger | `HOME-HERO-WATCHINTRO-ICON` | Framer Motion modal / `react-modal-video` |
+| Persistent chat widget | `GLOBAL-CHAT-WIDGET` | Real third-party embed (not custom-built) |
+| Possible hero decorative parallax | `HOME-HERO-DECOR-DOTGRID`, `-BLUERING`, `-REDRING` | GSAP ScrollTrigger — **only if** live investigation confirms motion (see Section 9) |
+| Possible tabbed/hover image-swap | `ABOUT-SERVICES-STRIP-IMAGE` | TBD — confirm live before choosing a library (see Section 9, item 11) |
+
+---
+
+## 3. GLOBAL DESIGN TOKENS (all values are ESTIMATES from visual inspection — verify against live site before finalizing)
+
+### 3.1 Color Palette
 
 | Token | Approx. Hex | Where observed | Confidence |
 |---|---|---|---|
@@ -51,7 +136,7 @@ Primary nav (visible in header, screenshot 1): **Home / About Us / Our Portfolio
 
 **Required live investigation:** sample exact hex values via browser devtools/eyedropper on the live site; do not ship estimates to production.
 
-### 2.2 Typography
+### 3.2 Typography
 
 | Token | Observation | Confidence |
 |---|---|---|
@@ -62,7 +147,7 @@ Primary nav (visible in header, screenshot 1): **Home / About Us / Our Portfolio
 | Heading scale (H2 section) | ~44–52px | Estimate |
 | Body copy | ~16–18px, line-height ~1.6 | Estimate |
 
-### 2.3 Spacing / Layout
+### 3.3 Spacing / Layout
 
 - Max content width appears to be the full viewport (~1920px) with internal padding roughly **80–100px** on left/right for text-container sections.
 - Section vertical padding is generous: roughly **120–160px** top and bottom per major section.
@@ -71,10 +156,10 @@ Primary nav (visible in header, screenshot 1): **Home / About Us / Our Portfolio
 
 ---
 
-## 3. GLOBAL PERSISTENT COMPONENTS
-*(Appear identically — or near-identically — across both pages and most/all sections. Build these once as shared components.)*
+## 4. GLOBAL PERSISTENT COMPONENTS
+*(Appear identically — or near-identically — across both pages and most/all sections. Build these once as shared components inside `PersistentLayout.jsx` — see Section 2.2.)*
 
-### 3.1 Header / Primary Navigation
+### 4.1 Header / Primary Navigation
 
 **Placeholder ID:** `GLOBAL-HEADER`
 **Type:** `[NAVIGATION]` (structural, not a placeholder for missing media — content is fully known)
@@ -100,7 +185,7 @@ Primary nav (visible in header, screenshot 1): **Home / About Us / Our Portfolio
 **Unknown:** Click behavior / what the grid icon opens (off-canvas menu? language switch? app launcher?).
 **Required live investigation:** Click both on the live site and document behavior.
 
-### 3.2 Floating Social Sidebar (left edge, fixed position)
+### 4.2 Floating Social Sidebar (left edge, fixed position)
 
 **Placeholder ID:** `GLOBAL-SIDEBAR-SOCIAL`
 **Type:** `[ICON]` group (4 items) + structural nav
@@ -112,7 +197,7 @@ Primary nav (visible in header, screenshot 1): **Home / About Us / Our Portfolio
 **Required live investigation:** Extract `href` values from the live site.
 **Phase 1 instruction:** Build the fixed vertical stack structure with placeholder icons and rotated text labels; leave `href="#"` until real values are sourced.
 
-### 3.3 Floating Chat Widget
+### 4.3 Floating Chat Widget
 
 **Placeholder ID:** `GLOBAL-CHAT-WIDGET`
 **Type:** `[INTERACTIVE_MEDIA]` (likely 3rd-party embed)
@@ -122,9 +207,9 @@ Primary nav (visible in header, screenshot 1): **Home / About Us / Our Portfolio
 **Known:** Persistent live-chat-style widget with the label "Contact us."
 **Unknown:** Underlying provider (could be Tawk.to, Crisp, WhatsApp Business widget, Facebook Messenger plugin, or a custom in-house widget) and what opens on click (chat panel vs. WhatsApp deep link).
 **Required live investigation:** Inspect the live page's injected `<script>` tags / network requests to identify the actual chat provider, then integrate the correct official embed (do not simulate a chat UI with a fake vendor).
-**Phase 1 instruction:** Render the fixed circular button + tooltip exactly as described; wire click handler as a TODO stub.
+**Phase 1 instruction:** Render the fixed circular button + tooltip exactly as described; wire click handler as a TODO stub. See Section 2.1/2.4 — integrate the real third-party embed, do not hand-build a chat backend.
 
-### 3.4 "Go to Top" Control
+### 4.4 "Go to Top" Control
 
 **Placeholder ID:** `GLOBAL-GOTOTOP`
 **Type:** `[ICON]` + label (structural — content known)
@@ -133,8 +218,9 @@ Primary nav (visible in header, screenshot 1): **Home / About Us / Our Portfolio
 **Known:** Text, arrow icon, scroll-triggered show/hide behavior, likely scrolls to top of page on click.
 **Unknown:** Exact show threshold (how many px scrolled before it appears), transition/animation style.
 **Required live investigation:** Verify scroll trigger threshold and animation on the live site.
+**Recommended implementation:** Framer Motion `useScroll`/`useInView`, or a plain scroll-position listener toggling visibility — see Section 2.4.
 
-### 3.5 Recurring Single "Dot" Indicator
+### 4.5 Recurring Single "Dot" Indicator
 
 **Placeholder ID:** `GLOBAL-DOT-MARKER`
 **Type:** `[UNKNOWN_MEDIA]` / `[INTERACTIVE_ANIMATION]`
@@ -143,9 +229,9 @@ Primary nav (visible in header, screenshot 1): **Home / About Us / Our Portfolio
 **Known:** A single dot, color-adaptive, appears at a plausible "cursor position" each time, present across both pages.
 **Unknown:** Confirmed implementation (custom cursor vs. decorative marker vs. slide indicator), exact size, animation/trailing behavior, whether it reacts to hover states (e.g., grows over links/buttons — a common pattern for custom cursors).
 **Required live investigation:** Move the mouse around the live site and observe directly whether this dot tracks the cursor. If confirmed as a custom cursor, implement as a `position: fixed`, `mix-blend-mode: difference` circle bound to `mousemove`, hidden on touch devices.
-**Phase 1 instruction:** Do not build this as fixed decorative content in every section. Build it once, globally, as a candidate custom-cursor component, disabled/hidden until confirmed live.
+**Phase 1 instruction:** Do not build this as fixed decorative content in every section. Build it once, globally, as a candidate custom-cursor component, disabled/hidden until confirmed live. See Section 2.1/2.4 for the recommended `mix-blend-mode` + Framer Motion approach.
 
-### 3.6 Footer
+### 4.6 Footer
 
 **Placeholder ID:** `GLOBAL-FOOTER`
 **Type:** structural (content known) + `[LOGO]` (shared with `GLOBAL-LOGO`)
@@ -160,11 +246,11 @@ Primary nav (visible in header, screenshot 1): **Home / About Us / Our Portfolio
 
 ---
 
-## 4. PAGE A — HOME (`/`)
+## 5. PAGE A — HOME (`/`)
 
 Scroll order: **Hero → Why Choose Us → About Preview ("We develop & create") → Services (4-panel gallery) → Fun Facts (stats) → Portfolio Preview grid**
 
-### 4.1 Section: Hero
+### 5.1 Section: Hero
 *(Screenshot 1)*
 
 **Layout:** Two-column hero, ~55% left (text) / ~45% right (image), light gray-white background.
@@ -233,9 +319,9 @@ Scroll order: **Hero → Why Choose Us → About Preview ("We develop & create")
 **Known:** Play-button affordance, implies a video exists.
 **Unknown:** What the video actually is (`[VIDEO]` target — likely opens a modal/lightbox video player), video source/host (YouTube/Vimeo/self-hosted), video content/thumbnail.
 **Required live investigation:** Click "WATCH INTRO" on the live site and document the resulting video modal, source, and thumbnail.
-**Phase 1 instruction:** Wire the button to open an empty/placeholder modal labeled "INTRO VIDEO — source unknown."
+**Phase 1 instruction:** Wire the button to open an empty/placeholder modal labeled "INTRO VIDEO — source unknown," built with the modal approach in Section 2.1/2.4.
 
-### 4.2 Section: Why Choose Us
+### 5.2 Section: Why Choose Us
 *(Screenshot 2, top half)*
 
 **Layout:** Centered header, 3-column equal-width bordered card row below, white background.
@@ -261,7 +347,7 @@ Scroll order: **Hero → Why Choose Us → About Preview ("We develop & create")
 
 **Card styling note:** Each card is a bordered rectangle (thin light-gray 1px border, no fill/shadow), generous internal padding, icon centered above bold heading text, no body copy inside the card.
 
-### 4.3 Section: About Preview — "We develop & create digital future."
+### 5.3 Section: About Preview — "We develop & create digital future."
 *(Screenshots 2 bottom → 3)*
 
 **Layout:** Two-column, ~50/50, light gray section background. Left = text + button + logo strip below; right = illustration.
@@ -292,7 +378,7 @@ Scroll order: **Hero → Why Choose Us → About Preview ("We develop & create")
 **Required live investigation:** Confirm link destinations; source official up-to-date logo assets for Fiverr/Upwork/Freelancer (do not redraw from memory — use official brand assets).
 **Phase 1 instruction:** Use placeholder boxes labeled "Fiverr logo," "Upwork logo," "Freelancer logo," "SND Design logo" respectively until official assets are sourced.
 
-### 4.4 Section: Services — 4-Panel Gallery
+### 5.4 Section: Services — 4-Panel Gallery
 *(Screenshot 4, top)*
 
 **Layout:** Full-bleed, edge-to-edge, 4 equal-width columns, no gutters, each column a full-bleed photographic background image with a dark gradient overlay (bottom-weighted, for text legibility) and text pinned to the bottom-left.
@@ -333,7 +419,7 @@ Scroll order: **Hero → Why Choose Us → About Preview ("We develop & create")
 
 **Phase 1 instruction for all 4 panels:** Render 4 edge-to-edge placeholder image blocks of equal width, each with its number + title overlaid at bottom-left over a dark gradient scrim, exactly as described, using neutral placeholder fills (not fabricated photography).
 
-### 4.5 Section: Fun Facts (Stats)
+### 5.5 Section: Fun Facts (Stats)
 *(Screenshot 4 bottom → 5)*
 
 **Layout:** Centered header, 3-column stat row below, white background.
@@ -353,8 +439,9 @@ Scroll order: **Hero → Why Choose Us → About Preview ("We develop & create")
 **Unknown:** Exact SVG source.
 **Note:** These numbers are very likely **animated count-up counters** on scroll-into-view (a standard pattern for "stats" sections in agency templates) — flag as `[INTERACTIVE_ANIMATION]` in addition to the static icon placeholders.
 **Required live investigation:** Confirm count-up animation behavior and trigger (scroll-into-view vs. page-load).
+**Recommended implementation:** `react-countup` fired by `useInView` — see Section 2.1/2.4.
 
-### 4.6 Section: Portfolio Preview Grid
+### 5.6 Section: Portfolio Preview Grid
 *(Screenshots 5 bottom → 6)*
 
 **Layout:** Asymmetric 2-column image grid: one large image occupies the full left column height; the right column stacks two smaller images. Below the grid, a centered coral pill button.
@@ -388,11 +475,11 @@ Scroll order: **Hero → Why Choose Us → About Preview ("We develop & create")
 
 ---
 
-## 5. PAGE B — ABOUT US (`/about/`)
+## 6. PAGE B — ABOUT US (`/about/`)
 
 Scroll order: **Hero (blue) → Services strip (blue, single wide image w/ 3 labels) → Our Platforms + Testimonials → Meet Our Team → CTA / Countdown → Footer**
 
-### 5.1 Section: About Hero
+### 6.1 Section: About Hero
 *(Screenshot 7)*
 
 **Layout:** Full-width royal-blue background section. Small scroll-cue arrow at top-center. Below: 2-column — left = framed photo with a circular rotating badge overlapping its top-right corner; right = text block.
@@ -418,7 +505,7 @@ Scroll order: **Hero (blue) → Services strip (blue, single wide image w/ 3 lab
 **Known:** Circular curved-text badge with center arrow — a very common "spinning badge" UI pattern in modern agency sites.
 **Unknown:** Whether it **rotates continuously** (strongly suspected given the pattern's ubiquity in this exact use-case, but not visually confirmable from a static screenshot), rotation speed/direction, and whether the arrow is animated separately (e.g., bouncing) from the rotating text ring.
 **Required live investigation:** Observe live for rotation animation; this is a near-certain CSS `@keyframes` rotating-text badge — confirm and reproduce the rotation speed/direction.
-**Phase 1 instruction:** Build as a static circular badge in Phase 1 (correct position/size/text), flagged for animation in Phase 2.
+**Phase 1 instruction:** Build as a static circular badge in Phase 1 (correct position/size/text), flagged for animation in Phase 2. Recommended implementation: inline SVG `<textPath>` + CSS `@keyframes` rotate — see Section 2.1/2.4.
 
 **Placeholder ID:** `ABOUT-HERO-SCROLLCUE`
 **Type:** `[ICON]`
@@ -426,7 +513,7 @@ Scroll order: **Hero (blue) → Services strip (blue, single wide image w/ 3 lab
 **Known:** Likely a "scroll down" affordance.
 **Unknown:** Whether animated (bouncing), whether clickable (smooth-scrolls to next section).
 
-### 5.2 Section: Services Strip (blue background)
+### 6.2 Section: Services Strip (blue background)
 *(Screenshot 8)*
 
 **Layout:** Full-bleed single wide photo spanning the section width, with **3 vertical text labels overlaid at the bottom**, separated by thin vertical divider lines.
@@ -434,7 +521,7 @@ Scroll order: **Hero (blue) → Services strip (blue, single wide image w/ 3 lab
 **Copy (verbatim):**
 - **"Graphic Designs"** | **"Web Development"** | **"Creative Video"**
 
-⚠️ **Structural discrepancy flag:** On the Home page (Section 4.4), this same conceptual content ("Graphic Designs / Web Development / Creative Video / SEO") is built as **4 separate full-bleed photographs**, each numbered, each with its own dark-gradient text overlay. Here on the About page, it appears instead as **ONE continuous flat-lay photograph** (not 4 stitched images) with only **3 text labels** overlaid via thin divider lines, and **no visible "SEO" fourth label and no numbering**. This could mean: (a) the About page genuinely uses a different, simplified 3-item version of this component, or (b) a 4th panel/label exists just outside the captured frame. **Do not assume these are the same component reused** — build them as documented, and flag for live verification.
+⚠️ **Structural discrepancy flag:** On the Home page (Section 5.4), this same conceptual content ("Graphic Designs / Web Development / Creative Video / SEO") is built as **4 separate full-bleed photographs**, each numbered, each with its own dark-gradient text overlay. Here on the About page, it appears instead as **ONE continuous flat-lay photograph** (not 4 stitched images) with only **3 text labels** overlaid via thin divider lines, and **no visible "SEO" fourth label and no numbering**. This could mean: (a) the About page genuinely uses a different, simplified 3-item version of this component, or (b) a 4th panel/label exists just outside the captured frame. **Do not assume these are the same component reused** — build them as documented, and flag for live verification.
 
 **Placeholder ID:** `ABOUT-SERVICES-STRIP-IMAGE`
 **Type:** `[IMAGE]`
@@ -445,7 +532,7 @@ Scroll order: **Hero (blue) → Services strip (blue, single wide image w/ 3 lab
 **Required live investigation:** Confirm whether this is 3 or 4 labeled zones on the live site, and whether it's one image or a horizontal filmstrip/carousel of images (given the vertical divider lines could also indicate a hover-triggered image-swap per label — a common "tabbed image reveal" interaction).
 **Phase 1 instruction:** Build as a single full-bleed image with 3 evenly-spaced bottom-aligned text labels divided by thin vertical rules, exactly as observed; leave a commented note about the possible 4th "SEO" zone/interaction to verify.
 
-### 5.3 Section: Our Platforms + Testimonials
+### 6.3 Section: Our Platforms + Testimonials
 *(Screenshot 9)*
 
 **Layout:** Top half — 2-column: left = heading, right = 3 logo cards in a row. Bottom half (light gray background) — 2-column: left = heading + prev/next arrow controls, right = large testimonial quote card with a second card peeking in from the right edge (carousel).
@@ -473,9 +560,9 @@ Scroll order: **Hero (blue) → Services strip (blue, single wide image w/ 3 lab
 **Known:** Client/brand logo, not a personal headshot.
 **Unknown:** Exact source asset.
 
-**Interactive note:** The prev/next circular arrow buttons on the left confirm this testimonial block is a **carousel/slider**, not a static grid — `[INTERACTIVE_MEDIA]`. Only 2 of presumably several testimonial slides were captured. Flag remaining slides as `[UNKNOWN_MEDIA]` — content not captured, do not fabricate additional testimonials.
+**Interactive note:** The prev/next circular arrow buttons on the left confirm this testimonial block is a **carousel/slider**, not a static grid — `[INTERACTIVE_MEDIA]`. Only 2 of presumably several testimonial slides were captured. Flag remaining slides as `[UNKNOWN_MEDIA]` — content not captured, do not fabricate additional testimonials. **Recommended implementation:** Swiper.js or Embla Carousel with `slidesPerView: 'auto'` to reproduce the partially-visible next card — see Section 2.1/2.4.
 
-### 5.4 Section: Meet Our Team
+### 6.4 Section: Meet Our Team
 *(Screenshot 10, top)*
 
 **Layout:** 2-column: left = heading + 2 CTAs; right = 2 team photos side by side.
@@ -501,7 +588,7 @@ Scroll order: **Hero (blue) → Services strip (blue, single wide image w/ 3 lab
 **Unknown:** Name/role (not labeled in the captured crop — a name/title caption may exist below each photo but was not visible in this screenshot's frame).
 **Required live investigation:** Check for name/role captions beneath each team photo, and whether more team members exist in a scrollable/grid row beyond these 2.
 
-### 5.5 Section: CTA — Countdown / Limited Discount
+### 6.5 Section: CTA — Countdown / Limited Discount
 *(Screenshots 10 bottom → 11 top)*
 
 **Layout:** Full-bleed section with a dark-overlaid background photo, centered content.
@@ -527,14 +614,15 @@ Scroll order: **Hero (blue) → Services strip (blue, single wide image w/ 3 lab
 **Known:** Structural layout of a countdown timer widget; captured state shows all zeros (timer may be expired, not yet initialized in this capture, or perpetually reset).
 **Unknown:** The actual target date/time the countdown counts down to, and what happens at zero (does it reset? redirect? show a different message?).
 **Required live investigation:** Inspect live JS to find the target timestamp and end-state behavior. Do not hardcode "00:00:00:00" as permanent content — this is very likely a live/dynamic value.
+**Recommended implementation:** custom `useCountdown(targetDate)` hook — see Section 2.1/2.4.
 
-### 5.6 Section: Footer
+### 6.6 Section: Footer
 *(Screenshot 11, bottom)*
-→ Covered by `GLOBAL-FOOTER` in Section 3.6. No page-specific differences observed.
+→ Covered by `GLOBAL-FOOTER` in Section 4.6. No page-specific differences observed.
 
 ---
 
-## 6. MASTER PLACEHOLDER REGISTRY
+## 7. MASTER PLACEHOLDER REGISTRY
 
 Quick-reference index of every placeholder defined in this document, for the implementing agent to check off during Phase 1 build.
 
@@ -576,7 +664,7 @@ Quick-reference index of every placeholder defined in this document, for the imp
 
 ---
 
-## 7. VISUAL COMPLETENESS AUDIT
+## 8. VISUAL COMPLETENESS AUDIT
 
 Per the mandatory audit rule: *"If all real media were removed, would every significant occupied visual region still have a placeholder?"*
 
@@ -591,7 +679,7 @@ Walking each screenshot region-by-region against the registry above: **yes** —
 
 ---
 
-## 8. CONSOLIDATED "REQUIRED LIVE INVESTIGATION" CHECKLIST
+## 9. CONSOLIDATED "REQUIRED LIVE INVESTIGATION" CHECKLIST
 
 For the team/agent with access to the live site (`sabernasr.com`), before Phase 2 implementation:
 
@@ -613,17 +701,25 @@ For the team/agent with access to the live site (`sabernasr.com`), before Phase 
 16. Capture the "Our Portfolio" and "Contact Us" pages, entirely uncaptured in this set.
 17. Capture hover/active states for nav links, buttons, and cards.
 18. Capture the responsive/mobile breakpoint layouts.
+19. Confirm each animation/library choice in Section 2.4 against actual live behavior (e.g., if the dot marker turns out *not* to be a custom cursor, or the badge doesn't rotate, update the tool choice accordingly rather than building the guessed behavior anyway).
 
 ---
 
-## 9. IMPLEMENTATION GUARDRAILS (for the Phase 1 building agent)
+## 10. IMPLEMENTATION GUARDRAILS (for the Phase 1 building agent)
 
+**Structure & content:**
 - ✅ DO preserve every placeholder's approximate width, height, aspect ratio, and position exactly as specified.
-- ✅ DO label every placeholder visibly in the Phase 1 build (e.g., a dev-mode caption or border label) so reviewers can instantly see what's real vs. pending.
+- ✅ DO label every placeholder visibly in the Phase 1 build (e.g., a dev-mode caption or border label) so reviewers can instantly see what's real vs. pending — use the `PlaceholderBox` component from Section 2.3 consistently.
 - ✅ DO build all copy text (headings, body, button labels) exactly as transcribed — this content is fully known and should not be treated as placeholder.
-- ✅ DO build the global fixed components (sidebar, chat widget, go-to-top, dot marker) once, as shared components, not re-implemented per section.
 - ❌ DO NOT fabricate real photography, illustrations, or logos to "fill in" a placeholder — use neutral flat-fill boxes with labels instead.
 - ❌ DO NOT merge the two "We develop & create digital future." components (Home vs. About) into one — they have different backgrounds, supporting copy, and supporting media.
 - ❌ DO NOT assume the About-page services strip is identical to the Home 4-panel gallery — build it exactly as separately documented, flagged for verification.
 - ❌ DO NOT hardcode the countdown timer's "00:00:00:00" as permanent — this is very likely dynamic/live content.
 - ❌ DO NOT silently drop the flagged ambiguities (dot marker, services-strip structure, CTA background image-vs-video) — carry the open questions forward into Phase 2 planning documents.
+
+**Framework & architecture (see Section 2 in full):**
+- ✅ DO build this as a **React + Vite** application with **React Router**'s shared-layout pattern — not static multi-page HTML.
+- ✅ DO mount the global fixed components (header, sidebar, chat widget, go-to-top, cursor dot, footer) exactly **once**, inside the persistent root layout — never re-implemented per page or per section.
+- ✅ DO implement each animated/interactive element with the specific library named in Section 2.4 (Framer Motion, GSAP+ScrollTrigger, Swiper/Embla, react-countup, etc.) rather than approximating it with CSS-only tricks, wherever true JS-driven behavior was identified.
+- ❌ DO NOT ship this as flat static HTML pages with no component framework — the observed persistent-chrome + routing + stateful-animation combination cannot be faithfully reproduced that way.
+- ❌ DO NOT introduce a second animation engine for an effect one library already handles (e.g., don't add GSAP for something Framer Motion's `whileInView` already covers cleanly) — see Section 2.1 for which tool owns which effect.
