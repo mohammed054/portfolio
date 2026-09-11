@@ -55,13 +55,12 @@ function Hero() {
           </div>
 
           <div className="relative max-lg:hidden">
-            <PlaceholderBox
-              id="HOME-HERO-PORTRAIT"
-              type="[HERO_IMAGE]"
-              width="100%"
-              height="900px"
-              label="HERO PORTRAIT — man in navy vest, professional headshot-style photo"
-              className="max-w-[850px] ml-auto"
+            <img
+              src="/images/hero-saber.webp"
+              alt="Saber Nasr — Professional portrait"
+              className="max-w-[850px] w-full ml-auto object-contain"
+              width="555"
+              height="1000"
             />
 
             {/* Decorative elements */}
