@@ -1,8 +1,10 @@
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
-import CountUp from 'react-countup'
+import ReactCountUp from 'react-countup'
 import { User, Target, Trophy } from 'lucide-react'
 import SectionHeading from './shared/SectionHeading'
+
+const CountUp = ReactCountUp.default || ReactCountUp
 
 const stats = [
   { icon: User, value: 2000, suffix: '+', label: 'Total Clients' },

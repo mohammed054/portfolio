@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
 import PlaceholderBox from './shared/PlaceholderBox'
 import { Play } from 'lucide-react'
-import CountUp from 'react-countup'
+import ReactCountUp from 'react-countup'
+
+const CountUp = ReactCountUp.default || ReactCountUp
 
 const stats = [
   { end: 15, suffix: '+', label: 'Years of Experience' },
