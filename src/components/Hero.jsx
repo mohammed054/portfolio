@@ -1,5 +1,14 @@
+import { Link } from 'react-router-dom'
 import PlaceholderBox from './shared/PlaceholderBox'
 import { Play } from 'lucide-react'
+import CountUp from 'react-countup'
+
+const stats = [
+  { end: 15, suffix: '+', label: 'Years of Experience' },
+  { end: 500, suffix: '+', label: 'Completed Projects' },
+  { end: 99, suffix: '%', label: 'Client Satisfaction' },
+  { end: 30, suffix: '+', label: 'Team Members' },
+]
 
 function Hero() {
   return (
@@ -14,13 +23,13 @@ function Hero() {
               Saber is a digital agency consists of strategists, creative minds, technologists, designers, marketers, storytellers, and inventors. 🤘
             </p>
             <div className="flex items-center gap-8 max-lg:justify-center">
-              <a
-                href="/about/"
+              <Link
+                to="/about/"
                 className="text-primary font-semibold text-[15px] relative group"
               >
                 Discover More
                 <span className="absolute bottom-0 left-0 w-full h-[2px] bg-primary scale-x-100 group-hover:scale-x-0 transition-transform duration-300 origin-left" />
-              </a>
+              </Link>
               <div className="flex items-center gap-3 cursor-pointer group">
                 <div className="w-[50px] h-[50px] border-2 border-secondary rounded-full flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-all duration-300 text-secondary">
                   <Play size={16} className="ml-0.5" fill="currentColor" />
@@ -29,6 +38,17 @@ function Hero() {
                   WATCH INTRO
                 </span>
               </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-14 max-lg:justify-center">
+              {stats.map((stat, i) => (
+                <div key={i} className="text-center lg:text-left">
+                  <div className="text-[clamp(28px,2rem+1vw,40px)] font-bold text-text-dark font-[Poppins]">
+                    <CountUp end={stat.end} duration={2.5} enableScrollSpy scrollSpyOnce />{stat.suffix}
+                  </div>
+                  <p className="text-text-muted text-[14px] mt-1">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </div>
 

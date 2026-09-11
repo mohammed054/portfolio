@@ -15,7 +15,7 @@ function WhyChooseUs() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {cards.map((card, i) => (
-            <div key={i} className="card-bordered">
+            <div key={i} className="card-bordered p-10 text-center">
               <div className="flex justify-center mb-6">
                 <div className="w-[70px] h-[70px] flex items-center justify-center text-secondary">
                   <card.icon size={52} strokeWidth={1.5} />

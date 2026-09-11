@@ -18,6 +18,9 @@
   --color-chat-purple: #A886CD;
   --color-page-transition: #FFBC7D;
   --color-card-border: #E2E2E2;
+  --color-ch-charcoal: #1E1E1E;
+  --color-ch-border: #2A2A2A;
+  --color-ch-muted: #6B7280;
 }
 
 @layer base {

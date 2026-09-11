@@ -1,4 +1,5 @@
 import { Play } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import SectionHeading from './shared/SectionHeading'
 import PlaceholderBox from './shared/PlaceholderBox'
 import Button from './shared/Button'
@@ -12,14 +13,14 @@ function Team() {
             <SectionHeading eyebrow="OUR TEAM" title="Meet Our Team" className="text-left mb-8" />
             <div className="flex items-center gap-6">
               <Button to="/about/">About Us</Button>
-              <a href="/contact-us/" className="flex items-center gap-3 group">
+              <Link to="/contact-us/" className="flex items-center gap-3 group">
                 <div className="w-[50px] h-[50px] border-2 border-secondary rounded-full flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-all duration-300 text-secondary">
                   <Play size={16} className="ml-0.5" fill="currentColor" />
                 </div>
                 <span className="text-[15px] font-semibold text-text-dark group-hover:text-secondary transition-colors font-[Poppins]">
                   Contact Us
                 </span>
-              </a>
+              </Link>
             </div>
           </div>
 

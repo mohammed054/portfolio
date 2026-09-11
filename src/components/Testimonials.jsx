@@ -28,6 +28,38 @@ const testimonials = [
     text: 'Best WordPress developer available and very quick in development.',
     rating: 5,
   },
+  {
+    id: 4,
+    author: 'chrismoran',
+    role: 'Project Manager',
+    avatar: 'HOME-TESTIMONIAL-AVATAR-4',
+    text: 'Saber is a fantastic developer. He delivered exactly what we needed and was very responsive throughout the project.',
+    rating: 5,
+  },
+  {
+    id: 5,
+    author: 'huiyin',
+    role: 'Project Manager',
+    avatar: 'HOME-TESTIMONIAL-AVATAR-5',
+    text: 'Excellent work and great communication. Saber understood our requirements perfectly and delivered on time.',
+    rating: 5,
+  },
+  {
+    id: 6,
+    author: 'mohamednawar',
+    role: 'Project Manager',
+    avatar: 'HOME-TESTIMONIAL-AVATAR-6',
+    text: 'Very professional and skilled developer. Highly recommend Saber for any web development project.',
+    rating: 5,
+  },
+  {
+    id: 7,
+    author: 'torecompany',
+    role: 'Project Manager',
+    avatar: 'HOME-TESTIMONIAL-AVATAR-7',
+    text: 'Saber delivered outstanding results. His attention to detail and creative approach exceeded our expectations.',
+    rating: 5,
+  },
 ]
 
 function Testimonials() {
