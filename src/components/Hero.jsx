@@ -63,6 +63,22 @@ function Hero() {
               label="RED RING"
               className="absolute -bottom-20 left-0 rounded-full hidden lg:flex"
             />
+            <PlaceholderBox
+              id="HOME-HERO-DECOR-XMARKS"
+              type="[DECORATIVE_GRAPHIC]"
+              width="50px"
+              height="50px"
+              label="X MARKS — two white cross marks on hero photo"
+              className="absolute top-[40%] left-[30%] hidden lg:flex"
+            />
+            <PlaceholderBox
+              id="HOME-HERO-DECOR-DOTCLUSTER"
+              type="[DECORATIVE_GRAPHIC]"
+              width="150px"
+              height="150px"
+              label="DOT CLUSTER — white dots on lower-right of hero photo"
+              className="absolute bottom-[10%] right-[5%] hidden lg:flex"
+            />
           </div>
         </div>
       </div>
