@@ -1,5 +1,4 @@
 import SectionHeading from './shared/SectionHeading'
-import PlaceholderBox from './shared/PlaceholderBox'
 import Button from './shared/Button'
 
 const skills = [
@@ -49,15 +48,12 @@ function Skills() {
 
           <div className="relative hidden lg:block min-h-[400px]">
             {floatingIcons.map((icon) => (
-              <PlaceholderBox
+              <img
                 key={icon.id}
-                id={`ABOUT-SKILL-ICON-${icon.id}`}
-                type="[ICON]"
-                width={`${icon.size}px`}
-                height={`${icon.size}px`}
-                label={`${icon.id} icon (parallax)`}
+                src={`/images/skills/${icon.id}.png`}
+                alt={`${icon.id} icon`}
                 className="absolute rounded-full"
-                style={{ left: icon.left, top: icon.top }}
+                style={{ left: icon.left, top: icon.top, width: icon.size, height: icon.size }}
               />
             ))}
           </div>

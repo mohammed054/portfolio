@@ -1,10 +1,8 @@
-import PlaceholderBox from './shared/PlaceholderBox'
-
 const services = [
-  { id: 'HOME-SERVICES-PANEL-1', number: '01.', title: 'Graphic Designs' },
-  { id: 'HOME-SERVICES-PANEL-2', number: '02.', title: 'Web Development' },
-  { id: 'HOME-SERVICES-PANEL-3', number: '03.', title: 'Creative Video' },
-  { id: 'HOME-SERVICES-PANEL-4', number: '04.', title: 'SEO' },
+  { id: 'HOME-SERVICES-PANEL-1', number: '01.', title: 'Graphic Designs', src: '/images/services/graphic-design.jpg' },
+  { id: 'HOME-SERVICES-PANEL-2', number: '02.', title: 'Web Development', src: '/images/services/web-development.jpg' },
+  { id: 'HOME-SERVICES-PANEL-3', number: '03.', title: 'Creative Video', src: '/images/services/creative-video.jpg' },
+  { id: 'HOME-SERVICES-PANEL-4', number: '04.', title: 'SEO', src: '/images/services/seo-thumb.jpg' },
 ]
 
 function ServicesGallery() {
@@ -13,13 +11,10 @@ function ServicesGallery() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {services.map((service) => (
           <div key={service.id} className="relative h-[550px] overflow-hidden group cursor-pointer">
-            <PlaceholderBox
-              id={service.id}
-              type="[IMAGE]"
-              width="100%"
-              height="100%"
-              label={`${service.title} — workspace photo`}
-              className="absolute inset-0 transition-transform duration-700 group-hover:scale-110"
+            <img
+              src={service.src}
+              alt={`${service.title} — workspace photo`}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-[1]" />
             <div className="absolute bottom-10 left-8 text-white z-[2]">

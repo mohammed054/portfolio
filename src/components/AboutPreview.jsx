@@ -1,5 +1,4 @@
 import SectionHeading from './shared/SectionHeading'
-import PlaceholderBox from './shared/PlaceholderBox'
 import Button from './shared/Button'
 
 function AboutPreview() {
@@ -18,14 +17,17 @@ function AboutPreview() {
             </div>
 
             <div className="grid grid-cols-4 gap-4 mt-14">
-              {['Fiverr logo', 'Upwork logo', 'Freelancer logo', 'SND Design logo'].map((label, i) => (
+              {[
+                { src: '/images/platforms/fiverr.png', alt: 'Fiverr logo' },
+                { src: '/images/platforms/upwork.png', alt: 'Upwork logo' },
+                { src: '/images/platforms/freelancer.png', alt: 'Freelancer logo' },
+                { src: '/images/platforms/snd-design.png', alt: 'SND Design logo' },
+              ].map((logo, i) => (
                 <div key={i} className="border border-card-border p-4 flex items-center justify-center bg-white">
-                  <PlaceholderBox
-                    id={`HOME-ABOUTPREVIEW-LOGOSTRIP-${i + 1}`}
-                    type="[LOGO]"
-                    width="100%"
-                    height="80px"
-                    label={label}
+                  <img
+                    src={logo.src}
+                    alt={logo.alt}
+                    className="w-full h-[80px] object-contain"
                   />
                 </div>
               ))}
@@ -33,12 +35,10 @@ function AboutPreview() {
           </div>
 
           <div className="relative">
-            <PlaceholderBox
-              id="HOME-ABOUTPREVIEW-ILLUSTRATION"
-              type="[ILLUSTRATION]"
-              width="100%"
-              height="450px"
-              label="ILLUSTRATION — person painting colorful abstract splash, flat vector style"
+            <img
+              src="/images/about/home-drawing.png"
+              alt="Illustration — person painting colorful abstract splash"
+              className="w-full h-[450px] object-contain"
             />
           </div>
         </div>

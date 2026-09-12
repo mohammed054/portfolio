@@ -1,10 +1,9 @@
 import SectionHeading from './shared/SectionHeading'
-import PlaceholderBox from './shared/PlaceholderBox'
 
 const platforms = [
-  { id: 'ABOUT-PLATFORM-1', label: 'Fiverr logo', href: 'https://www.fiverr.com/saber_nasr' },
-  { id: 'ABOUT-PLATFORM-2', label: 'Upwork logo', href: 'https://www.upwork.com/freelancers/saber' },
-  { id: 'ABOUT-PLATFORM-3', label: 'Freelancer logo', href: 'https://www.freelancer.com/u/SaberElbendary' },
+  { id: 'ABOUT-PLATFORM-1', label: 'Fiverr logo', href: 'https://www.fiverr.com/saber_nasr', src: '/images/platforms/fiverr.png' },
+  { id: 'ABOUT-PLATFORM-2', label: 'Upwork logo', href: 'https://www.upwork.com/freelancers/saber', src: '/images/platforms/upwork.png' },
+  { id: 'ABOUT-PLATFORM-3', label: 'Freelancer logo', href: 'https://www.freelancer.com/u/SaberElbendary', src: '/images/platforms/freelancer.png' },
 ]
 
 function AboutPlatforms() {
@@ -22,12 +21,10 @@ function AboutPlatforms() {
               rel="noopener noreferrer"
               className="border border-card-border p-6 flex items-center justify-center hover:opacity-60 transition-opacity duration-300 bg-white"
             >
-              <PlaceholderBox
-                id={platform.id}
-                type="[LOGO]"
-                width="180px"
-                height="60px"
-                label={platform.label}
+              <img
+                src={platform.src}
+                alt={platform.label}
+                className="w-[180px] h-[60px] object-contain"
               />
             </a>
           ))}

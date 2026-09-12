@@ -1,4 +1,3 @@
-import PlaceholderBox from './shared/PlaceholderBox'
 import Button from './shared/Button'
 
 function PortfolioGrid() {
@@ -8,37 +7,28 @@ function PortfolioGrid() {
         <div className="grid grid-cols-1 lg:grid-cols-2 grid-rows-[auto_auto] gap-4 mb-14">
           <div className="row-span-2">
             <div className="h-full min-h-[690px] overflow-hidden group cursor-pointer">
-              <PlaceholderBox
-                id="HOME-PORTFOLIO-IMG-1"
-                type="[IMAGE]"
-                width="100%"
-                height="100%"
-                label="Mustadeem Store — laptop mockup on wooden desk"
-                className="transition-transform duration-700 group-hover:scale-105"
+              <img
+                src="/images/portfolio/mustadeem.jpg"
+                alt="Mustadeem Store — laptop mockup on wooden desk"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
           </div>
           <div>
             <div className="h-[330px] overflow-hidden group cursor-pointer">
-              <PlaceholderBox
-                id="HOME-PORTFOLIO-IMG-2"
-                type="[IMAGE]"
-                width="100%"
-                height="100%"
-                label="food-delivery site — brand name unconfirmed, verify live"
-                className="transition-transform duration-700 group-hover:scale-105"
+              <img
+                src="/images/portfolio/mkayn-store.jpg"
+                alt="Mkayn Store"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
           </div>
           <div>
             <div className="h-[330px] overflow-hidden group cursor-pointer">
-              <PlaceholderBox
-                id="HOME-PORTFOLIO-IMG-3"
-                type="[IMAGE]"
-                width="100%"
-                height="100%"
-                label="HELIX CATALOG — product brochure mockup"
-                className="transition-transform duration-700 group-hover:scale-105"
+              <img
+                src="/images/portfolio/helix-catalog.jpg"
+                alt="HELIX CATALOG — product brochure mockup"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
           </div>

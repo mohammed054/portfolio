@@ -18,9 +18,7 @@ function Footer() {
         </div>
 
         <Link to="/" className="flex items-center gap-1.5">
-          <div className="w-9 h-9 bg-secondary rounded flex items-center justify-center text-white font-bold text-base font-[Poppins]">
-            S
-          </div>
+          <img src="/images/logos/footer-logo-light.png" alt="Saber Nasr Design" className="w-9 h-9 object-contain" />
           <span className="font-bold text-[17px] text-white tracking-tight font-[Poppins]">DESIGN</span>
         </Link>
 

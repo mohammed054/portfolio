@@ -1,7 +1,6 @@
 import { Play } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import SectionHeading from './shared/SectionHeading'
-import PlaceholderBox from './shared/PlaceholderBox'
 import Button from './shared/Button'
 
 function Team() {
@@ -26,23 +25,17 @@ function Team() {
 
           <div className="grid grid-cols-2 gap-5">
             <div className="overflow-hidden group cursor-pointer">
-              <PlaceholderBox
-                id="ABOUT-TEAM-PHOTO-1"
-                type="[IMAGE]"
-                width="100%"
-                height="300px"
-                label="Saber Nasr — Project Manager"
-                className="transition-transform duration-700 group-hover:scale-105"
+              <img
+                src="/images/team/Saber-Nasr.jpg"
+                alt="Saber Nasr — Project Manager"
+                className="w-full h-[300px] object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
             <div className="overflow-hidden group cursor-pointer">
-              <PlaceholderBox
-                id="ABOUT-TEAM-PHOTO-2"
-                type="[IMAGE]"
-                width="100%"
-                height="300px"
-                label="Mohamed Maksoud — Graphic Designer"
-                className="transition-transform duration-700 group-hover:scale-105"
+              <img
+                src="/images/team/Mohamed-Maksoud.jpg"
+                alt="Mohamed Maksoud — Graphic Designer"
+                className="w-full h-[300px] object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
           </div>

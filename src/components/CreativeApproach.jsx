@@ -1,5 +1,4 @@
 import SectionHeading from './shared/SectionHeading'
-import PlaceholderBox from './shared/PlaceholderBox'
 
 function CreativeApproach() {
   return (
@@ -7,20 +6,15 @@ function CreativeApproach() {
       <div className="container-main">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="relative">
-            <PlaceholderBox
-              id="HOME-CREATIVEAPPROACH-IMAGE"
-              type="[IMAGE]"
-              width="100%"
-              height="500px"
-              label="Digital agency workspace photo"
+            <img
+              src="/images/services/digital-agency.jpg"
+              alt="Digital agency workspace photo"
+              className="w-full h-[500px] object-cover"
             />
-            <PlaceholderBox
-              id="ABOUT-HERO-BADGE"
-              type="[ANIMATION]"
-              width="148px"
-              height="148px"
-              label="ABOUT US — rotating circular text badge"
-              className="absolute -top-6 -right-6 hidden lg:flex"
+            <img
+              src="/images/decorative/about-us-white.svg"
+              alt="About Us badge"
+              className="absolute -top-6 -right-6 hidden lg:block w-[148px] h-[148px] object-contain"
             />
           </div>
 

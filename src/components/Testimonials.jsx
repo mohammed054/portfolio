@@ -1,14 +1,13 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import SectionHeading from './shared/SectionHeading'
-import PlaceholderBox from './shared/PlaceholderBox'
 
 const testimonials = [
   {
     id: 1,
     author: 'banmas',
     role: 'Project Manager',
-    avatar: 'HOME-TESTIMONIAL-AVATAR-1',
+    avatarSrc: '/images/testimonials/banmas.png',
     text: 'Saber is a great person to work with, very professional and goes above and beyond to ensure the customer is happy.',
     rating: 5,
   },
@@ -16,7 +15,7 @@ const testimonials = [
     id: 2,
     author: 'ginabuckney',
     role: 'Project Manager',
-    avatar: 'HOME-TESTIMONIAL-AVATAR-2',
+    avatarSrc: '/images/testimonials/ginabuckney.jpeg',
     text: 'Saber is a great person to work with, very professional and goes above and beyond to ensure the customer is happy. He is very quick to respond to any request and provides advice to make the site better.',
     rating: 5,
   },
@@ -24,7 +23,7 @@ const testimonials = [
     id: 3,
     author: 'bollybeatz',
     role: 'Project Manager',
-    avatar: 'HOME-TESTIMONIAL-AVATAR-3',
+    avatarSrc: '/images/testimonials/bollybeatz.png',
     text: 'Best WordPress developer available and very quick in development.',
     rating: 5,
   },
@@ -32,7 +31,7 @@ const testimonials = [
     id: 4,
     author: 'chrismoran',
     role: 'Project Manager',
-    avatar: 'HOME-TESTIMONIAL-AVATAR-4',
+    avatarSrc: '/images/testimonials/chrismoran.jpg',
     text: 'Saber is a fantastic developer. He delivered exactly what we needed and was very responsive throughout the project.',
     rating: 5,
   },
@@ -40,7 +39,7 @@ const testimonials = [
     id: 5,
     author: 'huiyin',
     role: 'Project Manager',
-    avatar: 'HOME-TESTIMONIAL-AVATAR-5',
+    avatarSrc: '/images/testimonials/huiyin.jpg',
     text: 'Excellent work and great communication. Saber understood our requirements perfectly and delivered on time.',
     rating: 5,
   },
@@ -48,7 +47,7 @@ const testimonials = [
     id: 6,
     author: 'mohamednawar',
     role: 'Project Manager',
-    avatar: 'HOME-TESTIMONIAL-AVATAR-6',
+    avatarSrc: '/images/testimonials/mohamednawar.jpg',
     text: 'Very professional and skilled developer. Highly recommend Saber for any web development project.',
     rating: 5,
   },
@@ -56,7 +55,7 @@ const testimonials = [
     id: 7,
     author: 'torecompany',
     role: 'Project Manager',
-    avatar: 'HOME-TESTIMONIAL-AVATAR-7',
+    avatarSrc: '/images/testimonials/torecompany.png',
     text: 'Saber delivered outstanding results. His attention to detail and creative approach exceeded our expectations.',
     rating: 5,
   },
@@ -98,13 +97,10 @@ function Testimonials() {
               {testimonials.map((t) => (
                 <div key={t.id} className="min-w-[calc(66.666%-12px)] bg-white p-10 border border-card-border flex-shrink-0 max-md:min-w-full">
                   <div className="flex items-center gap-4 mb-6">
-                    <PlaceholderBox
-                      id={t.avatar}
-                      type="[IMAGE]"
-                      width="56px"
-                      height="56px"
-                      label={`Avatar — ${t.author}`}
-                      className="rounded-full flex-shrink-0"
+                    <img
+                      src={t.avatarSrc}
+                      alt={`Avatar — ${t.author}`}
+                      className="w-[56px] h-[56px] rounded-full flex-shrink-0 object-cover"
                     />
                     <div>
                       <div className="font-bold text-text-dark font-[Poppins]">{t.author}</div>

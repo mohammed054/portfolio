@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import PlaceholderBox from './shared/PlaceholderBox'
 import SectionHeading from './shared/SectionHeading'
 import Button from './shared/Button'
 
@@ -33,13 +32,10 @@ function CountdownCTA() {
 
   return (
     <section className="section-padding bg-dark-bg text-white relative overflow-hidden">
-      <PlaceholderBox
-        id="ABOUT-CTA-BGPHOTO"
-        type="[BACKGROUND_VIDEO]"
-        width="100%"
-        height="100%"
-        label="CTA background — hands on tablet, dark overlay"
-        className="absolute inset-0 opacity-20"
+      <img
+        src="/images/services/digital-agency.jpg"
+        alt="CTA background"
+        className="absolute inset-0 w-full h-full object-cover opacity-20"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/80 via-dark-bg/60 to-dark-bg/80 z-[1]" />
 

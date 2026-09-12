@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import PlaceholderBox from './shared/PlaceholderBox'
 import { Play } from 'lucide-react'
 
 function Hero() {

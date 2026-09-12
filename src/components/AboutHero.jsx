@@ -1,5 +1,4 @@
 import { MousePointer2, Share2, Target } from 'lucide-react'
-import PlaceholderBox from './shared/PlaceholderBox'
 
 const features = [
   { icon: MousePointer2, title: 'Creative Design', description: 'Get the best animation and interactive services for your business.' },
@@ -14,28 +13,20 @@ function AboutHero() {
         <div className="grid grid-cols-1 lg:grid-cols-[31.5%_17.8%_50%] gap-8 items-center">
           {/* Left column - workspace image */}
           <div className="relative">
-            <PlaceholderBox
-              id="ABOUT-HERO-DESKPHOTO"
-              type="[IMAGE]"
-              width="100%"
-              height="320px"
-              label="Home-office desk setup with two monitors, MacBook, lamp, coffee mug"
+            <img
+              src="/images/services/graphic-design.jpg"
+              alt="Home-office desk setup"
+              className="w-full h-[320px] object-cover"
             />
-            <PlaceholderBox
-              id="ABOUT-HERO-PROFILE-SWAP"
-              type="[INTERACTIVE_MEDIA]"
-              width="200px"
-              height="240px"
-              label="Profile swap — Fiverr ↔ Upwork on hover"
-              className="absolute -bottom-10 -right-10 hidden lg:block"
+            <img
+              src="/images/about/fiverr-profile.png"
+              alt="Profile swap"
+              className="absolute -bottom-10 -right-10 hidden lg:block w-[200px] h-[240px] object-cover"
             />
-            <PlaceholderBox
-              id="ABOUT-HERO-DOTGRID"
-              type="[DECORATIVE_GRAPHIC]"
-              width="130px"
-              height="130px"
-              label="Floating dot grid (parallax)"
-              className="absolute -top-6 -left-6 hidden lg:block"
+            <img
+              src="/images/decorative/img-animation-5.png"
+              alt="Floating dot grid"
+              className="absolute -top-6 -left-6 hidden lg:block w-[130px] h-[130px] object-contain"
             />
           </div>
 
