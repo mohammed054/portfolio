@@ -16,24 +16,6 @@ function AboutPreview() {
               <Button to="/about/">About Us</Button>
               <span className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-secondary rounded-full" />
             </div>
-
-            <div className="grid grid-cols-4 gap-4 mt-14">
-              {[
-                { src: '/images/platforms/fiverr.png', alt: 'Fiverr logo' },
-                { src: '/images/platforms/upwork.png', alt: 'Upwork logo' },
-                { src: '/images/platforms/freelancer.png', alt: 'Freelancer logo' },
-                { src: '/images/platforms/snd-design.png', alt: 'SND Design logo' },
-              ].map((logo, i) => (
-                <div key={i} className="border border-card-border p-4 flex items-center justify-center bg-white">
-                  <img
-                    src={logo.src}
-                    alt={logo.alt}
-                    className="w-full h-[80px] object-contain"
-                    loading="lazy"
-                  />
-                </div>
-              ))}
-            </div>
           </Reveal>
 
           <Reveal variant="fadeRight" className="relative">
@@ -42,6 +24,12 @@ function AboutPreview() {
               alt="Illustration — person painting colorful abstract splash"
               className="w-full h-[450px] object-contain"
               loading="lazy"
+            />
+            <img
+              src="/images/decorative/img-animation-5-white.png"
+              alt=""
+              className="absolute -top-6 -right-6 hidden lg:block w-[130px] h-[130px] object-contain animate-float-slow"
+              aria-hidden="true"
             />
           </Reveal>
         </div>
