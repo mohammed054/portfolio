@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { motion, useMotionValue, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import SectionHeading from './shared/SectionHeading'
 import Reveal from './shared/Reveal'
@@ -18,7 +18,7 @@ const testimonials = [
     author: 'ginabuckney',
     role: 'Project Manager',
     avatarSrc: '/images/testimonials/ginabuckney.jpeg',
-    text: 'Saber is a great person to work with, very professional and goes above and beyond to ensure the customer is happy. He is very quick to respond to any request and provides advice to make the site better. He is very patient waiting for information and provides great support. I would definitely recommend him for a job and work with him again',
+    text: 'Saber is a great person to work with, very professional and goes above and beyond to ensure the customer is happy. He is very quick to respond to any request and provides advice to make the site better.',
     rating: 5,
   },
   {
@@ -34,7 +34,7 @@ const testimonials = [
     author: 'chrismoran',
     role: 'Project Manager',
     avatarSrc: '/images/testimonials/chrismoran.jpg',
-    text: 'this guy is awesome, his talent is great. He created an absolutely stunning site in a matter of days. He was very responsive and i was able to see the changes before my eyes. His professionalism and communication were awesome',
+    text: 'this guy is awesome, his talent is great. He created an absolutely stunning site in a matter of days. He was very responsive and i was able to see the changes before my eyes.',
     rating: 5,
   },
   {
@@ -42,7 +42,7 @@ const testimonials = [
     author: 'huiyin',
     role: 'Project Manager',
     avatarSrc: '/images/testimonials/huiyin.jpg',
-    text: 'Saber is by far the best FIverr Service provider I\'ve met. He offers me much more than I\'ve accepted. He even promised me for unlimited revisions as long as I need it help. where will you get this type of service? HIGHLY RECOMMEND SABER!',
+    text: 'Saber is by far the best FIverr Service provider I\'ve met. He offers me much more than I\'ve accepted. He even promised me for unlimited revisions as long as I need it help. HIGHLY RECOMMEND SABER!',
     rating: 5,
   },
   {
@@ -65,24 +65,23 @@ const testimonials = [
 
 function Testimonials() {
   const [current, setCurrent] = useState(0)
-  const containerRef = useRef(null)
-  const dragX = useMotionValue(0)
 
   const next = () => setCurrent((prev) => (prev + 1) % testimonials.length)
   const prev = () => setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length)
 
-  const handleDragEnd = (_, info) => {
-    const threshold = 50
-    if (info.offset.x < -threshold) next()
-    else if (info.offset.x > threshold) prev()
-  }
-
   return (
-    <section className="section-padding bg-light-bg">
+    <section className="section-padding bg-white">
       <div className="container-main">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_2.5fr] gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <Reveal variant="fadeLeft">
-            <SectionHeading eyebrow="TESTIMONIALS" title="Suggestions & Feedback" className="text-left mb-8" />
+            <div className="text-left">
+              <span className="inline-block text-[0.722rem] font-semibold tracking-[2px] uppercase mb-4" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA' }}>
+                Testimonials
+              </span>
+              <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight mb-8" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", color: '#222733' }}>
+                Suggestions & Feedback
+              </h2>
+            </div>
             <div className="flex gap-3">
               <button
                 onClick={prev}
@@ -100,38 +99,33 @@ function Testimonials() {
           </Reveal>
 
           <Reveal variant="fadeRight">
-            <div ref={containerRef} className="relative overflow-hidden">
+            <div className="relative overflow-hidden">
               <motion.div
-                className="flex gap-6 cursor-grab active:cursor-grabbing"
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.2}
-                onDragEnd={handleDragEnd}
-                style={{ x: dragX }}
-                animate={{ x: `-${current * 66.666}%` }}
+                className="flex cursor-grab active:cursor-grabbing"
+                animate={{ x: `-${current * 100}%` }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               >
                 {testimonials.map((t) => (
-                  <div key={t.id} className="min-w-[calc(66.666%-12px)] bg-white p-10 border border-card-border flex-shrink-0 max-md:min-w-full select-none">
+                  <div key={t.id} className="min-w-full px-2 select-none">
                     <div className="flex items-center gap-4 mb-6">
                       <img
                         src={t.avatarSrc}
                         alt={`Avatar — ${t.author}`}
-                        className="w-[56px] h-[56px] rounded-full flex-shrink-0 object-cover"
+                        className="w-[100px] h-[100px] rounded-full flex-shrink-0 object-cover"
                         loading="lazy"
                       />
                       <div>
-                        <div className="font-bold text-text-dark font-[Poppins]">{t.author}</div>
-                        <div className="text-[0.833rem] text-text-muted">{t.role}</div>
-                      </div>
-                      <div className="flex gap-0.5 ml-auto">
-                        {Array.from({ length: t.rating }).map((_, i) => (
-                          <Star key={i} size={14} className="star-filled" />
-                        ))}
+                        <h4 className="font-bold text-lg" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", color: '#222733' }}>{t.author}</h4>
+                        <div className="text-[0.833rem]" style={{ color: '#A5A6AA' }}>{t.role}</div>
+                        <div className="flex gap-0.5 mt-2">
+                          {Array.from({ length: t.rating }).map((_, i) => (
+                            <Star key={i} size={14} className="star-filled" />
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    <p className="text-text-muted leading-[1.7] italic text-[0.833rem]">
-                      &ldquo;{t.text}&rdquo;
+                    <p className="leading-[1.7] italic text-[16px]" style={{ color: '#6b6e71', fontFamily: "'europa', sans-serif" }}>
+                      {t.text}
                     </p>
                   </div>
                 ))}

@@ -109,8 +109,8 @@
     align-items: center;
     justify-content: center;
     padding: 17px 57px;
-    border-radius: 30px;
-    font-family: 'Poppins', sans-serif;
+    border-radius: 3px;
+    font-family: 'sofia-pro', 'Poppins', sans-serif;
     font-weight: 600;
     font-size: 0.833rem;
     transition: all 0.3s ease;
@@ -483,6 +483,15 @@
   button:focus-visible {
     outline: 2px solid #FF5B4A;
     outline-offset: 2px;
+  }
+
+  /* Scrollbar hide utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
   /* Prevent overscroll bounce on iOS */

@@ -22,7 +22,7 @@ function WhyChooseUs() {
               <div className="card-bordered p-10 text-center">
                 <div className="flex justify-center mb-6">
                   <div className="w-[70px] h-[70px] flex items-center justify-center text-secondary">
-                    <card.icon size={52} strokeWidth={1.5} />
+                    <card.icon size={52} strokeWidth={2} />
                   </div>
                 </div>
                 <h3 className="text-lg font-bold text-text-dark font-[Poppins]">{card.title}</h3>

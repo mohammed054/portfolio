@@ -9,11 +9,11 @@ const services = [
 
 function ServicesGallery() {
   return (
-    <section className="w-full">
+    <section className="w-full bg-dark-bg">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         {services.map((service, i) => (
           <Reveal key={service.id} delay={i * 0.1} variant="fadeUp" className="h-full">
-            <div className="img-hover-mask relative h-[550px] cursor-pointer">
+            <div className="img-hover-mask relative h-[560px] cursor-pointer">
               <img
                 src={service.src}
                 alt={`${service.title} — workspace photo`}
@@ -23,8 +23,8 @@ function ServicesGallery() {
               <div className="mask" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-[4] pointer-events-none" />
               <div className="absolute bottom-10 left-8 text-white z-[5]">
-                <span className="text-[0.833rem] font-medium block mb-2 opacity-80">{service.number}</span>
-                <h3 className="text-xl font-bold font-[Poppins]">{service.title}</h3>
+                <span className="text-[15px] font-medium block mb-2 opacity-80" style={{ fontFamily: "'europa', sans-serif" }}>{service.number}</span>
+                <h6 className="text-xl font-bold" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>{service.title}</h6>
               </div>
             </div>
           </Reveal>

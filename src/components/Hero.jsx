@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { Play } from 'lucide-react'
 
 const slides = [
   {
@@ -19,7 +18,7 @@ const slides = [
 ]
 
 const heroDecor = [
-  { type: 'dashed', className: 'absolute top-10 right-[20%] w-[140px] h-[130px] border border-dashed border-text-muted/20 z-[1]', strength: 20 },
+  { type: 'dashed', className: 'absolute top-10 right-[20%] w-[140px] h-[130px] border border-dashed border-[#6b6e71]/20 z-[1]', strength: 20 },
   { type: 'circle-secondary', className: 'absolute top-0 right-[10%] w-[230px] h-[230px] border-2 border-secondary/30 rounded-full z-[1]', strength: 30 },
   { type: 'circle-primary', className: 'absolute -bottom-20 left-0 w-[250px] h-[250px] border-2 border-primary/30 rounded-full z-[1]', strength: 25 },
 ]
@@ -49,7 +48,7 @@ function Hero() {
   }
 
   return (
-    <section ref={heroRef} onMouseMove={handleMouse} className="relative bg-light-bg min-h-screen flex items-center overflow-hidden">
+    <section ref={heroRef} onMouseMove={handleMouse} className="relative min-h-screen flex items-center overflow-hidden" style={{ backgroundColor: '#f9f9f9' }}>
       <div className="container-main w-full">
         <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] items-center gap-8 min-h-[calc(100vh-80px)]">
           <div className="relative z-10 py-20 max-lg:text-center max-lg:flex max-lg:flex-col max-lg:items-center">
@@ -58,7 +57,8 @@ function Hero() {
               initial="hidden"
               animate="visible"
               variants={fadeUp}
-              className="text-[clamp(36px,2.5rem+2vw,68px)] font-bold leading-[1.05] mb-6 text-text-dark font-[Poppins]"
+              className="text-[80px] max-lg:text-[43px] max-md:text-[36px] font-medium leading-[75px] max-lg:leading-[50px] max-md:leading-[42px] mb-6"
+              style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", color: '#1f242e', letterSpacing: '-2px' }}
             >
               {slides[currentSlide].heading}
             </motion.h1>
@@ -67,7 +67,8 @@ function Hero() {
               initial="hidden"
               animate="visible"
               variants={fadeUp}
-              className="text-[clamp(15px,0.95rem+0.2vw,18px)] text-text-muted leading-[1.7] mb-8 max-w-[520px]"
+              className="text-[19px] max-md:text-[16px] leading-[30px] mb-8 max-w-[564px]"
+              style={{ color: '#6b6e71', fontFamily: "'europa', sans-serif", fontWeight: 300 }}
             >
               {slides[currentSlide].text}
             </motion.p>
@@ -80,38 +81,22 @@ function Hero() {
             >
               <Link
                 to="/about/"
-                className="text-primary font-semibold text-[0.833rem] relative group"
+                className="relative group"
+                style={{ fontFamily: "'europa', sans-serif", color: '#1f242e', fontSize: '19px', fontWeight: 500, textDecoration: 'none' }}
               >
                 Discover More →
-                <span className="absolute bottom-0 left-0 w-full h-[2px] bg-primary scale-x-100 group-hover:scale-x-0 transition-transform duration-300 origin-left" />
+                <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#1f242e] scale-x-100 group-hover:scale-x-0 transition-transform duration-300 origin-center" />
               </Link>
               <div className="watch-intro flex items-center gap-3 cursor-pointer group">
-                <div className="play-ring w-[50px] h-[50px] border-2 border-secondary rounded-full flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-all duration-300 text-secondary">
-                  <Play size={16} className="ml-0.5" fill="currentColor" />
+                <div className="play-ring relative w-[50px] h-[50px] border-2 border-secondary rounded-full flex items-center justify-center group-hover:bg-secondary transition-all duration-300 text-secondary">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="ml-0.5">
+                    <polygon points="5,3 19,12 5,21" />
+                  </svg>
                 </div>
-                <span className="text-[0.611rem] font-bold tracking-[3px] uppercase text-text-dark">
+                <span className="text-[14px] font-medium tracking-[2px] uppercase" style={{ color: '#1f242e', fontFamily: "'europa', sans-serif" }}>
                   WATCH INTRO
                 </span>
               </div>
-            </motion.div>
-
-            {/* Slider navigation dots */}
-            <motion.div
-              custom={3}
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              className="flex gap-2 mt-12 max-lg:justify-center"
-            >
-              {slides.map((_, i) => (
-                <button
-                  key={i}
-                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                    i === currentSlide ? 'bg-primary w-8' : 'bg-border'
-                  }`}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
-              ))}
             </motion.div>
           </div>
 
