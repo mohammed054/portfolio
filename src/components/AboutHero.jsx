@@ -1,4 +1,5 @@
 import { MousePointer2, Share2, Target } from 'lucide-react'
+import Reveal from './shared/Reveal'
 
 const features = [
   { icon: MousePointer2, title: 'Creative Design', description: 'Get the best animation and interactive services for your business.' },
@@ -11,8 +12,7 @@ function AboutHero() {
     <section className="section-padding bg-white relative overflow-hidden">
       <div className="container-main">
         <div className="grid grid-cols-1 lg:grid-cols-[31.5%_17.8%_50%] gap-8 items-center">
-          {/* Left column - workspace image */}
-          <div className="relative">
+          <Reveal variant="fadeLeft" className="relative">
             <img
               src="/images/services/graphic-design.jpg"
               alt="Home-office desk setup"
@@ -21,20 +21,24 @@ function AboutHero() {
             <img
               src="/images/about/fiverr-profile.png"
               alt="Profile swap"
-              className="absolute -bottom-10 -right-10 hidden lg:block w-[200px] h-[240px] object-cover"
+              className="absolute -bottom-10 -right-10 hidden lg:block w-[200px] h-[240px] object-cover animate-float"
             />
             <img
               src="/images/decorative/img-animation-5.png"
               alt="Floating dot grid"
-              className="absolute -top-6 -left-6 hidden lg:block w-[130px] h-[130px] object-contain"
+              className="absolute -top-6 -left-6 hidden lg:block w-[130px] h-[130px] object-contain animate-float-slow"
             />
-          </div>
+            <img
+              src="/images/decorative/img-ellipse.png"
+              alt=""
+              className="absolute -bottom-16 -right-16 hidden lg:block w-[200px] h-[200px] object-contain animate-rotate-slow opacity-40"
+              aria-hidden="true"
+            />
+          </Reveal>
 
-          {/* Center column - spacer */}
           <div className="hidden lg:block" />
 
-          {/* Right column - text + features */}
-          <div>
+          <Reveal variant="fadeRight">
             <span className="eyebrow">
               Get to Know Us
             </span>
@@ -53,12 +57,12 @@ function AboutHero() {
                   </div>
                   <div>
                     <h3 className="font-bold text-text-dark mb-2 font-[Poppins]">{feature.title}</h3>
-                    <p className="text-text-muted text-[15px] leading-[1.7]">{feature.description}</p>
+                    <p className="text-text-muted text-[0.833rem] leading-[1.7]">{feature.description}</p>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

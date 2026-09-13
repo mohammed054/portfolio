@@ -14,10 +14,8 @@ function Header() {
   }, [])
 
   const navLinkClass = ({ isActive }) =>
-    `text-[15px] font-medium transition-colors duration-300 hover:text-primary ${
-      isActive
-        ? 'text-primary border-b-2 border-primary pb-1'
-        : 'text-text-dark'
+    `nav-underline text-[0.833rem] font-medium transition-colors duration-300 hover:text-primary pb-1 ${
+      isActive ? 'text-primary active' : 'text-text-dark'
     }`
 
   return (
@@ -59,7 +57,6 @@ function Header() {
         </div>
       </header>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-dark-bg z-[60] flex flex-col items-center justify-center gap-8 lg:hidden">
           <button
@@ -75,14 +72,13 @@ function Header() {
         </div>
       )}
 
-      {/* Side Panel */}
       {sidePanelOpen && (
         <div className="fixed inset-0 z-[70]">
           <div
             className="absolute inset-0 bg-black/50 transition-opacity"
             onClick={() => setSidePanelOpen(false)}
           />
-          <div className="absolute left-0 top-0 h-full w-[388px] bg-white p-10 flex flex-col max-sm:w-full max-sm:p-6">
+          <div className="absolute right-0 top-0 h-full w-[388px] bg-white p-10 flex flex-col max-sm:w-full max-sm:p-6">
             <button
               onClick={() => setSidePanelOpen(false)}
               className="self-end mb-10 w-10 h-10 flex items-center justify-center hover:text-primary transition-colors"
@@ -95,11 +91,18 @@ function Header() {
               <Link to="/our-portfolio/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors font-[Poppins]">Our Portfolio</Link>
               <Link to="/contact-us/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors font-[Poppins]">Contact Us</Link>
             </nav>
-            <div className="border-t border-footer-border pt-6 mt-auto">
-              <p className="text-sm text-text-muted mb-4 font-medium">Have a Project?</p>
-              <div className="flex gap-4">
-                <a href="mailto:info@sabernasr.com" className="text-sm text-text-muted hover:text-primary transition-colors">Email</a>
-                <a href="https://wa.me/201055544244" className="text-sm text-text-muted hover:text-primary transition-colors">WhatsApp</a>
+            <div className="border-t border-footer-border pt-6 mt-auto space-y-4">
+              <div>
+                <p className="text-[0.722rem] font-semibold tracking-wider uppercase text-text-muted mb-1 font-[Poppins]">Have a Project?</p>
+                <a href="mailto:info@website.com" className="text-[0.889rem] text-text-muted hover:text-primary transition-colors">info@website.com</a>
+              </div>
+              <div>
+                <p className="text-[0.722rem] font-semibold tracking-wider uppercase text-text-muted mb-1 font-[Poppins]">Want to Work with Me?</p>
+                <Link to="/about/" onClick={() => setSidePanelOpen(false)} className="text-[0.889rem] text-primary hover:text-primary-hover transition-colors">Send Brief</Link>
+              </div>
+              <div>
+                <p className="text-[0.722rem] font-semibold tracking-wider uppercase text-text-muted mb-1 font-[Poppins]">Want to Buy Illustrations?</p>
+                <a href="#" className="text-[0.889rem] text-primary hover:text-primary-hover transition-colors">Go to Shop</a>
               </div>
             </div>
           </div>
@@ -113,7 +116,7 @@ function PlaceholderLogo() {
   return (
     <div className="flex items-center gap-1.5">
       <img src="/images/logos/main-logo.png" alt="Saber Nasr Design" className="w-9 h-9 object-contain" />
-      <span className="font-bold text-[17px] text-text-dark tracking-tight font-[Poppins]">DESIGN</span>
+      <span className="font-bold text-[0.944rem] text-text-dark tracking-tight font-[Poppins]">DESIGN</span>
     </div>
   )
 }

@@ -1,3 +1,5 @@
+import Reveal from './shared/Reveal'
+
 const services = [
   { id: 'HOME-SERVICES-PANEL-1', number: '01.', title: 'Graphic Designs', src: '/images/services/graphic-design.jpg' },
   { id: 'HOME-SERVICES-PANEL-2', number: '02.', title: 'Web Development', src: '/images/services/web-development.jpg' },
@@ -9,19 +11,22 @@ function ServicesGallery() {
   return (
     <section className="w-full">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-        {services.map((service) => (
-          <div key={service.id} className="relative h-[550px] overflow-hidden group cursor-pointer">
-            <img
-              src={service.src}
-              alt={`${service.title} — workspace photo`}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-[1]" />
-            <div className="absolute bottom-10 left-8 text-white z-[2]">
-              <span className="text-sm font-medium block mb-2 opacity-80">{service.number}</span>
-              <h3 className="text-xl font-bold font-[Poppins]">{service.title}</h3>
+        {services.map((service, i) => (
+          <Reveal key={service.id} delay={i * 0.1} variant="fadeUp" className="h-full">
+            <div className="img-hover-mask relative h-[550px] cursor-pointer">
+              <img
+                src={service.src}
+                alt={`${service.title} — workspace photo`}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="mask" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-[4] pointer-events-none" />
+              <div className="absolute bottom-10 left-8 text-white z-[5]">
+                <span className="text-[0.833rem] font-medium block mb-2 opacity-80">{service.number}</span>
+                <h3 className="text-xl font-bold font-[Poppins]">{service.title}</h3>
+              </div>
             </div>
-          </div>
+          </Reveal>
         ))}
       </div>
     </section>

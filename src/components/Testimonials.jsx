@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import SectionHeading from './shared/SectionHeading'
+import Reveal from './shared/Reveal'
 
 const testimonials = [
   {
@@ -8,7 +9,7 @@ const testimonials = [
     author: 'banmas',
     role: 'Project Manager',
     avatarSrc: '/images/testimonials/banmas.png',
-    text: 'Saber is a great person to work with, very professional and goes above and beyond to ensure the customer is happy.',
+    text: 'One of the fastest people I\'ve worked with on Linkedin. very transparent and giving great advice. it was fun doing the website with him and will definitely do more with him later.',
     rating: 5,
   },
   {
@@ -16,7 +17,7 @@ const testimonials = [
     author: 'ginabuckney',
     role: 'Project Manager',
     avatarSrc: '/images/testimonials/ginabuckney.jpeg',
-    text: 'Saber is a great person to work with, very professional and goes above and beyond to ensure the customer is happy. He is very quick to respond to any request and provides advice to make the site better.',
+    text: 'Saber is a great person to work with, very professional and goes above and beyond to ensure the customer is happy. He is very quick to respond to any request and provides advice to make the site better. He is very patient waiting for information and provides great support. I would definitely recommend him for a job and work with him again',
     rating: 5,
   },
   {
@@ -24,7 +25,7 @@ const testimonials = [
     author: 'bollybeatz',
     role: 'Project Manager',
     avatarSrc: '/images/testimonials/bollybeatz.png',
-    text: 'Best WordPress developer available and very quick in development.',
+    text: 'Best WordPress developer I have ever found on Fiverr, great communication, always available and very quick in his work. I will be contacting him for all my future development.',
     rating: 5,
   },
   {
@@ -32,7 +33,7 @@ const testimonials = [
     author: 'chrismoran',
     role: 'Project Manager',
     avatarSrc: '/images/testimonials/chrismoran.jpg',
-    text: 'Saber is a fantastic developer. He delivered exactly what we needed and was very responsive throughout the project.',
+    text: 'this guy is awesome, his talent is great. He created an absolutely stunning site in a matter of days. He was very responsive and i was able to see the changes before my eyes. His professionalism and communication were awesome',
     rating: 5,
   },
   {
@@ -40,7 +41,7 @@ const testimonials = [
     author: 'huiyin',
     role: 'Project Manager',
     avatarSrc: '/images/testimonials/huiyin.jpg',
-    text: 'Excellent work and great communication. Saber understood our requirements perfectly and delivered on time.',
+    text: 'Saber is by far the best FIverr Service provider I\'ve met. He offers me much more than I\'ve accepted. He even promised me for unlimited revisions as long as I need it help. where will you get this type of service? HIGHLY RECOMMEND SABER!',
     rating: 5,
   },
   {
@@ -48,7 +49,7 @@ const testimonials = [
     author: 'mohamednawar',
     role: 'Project Manager',
     avatarSrc: '/images/testimonials/mohamednawar.jpg',
-    text: 'Very professional and skilled developer. Highly recommend Saber for any web development project.',
+    text: 'Excellent Redesign! I recommend him for redesigns and fixes on WordPress sites. He is highly qualified and easy to work with. thank you so much',
     rating: 5,
   },
   {
@@ -56,7 +57,7 @@ const testimonials = [
     author: 'torecompany',
     role: 'Project Manager',
     avatarSrc: '/images/testimonials/torecompany.png',
-    text: 'Saber delivered outstanding results. His attention to detail and creative approach exceeded our expectations.',
+    text: 'This guy is amazing))) he just need some motivation and inspiration))) which I gave him a lot))) now he fixed all problems and so quickly))) I believed in him, I know when he wants something he will do it))) Thank you',
     rating: 5,
   },
 ]
@@ -71,7 +72,7 @@ function Testimonials() {
     <section className="section-padding bg-light-bg">
       <div className="container-main">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2.5fr] gap-12 items-start">
-          <div>
+          <Reveal variant="fadeLeft">
             <SectionHeading eyebrow="TESTIMONIALS" title="Suggestions & Feedback" className="text-left mb-8" />
             <div className="flex gap-3">
               <button
@@ -87,38 +88,40 @@ function Testimonials() {
                 <ChevronRight size={18} />
               </button>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="relative overflow-hidden">
-            <div
-              className="flex gap-6 transition-transform duration-500 ease-out"
-              style={{ transform: `translateX(-${current * 66.666}%)` }}
-            >
-              {testimonials.map((t) => (
-                <div key={t.id} className="min-w-[calc(66.666%-12px)] bg-white p-10 border border-card-border flex-shrink-0 max-md:min-w-full">
-                  <div className="flex items-center gap-4 mb-6">
-                    <img
-                      src={t.avatarSrc}
-                      alt={`Avatar — ${t.author}`}
-                      className="w-[56px] h-[56px] rounded-full flex-shrink-0 object-cover"
-                    />
-                    <div>
-                      <div className="font-bold text-text-dark font-[Poppins]">{t.author}</div>
-                      <div className="text-sm text-text-muted">{t.role}</div>
+          <Reveal variant="fadeRight">
+            <div className="relative overflow-hidden">
+              <div
+                className="flex gap-6 transition-transform duration-500 ease-out"
+                style={{ transform: `translateX(-${current * 66.666}%)` }}
+              >
+                {testimonials.map((t) => (
+                  <div key={t.id} className="min-w-[calc(66.666%-12px)] bg-white p-10 border border-card-border flex-shrink-0 max-md:min-w-full">
+                    <div className="flex items-center gap-4 mb-6">
+                      <img
+                        src={t.avatarSrc}
+                        alt={`Avatar — ${t.author}`}
+                        className="w-[56px] h-[56px] rounded-full flex-shrink-0 object-cover"
+                      />
+                      <div>
+                        <div className="font-bold text-text-dark font-[Poppins]">{t.author}</div>
+                        <div className="text-[0.833rem] text-text-muted">{t.role}</div>
+                      </div>
+                      <div className="flex gap-0.5 ml-auto">
+                        {Array.from({ length: t.rating }).map((_, i) => (
+                          <Star key={i} size={14} className="star-filled" />
+                        ))}
+                      </div>
                     </div>
-                    <div className="flex gap-0.5 ml-auto">
-                      {Array.from({ length: t.rating }).map((_, i) => (
-                        <Star key={i} size={14} className="star-filled" />
-                      ))}
-                    </div>
+                    <p className="text-text-muted leading-[1.7] italic text-[0.833rem]">
+                      &ldquo;{t.text}&rdquo;
+                    </p>
                   </div>
-                  <p className="text-text-muted leading-[1.7] italic text-[15px]">
-                    &ldquo;{t.text}&rdquo;
-                  </p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

@@ -13,13 +13,13 @@ function Footer() {
   return (
     <footer className="bg-dark-bg text-footer-text">
       <div className="container-main flex items-center justify-between py-7 max-md:flex-col max-md:gap-5">
-        <div className="text-sm font-medium">
+        <div className="text-[0.833rem] font-medium">
           &copy; 2026 All Rights Reserved to Saber Nasr.
         </div>
 
         <Link to="/" className="flex items-center gap-1.5">
           <img src="/images/logos/footer-logo-light.png" alt="Saber Nasr Design" className="w-9 h-9 object-contain" />
-          <span className="font-bold text-[17px] text-white tracking-tight font-[Poppins]">DESIGN</span>
+          <span className="font-bold text-[0.944rem] text-white tracking-tight font-[Poppins]">DESIGN</span>
         </Link>
 
         <div className="flex items-center gap-3">
