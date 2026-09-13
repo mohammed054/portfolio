@@ -82,7 +82,7 @@ function Hero() {
                 to="/about/"
                 className="text-primary font-semibold text-[0.833rem] relative group"
               >
-                Discover More
+                Discover More →
                 <span className="absolute bottom-0 left-0 w-full h-[2px] bg-primary scale-x-100 group-hover:scale-x-0 transition-transform duration-300 origin-left" />
               </Link>
               <div className="watch-intro flex items-center gap-3 cursor-pointer group">

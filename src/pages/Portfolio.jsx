@@ -12,36 +12,38 @@ const categories = [
 ]
 
 const portfolioItems = [
-  { name: 'Mustadeem Store', category: 'web', href: 'https://mustadeem.ae/' },
-  { name: 'Mkayn Store', category: 'web', href: 'https://mkayn.com/' },
-  { name: 'HELIX CATALOG', category: 'pdfs', href: 'https://sabernasr.com/portfolio/helix-catalog/' },
-  { name: 'Sealy Collection', category: 'pdfs', href: 'https://sabernasr.com/portfolio/sealy-collection/' },
-  { name: 'Sealy Products 2021', category: 'pdfs', href: 'https://sabernasr.com/portfolio/sealy-products-2021/' },
-  { name: 'Sealy Middle East', category: 'video', href: 'https://sabernasr.com/portfolio/sealy-middle-east/' },
-  { name: 'Saudi Holiday Travel', category: 'web', href: 'https://saudiholidays.travel/' },
-  { name: 'Crypto Sense', category: 'web', href: 'https://cryptosense.space/' },
-  { name: 'Maktabi', category: 'web', href: 'https://maktabitech.com/' },
-  { name: 'Sealy March 2024', category: 'social-media', href: 'https://sabernasr.com/portfolio/sealy-march-2024/' },
-  { name: 'Saudi Founding Day', category: 'social-media', href: 'https://sabernasr.com/portfolio/saudi-founding-day-3/' },
-  { name: 'Sealy Feb 2024', category: 'social-media', href: 'https://sabernasr.com/portfolio/sealy-social-media/' },
-  { name: 'Sealy Mattress', category: 'video', href: 'https://sabernasr.com/portfolio/sealy-mattress/' },
-  { name: 'Saudi Founding Day', category: 'video', href: 'https://sabernasr.com/portfolio/saudi-founding-day-2/' },
-  { name: 'Saudi Founding Day', category: 'video', href: 'https://sabernasr.com/portfolio/saudi-founding-day/' },
-  { name: 'Valent Health Logo', category: 'logo', href: 'https://sabernasr.com/portfolio/valent-health-logo/' },
-  { name: 'Apachi Restaurant', category: 'social-media', href: 'https://sabernasr.com/portfolio/apachi/' },
-  { name: 'Zahi Company', category: 'social-media', href: 'https://sabernasr.com/portfolio/zahi/' },
-  { name: 'ALtahrir Koshary', category: 'social-media', href: 'https://sabernasr.com/portfolio/altahrir-koshary/' },
-  { name: 'Tayebat Alsham', category: 'social-media', href: 'https://sabernasr.com/portfolio/tayebat-alsham/' },
-  { name: 'Asaad', category: 'web', href: 'https://asaad.org/' },
-  { name: 'Latelierdenaila', category: 'web', href: 'https://latelierdenaila.fr/' },
-  { name: 'Sealyme', category: 'web', href: 'https://sealyme.com/' },
-  { name: 'Sweet Diet', category: 'web', href: 'https://www.sweet-diet.com/' },
-  { name: 'Lean Community', category: 'web', href: 'https://market.leancommunity.org/' },
-  { name: 'My It Guide', category: 'web', href: 'https://myitguide.tech/' },
-  { name: 'Emoji Pizza', category: 'web', href: 'https://emojipizzasa.com/' },
-  { name: 'Glassfitti', category: 'web', href: 'https://glassfitti.com/' },
-  { name: 'Blue Print', category: 'web', href: 'https://blueprintmanagement.ca/' },
-  { name: 'Blue Blog', category: 'web', href: 'https://blueprintmanagement.ca/blog/' },
+  { name: 'Mustadeem Store', category: 'web', href: 'https://mustadeem.ae/', img: '/images/portfolio/mustadeem.jpg' },
+  { name: 'Mkayn Store', category: 'web', href: 'https://mkayn.com/', img: '/images/portfolio/mkayn-store.jpg' },
+  { name: 'HELIX CATALOG', category: 'pdfs', href: 'https://sabernasr.com/portfolio/helix-catalog/', img: '/images/portfolio/helix-catalog.jpg' },
+  { name: 'Sealy Collection', category: 'pdfs', href: 'https://sabernasr.com/portfolio/sealy-collection/', img: '/images/portfolio/sealy-collection.jpg' },
+  { name: 'Sealy Products 2021', category: 'pdfs', href: 'https://sabernasr.com/portfolio/sealy-products-2021/', img: '/images/portfolio/sealy-products.jpg' },
+  { name: 'Sealy Middle East', category: 'video', href: 'https://sabernasr.com/portfolio/sealy-middle-east/', img: '/images/portfolio/sealy-middle-east.jpg' },
+  { name: 'Saudi Holiday Travel', category: 'web', href: 'https://saudiholidays.travel/', img: '/images/portfolio/saudi-holiday.jpg' },
+  { name: 'Crypto Sense', category: 'web', href: 'https://cryptosense.space/', img: '/images/portfolio/crypto-sense.jpg' },
+  { name: 'Maktabi', category: 'web', href: 'https://maktabitech.com/', img: '/images/portfolio/maktabi.jpg' },
+  { name: 'Sealy March 2024', category: 'social-media', href: 'https://sabernasr.com/portfolio/sealy-march-2024/', img: '/images/portfolio/sealy-march.jpg' },
+  { name: 'Saudi Founding Day', category: 'social-media', href: 'https://sabernasr.com/portfolio/saudi-founding-day-3/', img: '/images/portfolio/saudi-founding-3.jpg' },
+  { name: 'Sealy Feb 2024', category: 'social-media', href: 'https://sabernasr.com/portfolio/sealy-social-media/', img: '/images/portfolio/sealy-social.jpg' },
+  { name: 'Sealy Mattress', category: 'video', href: 'https://sabernasr.com/portfolio/sealy-mattress/', img: '/images/portfolio/sealy-mattress.jpg' },
+  { name: 'Saudi Founding Day', category: 'video', href: 'https://sabernasr.com/portfolio/saudi-founding-day-2/', img: '/images/portfolio/saudi-founding-2.jpg' },
+  { name: 'Saudi Founding Day', category: 'video', href: 'https://sabernasr.com/portfolio/saudi-founding-day/', img: '/images/portfolio/saudi-founding-1.jpg' },
+  { name: 'Valent Health Logo', category: 'logo', href: 'https://sabernasr.com/portfolio/valent-health-logo/', img: '/images/portfolio/valent-health.jpg' },
+  { name: 'Apachi Restaurant', category: 'social-media', href: 'https://sabernasr.com/portfolio/apachi/', img: '/images/portfolio/apachi.jpg' },
+  { name: 'Zahi Company', category: 'social-media', href: 'https://sabernasr.com/portfolio/zahi/', img: '/images/portfolio/zahi.jpg' },
+  { name: 'ALtahrir Koshary', category: 'social-media', href: 'https://sabernasr.com/portfolio/altahrir-koshary/', img: '/images/portfolio/altahrir.jpg' },
+  { name: 'Tayebat Alsham', category: 'social-media', href: 'https://sabernasr.com/portfolio/tayebat-alsham/', img: '/images/portfolio/tayebat.jpg' },
+  { name: 'Asaad', category: 'web', href: 'https://asaad.org/', img: '/images/portfolio/asaad.jpg' },
+  { name: 'Latelierdenaila', category: 'web', href: 'https://latelierdenaila.fr/', img: '/images/portfolio/latelier.jpg' },
+  { name: 'Sealyme', category: 'web', href: 'https://sealyme.com/', img: '/images/portfolio/sealyme.jpg' },
+  { name: 'Sweet Diet', category: 'web', href: 'https://www.sweet-diet.com/', img: '/images/portfolio/sweet-diet.jpg' },
+  { name: 'Lean Community', category: 'web', href: 'https://market.leancommunity.org/', img: '/images/portfolio/lean-community.jpg' },
+  { name: 'My It Guide', category: 'web', href: 'https://myitguide.tech/', img: '/images/portfolio/my-it-guide.jpg' },
+  { name: 'Emoji Pizza', category: 'web', href: 'https://emojipizzasa.com/', img: '/images/portfolio/emoji-pizza.jpg' },
+  { name: 'Glassfitti', category: 'web', href: 'https://glassfitti.com/', img: '/images/portfolio/glassfitti.jpg' },
+  { name: 'Blue Print', category: 'web', href: 'https://blueprintmanagement.ca/', img: '/images/portfolio/blue-print.jpg' },
+  { name: 'Blue Blog', category: 'web', href: 'https://blueprintmanagement.ca/blog/', img: '/images/portfolio/blue-blog.jpg' },
+  { name: 'Lavanta Care', category: 'web', href: 'https://lavantacare.com/', img: '/images/portfolio/lavanta-care.jpg' },
+  { name: 'View Dubai', category: 'web', href: 'https://www.viewdubai.net/', img: '/images/portfolio/view-dubai.jpg' },
 ]
 
 function Portfolio() {
@@ -53,7 +55,6 @@ function Portfolio() {
       <div className="container-main">
         <Reveal>
           <SectionHeading
-            eyebrow="PORTFOLIO"
             title="Our Portfolio"
             className="mb-12"
           />
@@ -90,7 +91,7 @@ function Portfolio() {
               >
                 <div className="img-hover-mask aspect-[4/3] cursor-pointer bg-light-bg border border-card-border">
                   <img
-                    src={`/images/portfolio/mustadeem.jpg`}
+                    src={item.img}
                     alt={item.name}
                     className="w-full h-full object-cover"
                   />

@@ -35,7 +35,28 @@ function Header() {
         <nav className="hidden lg:flex items-center gap-8">
           <NavLink to="/" className={navLinkClass}>Home</NavLink>
           <NavLink to="/about/" className={navLinkClass}>About Us</NavLink>
-          <NavLink to="/our-portfolio/" className={navLinkClass}>Our Portfolio</NavLink>
+          <div className="relative group">
+            <NavLink to="/our-portfolio/" className={navLinkClass}>Our Portfolio</NavLink>
+            <div className="absolute top-full left-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div className="bg-white border border-card-border rounded-lg shadow-lg py-2 min-w-[180px]">
+                {[
+                  { slug: 'web', label: 'Web' },
+                  { slug: 'logo', label: 'Logo' },
+                  { slug: 'social-media', label: 'Social Media' },
+                  { slug: 'pdfs', label: 'PDFs' },
+                  { slug: 'video', label: 'Video' },
+                ].map((sub) => (
+                  <NavLink
+                    key={sub.slug}
+                    to={`/our-portfolio/${sub.slug}/`}
+                    className="block px-5 py-2.5 text-[0.833rem] text-text-dark hover:text-primary hover:bg-light-bg transition-colors font-[Poppins]"
+                  >
+                    {sub.label}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
+          </div>
           <NavLink to="/contact-us/" className={navLinkClass}>Contact Us</NavLink>
         </nav>
 
@@ -122,7 +143,7 @@ function Header() {
             <div className="border-t border-footer-border pt-6 mt-auto space-y-4">
               <div>
                 <p className="text-[0.722rem] font-semibold tracking-wider uppercase text-text-muted mb-1 font-[Poppins]">Have a Project?</p>
-                <a href="mailto:info@website.com" className="text-[0.889rem] text-text-muted hover:text-primary transition-colors">info@website.com</a>
+                <a href="mailto:info@sabernasr.com" className="text-[0.889rem] text-text-muted hover:text-primary transition-colors">info@sabernasr.com</a>
               </div>
               <div>
                 <p className="text-[0.722rem] font-semibold tracking-wider uppercase text-text-muted mb-1 font-[Poppins]">Want to Work with Me?</p>
@@ -144,7 +165,7 @@ function Header() {
 function PlaceholderLogo() {
   return (
     <div className="flex items-center gap-1.5">
-      <img src="/images/logos/main-logo.png" alt="Saber Nasr Design" className="w-9 h-9 object-contain" />
+          <img src="/images/logos/main-logo.png" alt="Saber Nasr Design" className="max-h-[40px] w-auto object-contain" />
       <span className="font-bold text-[0.944rem] text-text-dark tracking-tight font-[Poppins]">DESIGN</span>
     </div>
   )

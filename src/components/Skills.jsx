@@ -28,21 +28,25 @@ function FloatingIcon({ icon, mouseX, mouseY }) {
   const springY = useSpring(y, { stiffness: 50, damping: 20 })
 
   return (
-    <motion.img
+    <motion.div
       key={icon.id}
-      src={`/images/skills/${icon.id}.png`}
-      alt={`${icon.id} icon`}
-      className="absolute rounded-full"
-      loading="lazy"
+      className="absolute bg-white p-[5px] rounded-full shadow-[0px_3px_16px_0px_rgba(0,0,0,0.08)]"
       style={{
         left: icon.left,
         top: icon.top,
-        width: icon.size,
-        height: icon.size,
+        width: icon.size + 10,
+        height: icon.size + 10,
         x: springX,
         y: springY,
       }}
-    />
+    >
+      <img
+        src={`/images/skills/${icon.id}.png`}
+        alt={`${icon.id} icon`}
+        className="w-full h-full object-contain rounded-full"
+        loading="lazy"
+      />
+    </motion.div>
   )
 }
 

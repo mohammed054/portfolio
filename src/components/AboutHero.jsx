@@ -18,11 +18,13 @@ function AboutHero() {
               alt="Home-office desk setup"
               className="w-full h-[320px] object-cover"
             />
-            <img
-              src="/images/about/fiverr-profile.png"
-              alt="Profile swap"
-              className="absolute -bottom-10 -right-10 hidden lg:block w-[200px] h-[240px] object-cover animate-float"
-            />
+            <div className="absolute -bottom-10 -right-10 hidden lg:block w-[210px] h-[250px] animate-float">
+              <img
+                src="/images/about/fiverr-profile.png"
+                alt="Profile swap"
+                className="w-full h-full object-cover rounded-full p-[5px] bg-white shadow-[0px_3px_16px_0px_rgba(0,0,0,0.08)]"
+              />
+            </div>
             <img
               src="/images/decorative/img-animation-5.png"
               alt="Floating dot grid"

@@ -12,17 +12,17 @@ function FacebookIcon({ size = 16 }) {
 function Footer() {
   return (
     <footer className="bg-dark-bg text-footer-text">
-      <div className="container-main flex items-center justify-between py-7 max-md:flex-col max-md:gap-5">
+      <div className="container-main grid grid-cols-[40%_19.332%_auto] items-center py-6 max-md:grid-cols-1 max-md:gap-5 max-md:text-center">
         <div className="text-[0.833rem] font-medium">
           &copy; 2026 All Rights Reserved to Saber Nasr.
         </div>
 
-        <Link to="/" className="flex items-center gap-1.5">
-          <img src="/images/logos/footer-logo-light.png" alt="Saber Nasr Design" className="w-9 h-9 object-contain" />
+        <Link to="/" className="flex items-center gap-1.5 max-md:justify-center">
+          <img src="/images/logos/footer-logo-light.png" alt="Saber Nasr Design" className="max-h-[40px] w-auto object-contain" />
           <span className="font-bold text-[0.944rem] text-white tracking-tight font-[Poppins]">DESIGN</span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 max-md:justify-center">
           <a href="https://www.facebook.com/Saber.Nasr.Elbendary/" target="_blank" rel="noopener noreferrer" className="footer-social-icon">
             <FacebookIcon size={16} />
           </a>
