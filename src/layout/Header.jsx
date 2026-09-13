@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Search, Grid3X3, Menu, X } from 'lucide-react'
 
 function Header() {
@@ -57,28 +58,55 @@ function Header() {
         </div>
       </header>
 
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-dark-bg z-[60] flex flex-col items-center justify-center gap-8 lg:hidden">
-          <button
-            onClick={() => setMobileMenuOpen(false)}
-            className="absolute top-5 right-5 text-white w-10 h-10 flex items-center justify-center"
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-dark-bg z-[60] flex flex-col items-center justify-center gap-8 lg:hidden"
           >
-            <X size={24} />
-          </button>
-          <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-white text-2xl font-semibold font-[Poppins]">Home</Link>
-          <Link to="/about/" onClick={() => setMobileMenuOpen(false)} className="text-white text-2xl font-semibold font-[Poppins]">About Us</Link>
-          <Link to="/our-portfolio/" onClick={() => setMobileMenuOpen(false)} className="text-white text-2xl font-semibold font-[Poppins]">Our Portfolio</Link>
-          <Link to="/contact-us/" onClick={() => setMobileMenuOpen(false)} className="text-white text-2xl font-semibold font-[Poppins]">Contact Us</Link>
-        </div>
-      )}
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="absolute top-5 right-5 text-white w-10 h-10 flex items-center justify-center"
+            >
+              <X size={24} />
+            </button>
+            {['Home', 'About Us', 'Our Portfolio', 'Contact Us'].map((label, i) => {
+              const path = label === 'Home' ? '/' : label === 'About Us' ? '/about/' : label === 'Our Portfolio' ? '/our-portfolio/' : '/contact-us/'
+              return (
+                <motion.div
+                  key={label}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 + 0.1 }}
+                >
+                  <Link to={path} onClick={() => setMobileMenuOpen(false)} className="text-white text-2xl font-semibold font-[Poppins]">{label}</Link>
+                </motion.div>
+              )
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {sidePanelOpen && (
-        <div className="fixed inset-0 z-[70]">
-          <div
-            className="absolute inset-0 bg-black/50 transition-opacity"
-            onClick={() => setSidePanelOpen(false)}
-          />
-          <div className="absolute right-0 top-0 h-full w-[388px] bg-white p-10 flex flex-col max-sm:w-full max-sm:p-6">
+      <AnimatePresence>
+        {sidePanelOpen && (
+          <div className="fixed inset-0 z-[70]">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/50 transition-opacity"
+              onClick={() => setSidePanelOpen(false)}
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
+              className="absolute right-0 top-0 h-full w-[388px] bg-white p-10 flex flex-col max-sm:w-full max-sm:p-6"
+            >
             <button
               onClick={() => setSidePanelOpen(false)}
               className="self-end mb-10 w-10 h-10 flex items-center justify-center hover:text-primary transition-colors"
@@ -105,9 +133,10 @@ function Header() {
                 <a href="#" className="text-[0.889rem] text-primary hover:text-primary-hover transition-colors">Go to Shop</a>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
-      )}
+        )}
+      </AnimatePresence>
     </>
   )
 }

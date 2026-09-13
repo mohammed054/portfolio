@@ -29,6 +29,7 @@ function Platforms() {
                   src={platform.src}
                   alt={platform.label}
                   className="w-[180px] h-[60px] object-contain"
+                  loading="lazy"
                 />
                 <div className="text-center">
                   <h3 className="text-sm font-bold text-text-dark font-[Poppins]">{platform.label}</h3>

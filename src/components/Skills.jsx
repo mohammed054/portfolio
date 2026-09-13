@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion'
+import { motion, useMotionValue, useTransform, useSpring, useInView } from 'framer-motion'
 import SectionHeading from './shared/SectionHeading'
 import Button from './shared/Button'
 import Reveal from './shared/Reveal'
@@ -33,6 +33,7 @@ function FloatingIcon({ icon, mouseX, mouseY }) {
       src={`/images/skills/${icon.id}.png`}
       alt={`${icon.id} icon`}
       className="absolute rounded-full"
+      loading="lazy"
       style={{
         left: icon.left,
         top: icon.top,
@@ -42,6 +43,26 @@ function FloatingIcon({ icon, mouseX, mouseY }) {
         y: springY,
       }}
     />
+  )
+}
+
+function ProgressBar({ skill }) {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
+  return (
+    <div ref={ref}>
+      <div className="flex justify-between mb-3">
+        <span className="font-semibold text-white text-[0.833rem]">{skill.name}</span>
+        <span className="text-white/70 text-[0.833rem]">{skill.percentage}%</span>
+      </div>
+      <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-primary rounded-full transition-all duration-[1500ms] ease-out"
+          style={{ width: inView ? `${skill.percentage}%` : '0%' }}
+        />
+      </div>
+    </div>
   )
 }
 
@@ -70,18 +91,7 @@ function Skills() {
 
             <div className="space-y-8 mb-10">
               {skills.map((skill) => (
-                <div key={skill.name}>
-                  <div className="flex justify-between mb-3">
-                    <span className="font-semibold text-white text-[0.833rem]">{skill.name}</span>
-                    <span className="text-white/70 text-[0.833rem]">{skill.percentage}%</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full"
-                      style={{ width: `${skill.percentage}%` }}
-                    />
-                  </div>
-                </div>
+                <ProgressBar key={skill.name} skill={skill} />
               ))}
             </div>
 

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { motion, useMotionValue, useTransform } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import SectionHeading from './shared/SectionHeading'
 import Reveal from './shared/Reveal'
@@ -64,9 +65,17 @@ const testimonials = [
 
 function Testimonials() {
   const [current, setCurrent] = useState(0)
+  const containerRef = useRef(null)
+  const dragX = useMotionValue(0)
 
   const next = () => setCurrent((prev) => (prev + 1) % testimonials.length)
   const prev = () => setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+
+  const handleDragEnd = (_, info) => {
+    const threshold = 50
+    if (info.offset.x < -threshold) next()
+    else if (info.offset.x > threshold) prev()
+  }
 
   return (
     <section className="section-padding bg-light-bg">
@@ -91,18 +100,25 @@ function Testimonials() {
           </Reveal>
 
           <Reveal variant="fadeRight">
-            <div className="relative overflow-hidden">
-              <div
-                className="flex gap-6 transition-transform duration-500 ease-out"
-                style={{ transform: `translateX(-${current * 66.666}%)` }}
+            <div ref={containerRef} className="relative overflow-hidden">
+              <motion.div
+                className="flex gap-6 cursor-grab active:cursor-grabbing"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={handleDragEnd}
+                style={{ x: dragX }}
+                animate={{ x: `-${current * 66.666}%` }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               >
                 {testimonials.map((t) => (
-                  <div key={t.id} className="min-w-[calc(66.666%-12px)] bg-white p-10 border border-card-border flex-shrink-0 max-md:min-w-full">
+                  <div key={t.id} className="min-w-[calc(66.666%-12px)] bg-white p-10 border border-card-border flex-shrink-0 max-md:min-w-full select-none">
                     <div className="flex items-center gap-4 mb-6">
                       <img
                         src={t.avatarSrc}
                         alt={`Avatar — ${t.author}`}
                         className="w-[56px] h-[56px] rounded-full flex-shrink-0 object-cover"
+                        loading="lazy"
                       />
                       <div>
                         <div className="font-bold text-text-dark font-[Poppins]">{t.author}</div>
@@ -119,7 +135,7 @@ function Testimonials() {
                     </p>
                   </div>
                 ))}
-              </div>
+              </motion.div>
             </div>
           </Reveal>
         </div>

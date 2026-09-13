@@ -53,6 +53,7 @@ function PortfolioSlider() {
                   src={item.src}
                   alt={item.name}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
                 <div className="mask" />
               </div>

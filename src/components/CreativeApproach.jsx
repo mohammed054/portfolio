@@ -12,6 +12,7 @@ function CreativeApproach() {
                 src="/images/services/digital-agency.jpg"
                 alt="Digital agency workspace photo"
                 className="w-full h-[500px] object-cover"
+                loading="lazy"
               />
               <img
                 src="/images/decorative/about-us-white.svg"

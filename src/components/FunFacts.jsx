@@ -1,3 +1,5 @@
+import { useRef, useState, useEffect } from 'react'
+import { useInView } from 'framer-motion'
 import { User, Target, Trophy } from 'lucide-react'
 import SectionHeading from './shared/SectionHeading'
 import Reveal from './shared/Reveal'
@@ -33,15 +35,34 @@ function FunFacts() {
 }
 
 function StatItem({ stat }) {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    if (!inView) return
+    let start = 0
+    const end = stat.value
+    const duration = 1500
+    const step = end <= 1000 ? 10 : end <= 2000 ? 20 : 30
+    const stepTime = (duration / end) * step
+    const timer = setInterval(() => {
+      start += step
+      if (start >= end) { start = end; clearInterval(timer) }
+      setCount(start)
+    }, stepTime)
+    return () => clearInterval(timer)
+  }, [inView, stat.value])
+
   return (
-      <div className="text-center">
+    <div ref={ref} className="text-center">
       <div className="flex justify-center mb-5">
         <div className="w-[90px] h-[90px] flex items-center justify-center text-[#D1D5DB]">
           <stat.icon size={72} strokeWidth={1} />
         </div>
       </div>
       <div className="text-[clamp(40px,3rem+1vw,56px)] font-bold text-text-dark mb-2 font-[Poppins]">
-        0+
+        {count.toLocaleString()}{stat.suffix}
       </div>
       <p className="text-text-muted text-[0.944rem]">{stat.label}</p>
     </div>

@@ -126,6 +126,7 @@
   .btn-pill-primary:hover {
     background-color: #FD4431;
     box-shadow: 0 7px 25px rgba(255, 91, 74, 0.2);
+    transform: translateY(-2px);
   }
 
   .btn-pill-outline {
@@ -137,6 +138,7 @@
   .btn-pill-outline:hover {
     background-color: #FF5B4A;
     color: white;
+    transform: translateY(-2px);
   }
 
   .eyebrow {
@@ -427,5 +429,66 @@
 
   .page-transition-overlay.exiting {
     animation: page-transition-out 0.6s ease-in-out forwards;
+  }
+
+  /* Lazy image placeholder */
+  img[loading="lazy"] {
+    background-color: #E5E7EB;
+  }
+
+  /* Smooth image load-in */
+  img {
+    transition: opacity 0.3s ease;
+  }
+
+  /* Touch-friendly tap targets on mobile */
+  @media (max-width: 767px) {
+    a, button {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    .section-padding {
+      padding: 60px 0;
+    }
+
+    .btn-pill {
+      padding: 14px 36px;
+      font-size: 0.778rem;
+    }
+
+    .card-bordered {
+      padding: 24px;
+    }
+  }
+
+  /* Tablet adjustments */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .section-padding {
+      padding: 80px 0;
+    }
+  }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Focus visible for accessibility */
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid #FF5B4A;
+    outline-offset: 2px;
+  }
+
+  /* Prevent overscroll bounce on iOS */
+  @supports (-webkit-touch-callout: none) {
+    body {
+      -webkit-overflow-scrolling: touch;
+    }
   }
 }

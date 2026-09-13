@@ -29,6 +29,7 @@ function AboutPlatforms() {
                   src={platform.src}
                   alt={platform.label}
                   className="w-[180px] h-[60px] object-contain"
+                  loading="lazy"
                 />
               </a>
             ))}

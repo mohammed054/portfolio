@@ -37,6 +37,7 @@ function CountdownCTA() {
         src="/images/services/digital-agency.jpg"
         alt="CTA background"
         className="absolute inset-0 w-full h-full object-cover opacity-20"
+        loading="lazy"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/80 via-dark-bg/60 to-dark-bg/80 z-[1]" />
 

@@ -18,6 +18,7 @@ function ServicesGallery() {
                 src={service.src}
                 alt={`${service.title} — workspace photo`}
                 className="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
               />
               <div className="mask" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-[4] pointer-events-none" />

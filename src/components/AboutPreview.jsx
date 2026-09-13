@@ -29,6 +29,7 @@ function AboutPreview() {
                     src={logo.src}
                     alt={logo.alt}
                     className="w-full h-[80px] object-contain"
+                    loading="lazy"
                   />
                 </div>
               ))}
@@ -40,6 +41,7 @@ function AboutPreview() {
               src="/images/about/home-drawing.png"
               alt="Illustration — person painting colorful abstract splash"
               className="w-full h-[450px] object-contain"
+              loading="lazy"
             />
           </Reveal>
         </div>

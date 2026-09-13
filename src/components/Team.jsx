@@ -54,6 +54,7 @@ function Team() {
                     src={member.image}
                     alt={`${member.name} — ${member.role}`}
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                   <div className="team-card-overlay">
                     <div className="team-card-info">
