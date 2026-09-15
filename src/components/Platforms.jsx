@@ -1,6 +1,5 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import SectionHeading from './shared/SectionHeading'
 import Reveal from './shared/Reveal'
 
 const platforms = [
@@ -12,7 +11,6 @@ const platforms = [
 
 function Platforms() {
   const scrollRef = useRef(null)
-  const [scrollPos, setScrollPos] = useState(0)
 
   const scroll = (dir) => {
     if (!scrollRef.current) return

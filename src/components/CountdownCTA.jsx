@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import SectionHeading from './shared/SectionHeading'
 import Button from './shared/Button'
 import Reveal from './shared/Reveal'
 

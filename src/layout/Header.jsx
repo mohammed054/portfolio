@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Search, Grid3X3, Menu, X } from 'lucide-react'
@@ -6,6 +6,7 @@ import { Search, Grid3X3, Menu, X } from 'lucide-react'
 function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [sidePanelOpen, setSidePanelOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
 
   const navLinkClass = ({ isActive }) =>
     `nav-underline text-[15px] transition-colors duration-300 hover:text-primary pb-1 ${
@@ -52,7 +53,11 @@ function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <button className="w-10 h-10 flex items-center justify-center hover:text-primary transition-colors hidden lg:block" style={{ marginLeft: '8px' }}>
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="w-10 h-10 flex items-center justify-center hover:text-primary transition-colors hidden lg:block"
+            style={{ marginLeft: '8px' }}
+          >
             <Search size={18} />
           </button>
           <button
@@ -165,6 +170,42 @@ function Header() {
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {searchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[80] bg-white flex flex-col items-center justify-center"
+          >
+            <button
+              onClick={() => setSearchOpen(false)}
+              className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center hover:text-primary transition-colors text-text-dark"
+            >
+              <X size={24} />
+            </button>
+            <div className="w-full max-w-[600px] px-8">
+              <p className="text-[0.722rem] font-semibold tracking-[2px] uppercase mb-6 text-center text-text-muted" style={{ fontFamily: "'europa', sans-serif" }}>
+                Type and press Enter
+              </p>
+              <form onSubmit={(e) => { e.preventDefault(); setSearchOpen(false) }} className="relative">
+                <input
+                  type="text"
+                  autoFocus
+                  placeholder="Search..."
+                  className="w-full text-[clamp(24px,2rem+1.5vw,42px)] font-bold text-text-dark bg-transparent border-b-2 border-card-border focus:border-primary outline-none pb-4 transition-colors duration-300 placeholder:text-text-muted/40"
+                  style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}
+                />
+                <button type="submit" className="absolute right-0 bottom-4 text-text-muted hover:text-primary transition-colors">
+                  <Search size={28} />
+                </button>
+              </form>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { MousePointer2, Share2, Target } from 'lucide-react'
 import Reveal from './shared/Reveal'
 
@@ -8,22 +9,40 @@ const features = [
 ]
 
 function AboutHero() {
+  const [hovered, setHovered] = useState(false)
+
   return (
     <section className="section-padding bg-white relative overflow-hidden">
       <div className="container-main">
         <div className="grid grid-cols-1 lg:grid-cols-[31.5%_17.8%_50%] gap-8 items-center">
           <Reveal variant="fadeLeft" className="relative">
-            <img
-              src="/images/services/graphic-design.jpg"
-              alt="Home-office desk setup"
-              className="w-full h-[320px] object-cover"
-            />
-            <div className="absolute -bottom-10 -right-10 hidden lg:block w-[210px] h-[250px] animate-float">
+            <div
+              className="relative overflow-hidden"
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+            >
               <img
-                src="/images/about/fiverr-profile.png"
-                alt="Profile swap"
-                className="w-full h-full object-cover rounded-full p-[5px] bg-white shadow-[0px_3px_16px_0px_rgba(0,0,0,0.08)]"
+                src="/images/services/graphic-design.jpg"
+                alt="Home-office desk setup"
+                className="w-full h-[320px] object-cover"
               />
+              <div className="absolute inset-0 bg-black/10 opacity-0 hover:opacity-100 transition-opacity duration-500" />
+            </div>
+            <div className="absolute -bottom-10 -right-10 hidden lg:block w-[210px] h-[250px]">
+              <div className="relative w-full h-full">
+                <img
+                  src="/images/about/fiverr-profile.png"
+                  alt="Fiverr profile"
+                  className="absolute inset-0 w-full h-full object-cover rounded-full p-[5px] bg-white shadow-[0px_3px_16px_0px_rgba(0,0,0,0.08)] transition-opacity duration-700"
+                  style={{ opacity: hovered ? 0 : 1 }}
+                />
+                <img
+                  src="/images/about/upwork-profile.png"
+                  alt="Upwork profile"
+                  className="absolute inset-0 w-full h-full object-cover rounded-full p-[5px] bg-white shadow-[0px_3px_16px_0px_rgba(0,0,0,0.08)] transition-opacity duration-700"
+                  style={{ opacity: hovered ? 1 : 0 }}
+                />
+              </div>
             </div>
             <img
               src="/images/decorative/img-animation-5.png"

@@ -1,6 +1,5 @@
 import { Play } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import SectionHeading from './shared/SectionHeading'
 import Button from './shared/Button'
 import Reveal from './shared/Reveal'
 

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import SectionHeading from '../components/shared/SectionHeading'
 import Reveal from '../components/shared/Reveal'
 
 function Contact() {

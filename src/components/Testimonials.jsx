@@ -1,7 +1,6 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
-import SectionHeading from './shared/SectionHeading'
 import Reveal from './shared/Reveal'
 
 const testimonials = [

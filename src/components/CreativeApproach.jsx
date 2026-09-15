@@ -1,4 +1,3 @@
-import SectionHeading from './shared/SectionHeading'
 import Reveal from './shared/Reveal'
 
 function CreativeApproach() {
