@@ -160,7 +160,7 @@ function Header() {
                 </div>
                 <div>
                   <p className="text-[0.722rem] font-semibold tracking-wider uppercase mb-1" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA' }}>Want to Buy Illustrations?</p>
-                  <a href="#" className="text-[0.889rem] text-primary hover:text-primary-hover transition-colors">Go to Shop</a>
+                  <a href="https://sabernasr.com/shop/" target="_blank" rel="noopener noreferrer" className="text-[0.889rem] text-primary hover:text-primary-hover transition-colors">Go to Shop</a>
                 </div>
               </div>
             </motion.div>

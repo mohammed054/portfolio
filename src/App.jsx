@@ -1,7 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useState, useEffect, Suspense } from 'react'
 import PersistentLayout from './layout/PersistentLayout'
-import CursorDot from './components/CursorDot'
 import Home from './pages/Home'
 import About from './pages/About'
 import Portfolio from './pages/Portfolio'
@@ -33,7 +32,6 @@ function LoadingSpinner() {
 function App() {
   return (
     <>
-      <CursorDot />
       <PageTransition />
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>

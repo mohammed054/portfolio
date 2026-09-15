@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import SectionHeading from '../components/shared/SectionHeading'
 import Reveal from '../components/shared/Reveal'
 
@@ -35,6 +35,13 @@ const portfolioItems = [
   { name: 'Saudi Founding Day 3', category: 'social-media', href: 'https://sabernasr.com/portfolio/saudi-founding-day-3/', img: '/images/portfolio/saudi-founding-3.jpg' },
   { name: 'Sealy March 2024', category: 'social-media', href: 'https://sabernasr.com/portfolio/sealy-march-2024/', img: '/images/portfolio/sealy-march.jpg' },
   { name: 'Sealy Feb 2024', category: 'social-media', href: 'https://sabernasr.com/portfolio/sealy-social-media/', img: '/images/portfolio/sealy-social.jpg' },
+  { name: 'Saudi Holiday Travel', category: 'web', href: 'https://sabernasr.com/portfolio/saudi-holiday-travel/', img: '/images/portfolio/saudi-holidays.jpg' },
+  { name: 'Crypto Sense', category: 'web', href: 'https://sabernasr.com/portfolio/crypto-sense/', img: '/images/portfolio/cryptosense.jpg' },
+  { name: 'Lean Community', category: 'web', href: 'https://sabernasr.com/portfolio/lean-community/', img: '/images/portfolio/lean-community.jpg' },
+  { name: 'My It Guide', category: 'web', href: 'https://sabernasr.com/portfolio/my-it-guide/', img: '/images/portfolio/my-it-guide.jpg' },
+  { name: 'Emoji Pizza', category: 'web', href: 'https://sabernasr.com/portfolio/emoji-pizza/', img: '/images/portfolio/emoji-pizza.jpg' },
+  { name: 'Blue Print', category: 'web', href: 'https://sabernasr.com/portfolio/blue-print/', img: '/images/portfolio/blue-print.jpg' },
+  { name: 'Blue Blog', category: 'web', href: 'https://sabernasr.com/portfolio/blue-blog/', img: '/images/portfolio/blue-blog.jpg' },
 ]
 
 function Portfolio() {
@@ -54,9 +61,9 @@ function Portfolio() {
         <Reveal delay={0.1}>
           <div className="flex flex-wrap justify-center gap-3 mb-14">
             {categories.map((cat) => (
-              <a
+              <Link
                 key={cat.slug}
-                href={cat.slug ? `/our-portfolio/${cat.slug}/` : '/our-portfolio/'}
+                to={cat.slug ? `/our-portfolio/${cat.slug}/` : '/our-portfolio/'}
                 className={`px-6 py-2.5 rounded-full text-[0.833rem] font-semibold font-[Poppins] transition-all duration-300 ${
                   activeCategory === cat.slug
                     ? 'bg-primary text-white'
@@ -64,7 +71,7 @@ function Portfolio() {
                 }`}
               >
                 {cat.label}
-              </a>
+              </Link>
             ))}
           </div>
         </Reveal>

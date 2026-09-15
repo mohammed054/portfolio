@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
 import { useInView } from 'framer-motion'
-import SectionHeading from './shared/SectionHeading'
 import Reveal from './shared/Reveal'
 
 const stats = [
