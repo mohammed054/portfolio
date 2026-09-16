@@ -37,7 +37,7 @@ function MailIcon({ size = 16 }) {
 function Footer() {
   return (
     <footer className="bg-dark-bg text-footer-text">
-      <div className="container-main grid grid-cols-[33%_34%_33%] items-center py-6 max-md:grid-cols-1 max-md:gap-5 max-md:text-center">
+      <div className="container-main grid grid-cols-[40%_19%_40%] items-center py-6 max-md:grid-cols-1 max-md:gap-5 max-md:text-center">
         <div className="text-[16px]" style={{ fontFamily: "'europa', sans-serif" }}>
           &copy; 2026 All Rights Reserved to Saber Nasr.
         </div>
@@ -47,16 +47,16 @@ function Footer() {
         </Link>
 
         <div className="flex items-center gap-3 justify-end max-md:justify-center">
-          <a href="https://www.facebook.com/Saber.Nasr.Elbendary/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+          <a href="https://www.facebook.com/Saber.Nasr.Elbendary/" target="_blank" rel="noopener noreferrer" className="footer-social-icon hover:text-white transition-colors">
             <FacebookIcon size={16} />
           </a>
-          <a href="https://wa.me/201055544244" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+          <a href="https://wa.me/201098083841" target="_blank" rel="noopener noreferrer" className="footer-social-icon hover:text-white transition-colors">
             <WhatsappIcon size={16} />
           </a>
-          <a href="tel:+201055544244" className="hover:text-white transition-colors">
+          <a href="tel:+201098083841" className="footer-social-icon hover:text-white transition-colors">
             <PhoneIcon size={16} />
           </a>
-          <a href="mailto:info@sabernasr.com" className="hover:text-white transition-colors">
+          <a href="mailto:info@sabernasr.com" className="footer-social-icon hover:text-white transition-colors">
             <MailIcon size={16} />
           </a>
         </div>

@@ -1,21 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion'
-
-const slides = [
-  {
-    heading: 'Build Innovative Digital Projects',
-    text: 'Saber is a digital agency consists of strategists, creative minds, technologists, designers, marketers, storytellers, and inventors. 🤘',
-  },
-  {
-    heading: 'Creative Solutions for Your Brand',
-    text: 'We craft unique digital experiences that elevate your brand and connect with your audience.',
-  },
-  {
-    heading: 'Let\'s Build Something Amazing',
-    text: 'From strategy to execution, we deliver results that drive growth and success for your business.',
-  },
-]
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 
 const heroDecor = [
   { type: 'dashed', className: 'absolute top-10 right-[20%] w-[140px] h-[130px] border border-dashed border-[#6b6e71]/20 z-[1]', strength: 20 },
@@ -29,29 +14,10 @@ function ParallaxDecor({ decor, mouseX, mouseY }) {
   return <div className={decor.className} style={{ x, y }} aria-hidden="true" />
 }
 
-const slideTextVariants = {
-  initial: { opacity: 0, y: 40 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] } },
-  exit: { opacity: 0, y: -30, transition: { duration: 0.3, ease: 'easeIn' } },
-}
-
 function Hero() {
-  const [currentSlide, setCurrentSlide] = useState(0)
   const heroRef = useRef(null)
   const mouseX = useMotionValue(0.5)
   const mouseY = useMotionValue(0.5)
-  const intervalRef = useRef(null)
-
-  const startAutoAdvance = useCallback(() => {
-    intervalRef.current = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length)
-    }, 5000)
-  }, [])
-
-  useEffect(() => {
-    startAutoAdvance()
-    return () => clearInterval(intervalRef.current)
-  }, [startAutoAdvance])
 
   const handleMouse = (e) => {
     const rect = heroRef.current?.getBoundingClientRect()
@@ -65,28 +31,24 @@ function Hero() {
       <div className="container-main w-full">
         <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] items-center gap-8 min-h-[calc(100vh-80px)]">
           <div className="relative z-10 py-20 max-lg:text-center max-lg:flex max-lg:flex-col max-lg:items-center">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentSlide}
-                variants={slideTextVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              <h1
+                className="text-[80px] max-lg:text-[43px] max-md:text-[36px] font-medium leading-[75px] max-lg:leading-[50px] max-md:leading-[42px] mb-6"
+                style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", color: '#1f242e', letterSpacing: '-2px' }}
               >
-                <h1
-                  className="text-[80px] max-lg:text-[43px] max-md:text-[36px] font-medium leading-[75px] max-lg:leading-[50px] max-md:leading-[42px] mb-6"
-                  style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", color: '#1f242e', letterSpacing: '-2px' }}
-                >
-                  {slides[currentSlide].heading}
-                </h1>
-                <p
-                  className="text-[19px] max-md:text-[16px] leading-[30px] mb-8 max-w-[564px]"
-                  style={{ color: '#6b6e71', fontFamily: "'europa', sans-serif", fontWeight: 300 }}
-                >
-                  {slides[currentSlide].text}
-                </p>
-              </motion.div>
-            </AnimatePresence>
+                Build Innovative Digital Projects
+              </h1>
+              <p
+                className="text-[19px] max-md:text-[16px] leading-[30px] mb-8 max-w-[564px]"
+                style={{ color: '#6b6e71', fontFamily: "'europa', sans-serif", fontWeight: 300 }}
+              >
+                Saber is a digital agency consists of strategists, creative minds, technologists, designers, marketers, storytellers, and inventors. 🤘
+              </p>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -113,23 +75,6 @@ function Hero() {
                 </span>
               </div>
             </motion.div>
-
-            <div className="flex gap-3 mt-10 max-lg:justify-center">
-              {slides.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => {
-                    setCurrentSlide(i)
-                    clearInterval(intervalRef.current)
-                    startAutoAdvance()
-                  }}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    i === currentSlide ? 'bg-primary w-8' : 'bg-[#D2D3D5] hover:bg-[#A5A6AA]'
-                  }`}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
-              ))}
-            </div>
           </div>
 
           <motion.div

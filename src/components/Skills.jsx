@@ -18,7 +18,7 @@ const floatingIcons = [
   { id: 'coding', size: 95, left: '58.32%', top: '7.6%' },
   { id: 'premiere-pro', size: 80, left: '81.44%', top: '36.3%' },
   { id: 'after-effects', size: 71, left: '28.37%', top: '87.6%' },
-  { id: 'seo', size: 84, left: '50%', top: '50%' },
+  { id: 'seo', size: 84, left: 'calc(50% - 50px)', top: 'calc(50% - 45px)' },
 ]
 
 function FloatingIcon({ icon, mouseX, mouseY }) {

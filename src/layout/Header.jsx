@@ -16,14 +16,13 @@ function Header() {
   return (
     <>
       <header
-        className="fixed top-0 left-0 w-full z-50 flex items-center justify-between bg-white px-[50px] max-md:px-5"
-        style={{ padding: '20px 50px' }}
+        className="fixed top-0 left-0 w-full z-50 flex items-center justify-between bg-white py-5 px-5 lg:px-[50px]"
       >
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <PlaceholderLogo />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-8" style={{ borderBottom: '1px solid #DDDDDD', paddingBottom: '37px', marginLeft: '0px' }}>
+        <nav className="hidden lg:flex items-center gap-8" style={{ borderBottom: '1px solid #E2E2E2', paddingBottom: '37px', marginLeft: '0px' }}>
           <NavLink to="/" className={navLinkClass}>Home</NavLink>
           <NavLink to="/about/" className={navLinkClass}>About Us</NavLink>
           <div className="relative group">
@@ -108,10 +107,10 @@ function Header() {
               <a href="https://www.facebook.com/Saber.Nasr.Elbendary/" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
               </a>
-              <a href="https://wa.me/201055544244" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors">
+              <a href="https://wa.me/201098083841" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
               </a>
-              <a href="tel:+201055544244" className="text-white/70 hover:text-white transition-colors">
+              <a href="tel:+201098083841" className="text-white/70 hover:text-white transition-colors">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
               </a>
               <a href="mailto:info@sabernasr.com" className="text-white/70 hover:text-white transition-colors">
@@ -154,7 +153,7 @@ function Header() {
                 <Link to="/our-portfolio/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>Our Portfolio</Link>
                 <Link to="/contact-us/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>Contact Us</Link>
               </nav>
-              <div className="border-t pt-6 mt-auto space-y-4" style={{ borderColor: '#DDDDDD' }}>
+              <div className="border-t pt-6 mt-auto space-y-4" style={{ borderColor: '#E2E2E2' }}>
                 <div>
                   <p className="text-[0.722rem] font-semibold tracking-wider uppercase mb-1" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA' }}>Have a Project?</p>
                   <a href="mailto:info@sabernasr.com" className="text-[0.889rem] hover:text-primary transition-colors" style={{ color: '#A5A6AA' }}>info@sabernasr.com</a>

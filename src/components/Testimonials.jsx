@@ -69,7 +69,7 @@ function Testimonials() {
   const prev = () => setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length)
 
   return (
-    <section className="section-padding bg-white">
+    <section className="section-padding bg-light-bg">
       <div className="container-main">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <Reveal variant="fadeLeft">

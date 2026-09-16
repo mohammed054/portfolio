@@ -16,7 +16,7 @@ function AboutPlatforms() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-[900px] mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {platforms.map((platform) => (
               <a
                 key={platform.id}

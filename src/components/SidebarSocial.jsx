@@ -11,8 +11,8 @@ function FacebookIcon({ size = 16 }) {
 function SidebarSocial() {
   const items = [
     { icon: Mail, label: 'Email', href: 'mailto:info@sabernasr.com' },
-    { icon: Phone, label: 'Phone', href: 'tel:+201055544244' },
-    { icon: MessageCircle, label: 'Whatsapp', href: 'https://wa.me/201055544244' },
+    { icon: Phone, label: 'Phone', href: 'tel:+201098083841' },
+    { icon: MessageCircle, label: 'Whatsapp', href: 'https://wa.me/201098083841' },
     { icon: FacebookIcon, label: 'Facebook', href: 'https://www.facebook.com/Saber.Nasr.Elbendary/' },
   ]
 

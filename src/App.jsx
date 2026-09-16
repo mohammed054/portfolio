@@ -14,7 +14,7 @@ function PageTransition() {
     <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
-        initial={{ scaleX: 0, transformOrigin: 'right' }}
+        initial={{ scaleX: 1, transformOrigin: 'right' }}
         animate={{ scaleX: 0 }}
         exit={{ scaleX: 1 }}
         transition={{ duration: 0.4, ease: [0.7, 0, 0.3, 1] }}
