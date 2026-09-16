@@ -27,7 +27,7 @@ function Platforms() {
               <span className="inline-block text-[0.722rem] font-semibold tracking-[2px] uppercase mb-4" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA' }}>
                 Huge Honor
               </span>
-              <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", color: '#222733' }}>
+              <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif", color: '#222733' }}>
                 Our Platforms
               </h2>
             </div>

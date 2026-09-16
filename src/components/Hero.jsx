@@ -38,7 +38,7 @@ function Hero() {
             >
               <h1
                 className="text-[80px] max-lg:text-[43px] max-md:text-[36px] font-medium leading-[75px] max-lg:leading-[50px] max-md:leading-[42px] mb-6"
-                style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", color: '#1f242e', letterSpacing: '-2px' }}
+                style={{ fontFamily: "'sofia-pro', 'europa', sans-serif", color: '#1f242e', letterSpacing: '-2px' }}
               >
                 Build Innovative Digital Projects
               </h1>

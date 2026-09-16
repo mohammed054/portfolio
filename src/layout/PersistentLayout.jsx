@@ -10,7 +10,7 @@ function PersistentLayout() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="pt-[64px]">
+      <main className="pt-[100px] lg:pt-[100px]">
         <Outlet />
       </main>
       <Footer />

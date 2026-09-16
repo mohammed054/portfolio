@@ -60,9 +60,9 @@ function ProgressBar({ skill }) {
         <span className="font-semibold text-white text-[0.833rem]">{skill.name}</span>
         <span className="text-white/70 text-[0.833rem]">{skill.percentage}%</span>
       </div>
-      <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden">
+      <div className="w-full h-[6px] bg-white rounded-[20px] overflow-hidden">
         <div
-          className="h-full bg-primary rounded-full transition-all duration-[1500ms] ease-out"
+          className="h-full bg-primary rounded-[20px] transition-all duration-[1500ms] ease-out"
           style={{ width: inView ? `${skill.percentage}%` : '0%' }}
         />
       </div>

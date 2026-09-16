@@ -33,11 +33,22 @@ function ScrollToTop() {
   return null
 }
 
+function SchemeClass() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    const html = document.documentElement
+    html.classList.remove('scheme_light', 'scheme_default')
+    html.classList.add(pathname === '/' ? 'scheme_light' : 'scheme_default')
+  }, [pathname])
+  return null
+}
+
 function App() {
   return (
     <>
       <PageTransition />
       <ScrollToTop />
+      <SchemeClass />
       <Suspense fallback={
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-light-bg">
           <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />

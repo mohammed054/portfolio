@@ -17,7 +17,7 @@ function FunFacts() {
             <span className="inline-block text-[0.722rem] font-semibold tracking-[2px] uppercase mb-4" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA' }}>
               Fun Facts
             </span>
-            <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", color: '#222733' }}>
+            <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif", color: '#222733' }}>
               An original team of creators<br />designers & dreamers.
             </h2>
           </div>
@@ -64,7 +64,7 @@ function StatItem({ stat }) {
           </svg>
         </div>
       </div>
-      <div className="text-[clamp(40px,3rem+1vw,56px)] font-bold mb-2" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", color: '#222733' }}>
+      <div className="text-[clamp(40px,3rem+1vw,56px)] font-bold mb-2" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif", color: '#222733' }}>
         {count.toLocaleString()}{stat.suffix}
       </div>
       <p className="text-[0.944rem]" style={{ color: '#A5A6AA', fontFamily: "'europa', sans-serif" }}>{stat.label}</p>

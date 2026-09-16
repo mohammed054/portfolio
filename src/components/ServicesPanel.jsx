@@ -51,7 +51,7 @@ function ServiceCard({ service }) {
         <div className="absolute bottom-8 left-8 text-white z-[5]">
           <h4
             className="text-xl font-bold transition-transform duration-500 group-hover:translate-x-2"
-            style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}
+            style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}
           >
             {service.title}
           </h4>

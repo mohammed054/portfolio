@@ -10,14 +10,14 @@
   --color-dark-bg: #171A21;
   --color-light-bg: #F6F6F6;
   --color-section-bg: #F9F9F9;
-  --color-border: #E2E2E2;
+  --color-border: #DDDDDD;
   --color-text-dark: #222733;
   --color-text-muted: #A5A6AA;
   --color-footer-text: #D2D3D5;
   --color-footer-border: #DDDDDD;
   --color-chat-purple: #A886CD;
   --color-page-transition: #FFBC7D;
-  --color-card-border: #E2E2E2;
+  --color-card-border: #DDDDDD;
   --color-ch-charcoal: #1E1E1E;
   --color-ch-border: #2A2A2A;
   --color-ch-muted: #6B7280;
@@ -46,7 +46,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'sofia-pro', 'Poppins', 'Segoe UI', Roboto, sans-serif;
+    font-family: 'sofia-pro', 'europa', 'Segoe UI', Roboto, sans-serif;
     font-weight: 700;
     color: #222733;
     line-height: 1.1;
@@ -110,7 +110,7 @@
     justify-content: center;
     padding: 17px 57px;
     border-radius: 3px;
-    font-family: 'sofia-pro', 'Poppins', sans-serif;
+    font-family: 'sofia-pro', 'europa', sans-serif;
     font-weight: 600;
     font-size: 0.833rem;
     transition: all 0.3s ease;
@@ -153,7 +153,7 @@
   }
 
   .card-bordered {
-    border: 1px solid #E2E2E2;
+    border: 1px solid #DDDDDD;
     padding: 40px;
     text-align: center;
     transition: all 0.3s ease;
@@ -195,15 +195,15 @@
   .progress-track {
     width: 100%;
     height: 6px;
-    background-color: #E5E7EB;
-    border-radius: 9999px;
+    background-color: #FFFFFF;
+    border-radius: 20px;
     overflow: hidden;
   }
 
   .progress-fill {
     height: 100%;
     background-color: #FF5B4A;
-    border-radius: 9999px;
+    border-radius: 20px;
     transition: width 1.5s ease-out;
   }
 

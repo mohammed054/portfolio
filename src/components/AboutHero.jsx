@@ -63,7 +63,7 @@ function AboutHero() {
             <span className="eyebrow text-white">
               Get to Know Us
             </span>
-            <h1 className="text-[clamp(32px,2rem+1.5vw,48px)] font-bold leading-[1.1] mb-6 text-white font-[Poppins]">
+            <h1 className="text-[clamp(32px,2rem+1.5vw,48px)] font-bold leading-[1.1] mb-6 text-white">
               We build the future.
             </h1>
             <p className="text-white/80 leading-[1.7] mb-10 text-[16px]">
@@ -77,7 +77,7 @@ function AboutHero() {
                     <feature.icon size={40} strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-white mb-2 font-[Poppins]">{feature.title}</h3>
+                    <h3 className="font-bold text-white mb-2">{feature.title}</h3>
                     <p className="text-white/70 text-[0.833rem] leading-[1.7]">{feature.description}</p>
                   </div>
                 </div>

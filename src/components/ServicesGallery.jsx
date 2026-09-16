@@ -24,7 +24,7 @@ function ServicesGallery() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-[4] pointer-events-none" />
               <div className="absolute bottom-10 left-8 text-white z-[5]">
                 <span className="text-[15px] font-medium block mb-2 opacity-80" style={{ fontFamily: "'europa', sans-serif" }}>{service.number}</span>
-                <h6 className="text-xl font-bold" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>{service.title}</h6>
+                <h6 className="text-xl font-bold" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>{service.title}</h6>
               </div>
             </div>
           </Reveal>

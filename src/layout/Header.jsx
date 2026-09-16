@@ -16,13 +16,13 @@ function Header() {
   return (
     <>
       <header
-        className="fixed top-0 left-0 w-full z-50 flex items-center justify-between bg-white py-5 px-5 lg:px-[50px]"
+        className="fixed top-0 left-0 w-full z-50 flex items-center justify-between bg-white py-[10px] lg:py-5 px-5 lg:px-[50px]"
       >
-        <Link to="/" className="flex items-center gap-2 shrink-0">
+        <Link to="/" className="flex items-center gap-2 shrink-0 lg:mr-[70px]">
           <PlaceholderLogo />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-8" style={{ borderBottom: '1px solid #E2E2E2', paddingBottom: '37px', marginLeft: '0px' }}>
+        <nav className="hidden lg:flex items-center gap-8" style={{ borderBottom: '1px solid #DDDDDD', paddingBottom: '37px', marginLeft: '0px' }}>
           <NavLink to="/" className={navLinkClass}>Home</NavLink>
           <NavLink to="/about/" className={navLinkClass}>About Us</NavLink>
           <div className="relative group">
@@ -99,7 +99,7 @@ function Header() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 + 0.1 }}
                 >
-                  <Link to={path} onClick={() => setMobileMenuOpen(false)} className="text-white text-2xl font-semibold" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>{label}</Link>
+                  <Link to={path} onClick={() => setMobileMenuOpen(false)} className="text-white text-2xl font-semibold" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>{label}</Link>
                 </motion.div>
               )
             })}
@@ -148,12 +148,12 @@ function Header() {
                 <X size={24} />
               </button>
               <nav className="flex flex-col gap-6 mb-10">
-                <Link to="/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>Home</Link>
-                <Link to="/about/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>About Us</Link>
-                <Link to="/our-portfolio/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>Our Portfolio</Link>
-                <Link to="/contact-us/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>Contact Us</Link>
+                <Link to="/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Home</Link>
+                <Link to="/about/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>About Us</Link>
+                <Link to="/our-portfolio/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Our Portfolio</Link>
+                <Link to="/contact-us/" onClick={() => setSidePanelOpen(false)} className="text-lg font-semibold text-text-dark hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Contact Us</Link>
               </nav>
-              <div className="border-t pt-6 mt-auto space-y-4" style={{ borderColor: '#E2E2E2' }}>
+              <div className="border-t pt-6 mt-auto space-y-4" style={{ borderColor: '#DDDDDD' }}>
                 <div>
                   <p className="text-[0.722rem] font-semibold tracking-wider uppercase mb-1" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA' }}>Have a Project?</p>
                   <a href="mailto:info@sabernasr.com" className="text-[0.889rem] hover:text-primary transition-colors" style={{ color: '#A5A6AA' }}>info@sabernasr.com</a>
@@ -197,7 +197,7 @@ function Header() {
                   autoFocus
                   placeholder="Search..."
                   className="w-full text-[clamp(24px,2rem+1.5vw,42px)] font-bold text-text-dark bg-transparent border-b-2 border-card-border focus:border-primary outline-none pb-4 transition-colors duration-300 placeholder:text-text-muted/40"
-                  style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}
+                  style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}
                 />
                 <button type="submit" className="absolute right-0 bottom-4 text-text-muted hover:text-primary transition-colors">
                   <Search size={28} />

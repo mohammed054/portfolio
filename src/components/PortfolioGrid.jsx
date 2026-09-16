@@ -25,7 +25,7 @@ function PortfolioGrid() {
                     />
                     <div className="mask" />
                     <div className="absolute inset-0 z-[5] flex flex-col justify-end p-6 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
-                      <h5 className="text-white font-bold text-lg" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>{item.name}</h5>
+                      <h5 className="text-white font-bold text-lg" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>{item.name}</h5>
                       <span className="text-white/70 text-[0.722rem] uppercase tracking-wider mt-1" style={{ fontFamily: "'europa', sans-serif" }}>{item.category}</span>
                     </div>
                   </div>

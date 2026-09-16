@@ -46,7 +46,7 @@ function CountdownCTA() {
             <span className="inline-block text-[0.722rem] font-semibold tracking-[2px] uppercase mb-4" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA' }}>
               Get The Offer
             </span>
-            <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight text-white" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>
+            <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight text-white" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>
               Ask Us About Limited Discount
             </h2>
           </div>
@@ -62,13 +62,13 @@ function CountdownCTA() {
             ].map(({ value, label }, idx) => (
               <div key={label} className="flex items-center">
                 <div className="flex flex-col items-center">
-                  <div className="text-[clamp(36px,2.5rem+1vw,52px)] font-bold mb-3 pb-4 px-5 min-w-[90px]" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", borderBottom: '2px solid rgba(255,255,255,0.2)' }}>
+                  <div className="text-[clamp(36px,2.5rem+1vw,52px)] font-bold mb-3 pb-4 px-5 min-w-[90px]" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif", borderBottom: '2px solid rgba(255,255,255,0.2)' }}>
                     {pad(value)}
                   </div>
                   <span className="text-[0.833rem] font-medium" style={{ color: '#D2D3D5', fontFamily: "'europa', sans-serif" }}>{label}</span>
                 </div>
                 {idx < 3 && (
-                  <span className="text-[clamp(36px,2.5rem+1vw,52px)] font-bold mb-8 px-2 text-white/40" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>
+                  <span className="text-[clamp(36px,2.5rem+1vw,52px)] font-bold mb-8 px-2 text-white/40" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>
                     :
                   </span>
                 )}

@@ -42,6 +42,8 @@ const portfolioItems = [
   { name: 'Emoji Pizza', category: 'web', href: 'https://sabernasr.com/portfolio/emoji-pizza/', img: '/images/portfolio/emoji-pizza.jpg' },
   { name: 'Blue Print', category: 'web', href: 'https://sabernasr.com/portfolio/blue-print/', img: '/images/portfolio/blue-print.jpg' },
   { name: 'Blue Blog', category: 'web', href: 'https://sabernasr.com/portfolio/blue-blog/', img: '/images/portfolio/blue-blog.jpg' },
+  { name: 'Lavanta Care', category: 'web', href: 'https://lavantacare.com/', img: '/images/portfolio/lavanta-care.jpg' },
+  { name: 'View', category: 'web', href: 'https://view.com/', img: '/images/portfolio/view.jpg' },
 ]
 
 function Portfolio() {
@@ -64,7 +66,7 @@ function Portfolio() {
               <Link
                 key={cat.slug}
                 to={cat.slug ? `/our-portfolio/${cat.slug}/` : '/our-portfolio/'}
-                className={`px-6 py-2.5 rounded-full text-[0.833rem] font-semibold font-[Poppins] transition-all duration-300 ${
+                className={`px-6 py-2.5 rounded-full text-[0.833rem] font-semibold font-europa transition-all duration-300 ${
                   activeCategory === cat.slug
                     ? 'bg-primary text-white'
                     : 'bg-light-bg text-text-dark hover:bg-primary hover:text-white'
@@ -95,7 +97,7 @@ function Portfolio() {
                   />
                   <div className="mask" />
                   <div className="absolute inset-0 z-[5] flex flex-col justify-end p-5 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
-                    <h3 className="text-white font-bold text-lg font-[Poppins]">{item.name}</h3>
+                    <h3 className="text-white font-bold text-lg font-europa">{item.name}</h3>
                     <span className="text-white/70 text-[0.722rem] uppercase tracking-wider mt-1">{item.category.replace('-', ' ')}</span>
                   </div>
                 </div>

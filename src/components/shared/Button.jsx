@@ -10,7 +10,7 @@ function Button({ to, children, variant = 'primary', className = '' }) {
 
   const style = {
     padding: '17px 57px',
-    fontFamily: "'sofia-pro', 'Poppins', sans-serif",
+    fontFamily: "'sofia-pro', 'europa', sans-serif",
   }
 
   if (to) {

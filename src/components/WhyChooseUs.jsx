@@ -25,7 +25,7 @@ function WhyChooseUs() {
                     <card.icon size={52} strokeWidth={2} />
                   </div>
                 </div>
-                <h3 className="text-lg font-bold text-text-dark font-[Poppins]">{card.title}</h3>
+                <h3 className="text-lg font-bold text-text-dark">{card.title}</h3>
               </div>
             </Reveal>
           ))}

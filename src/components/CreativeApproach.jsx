@@ -26,7 +26,7 @@ function CreativeApproach() {
               <span className="inline-block text-[0.722rem] font-semibold tracking-[2px] uppercase mb-4" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA' }}>
                 Creative Approach
               </span>
-              <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight mb-8 text-white" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>
+              <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight mb-8 text-white" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>
                 We develop & create digital future.
               </h2>
             </div>

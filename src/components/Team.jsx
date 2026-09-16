@@ -37,7 +37,7 @@ function Team() {
               <span className="inline-block text-[0.722rem] font-semibold tracking-[2px] uppercase mb-4" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA' }}>
                 Our Team
               </span>
-              <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight mb-8" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", color: '#222733' }}>
+              <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight mb-8" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif", color: '#222733' }}>
                 Meet Our Team
               </h2>
             </div>
@@ -47,7 +47,7 @@ function Team() {
                 <div className="w-[50px] h-[50px] border-2 border-text-dark rounded-full flex items-center justify-center group-hover:bg-text-dark group-hover:text-white transition-all duration-300">
                   <Play size={16} className="ml-0.5" fill="currentColor" />
                 </div>
-                <span className="text-[0.833rem] font-semibold group-hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif", color: '#222733' }}>
+                <span className="text-[0.833rem] font-semibold group-hover:text-primary transition-colors" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif", color: '#222733' }}>
                   Contact Us
                 </span>
               </Link>
@@ -66,7 +66,7 @@ function Team() {
                   />
                   <div className="team-card-overlay">
                     <div className="team-card-info">
-                      <h4 className="text-white font-bold text-lg" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>{member.name}</h4>
+                      <h4 className="text-white font-bold text-lg" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>{member.name}</h4>
                       <p className="text-white/80 text-[0.833rem]" style={{ fontFamily: "'europa', sans-serif" }}>{member.role}</p>
                     </div>
                     <div className="team-card-socials">

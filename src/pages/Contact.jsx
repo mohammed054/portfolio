@@ -17,7 +17,7 @@ function Contact() {
   }
 
   return (
-    <section className="bg-white min-h-screen">
+    <section className="bg-light-bg min-h-screen">
       <div className="grid grid-cols-1 lg:grid-cols-[58%_42%] min-h-[635px]">
         <Reveal variant="fadeLeft">
           <div className="w-full h-[400px] lg:h-full bg-gray-200">
@@ -36,15 +36,15 @@ function Contact() {
 
         <div className="relative lg:ml-[-105px] z-10 flex items-center justify-center py-16 px-8 lg:py-20">
           <Reveal variant="fadeRight" className="w-full max-w-[540px]">
-            <div className="bg-white rounded-[20px] p-8 lg:p-[70px] shadow-[0_5px_40px_rgba(0,0,0,0.08)]">
-              <h2 className="text-[clamp(24px,1.5rem+1vw,36px)] font-bold leading-[1.15] mb-4 text-text-dark" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>
+            <div className="bg-white rounded-[20px] p-8 lg:px-[70px] lg:pt-[70px] lg:pb-[80px] shadow-[0_5px_40px_rgba(0,0,0,0.08)]">
+              <h2 className="text-[clamp(24px,1.5rem+1vw,36px)] font-bold leading-[1.15] mb-4 text-text-dark" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>
                 Have a Cool Project?<br />Get in touch!
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-5 mt-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-semibold text-text-dark mb-2" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>Name *</label>
+                    <label className="block text-sm font-semibold text-text-dark mb-2" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Name *</label>
                     <input
                       type="text"
                       required
@@ -55,7 +55,7 @@ function Contact() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-text-dark mb-2" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>Email *</label>
+                    <label className="block text-sm font-semibold text-text-dark mb-2" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Email *</label>
                     <input
                       type="email"
                       required
@@ -67,7 +67,7 @@ function Contact() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-text-dark mb-2" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>Subject</label>
+                  <label className="block text-sm font-semibold text-text-dark mb-2" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Subject</label>
                   <input
                     type="text"
                     value={formData.subject}
@@ -77,7 +77,7 @@ function Contact() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-text-dark mb-2" style={{ fontFamily: "'sofia-pro', 'Poppins', sans-serif" }}>Your Message</label>
+                  <label className="block text-sm font-semibold text-text-dark mb-2" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Your Message</label>
                   <textarea
                     rows={6}
                     value={formData.message}
@@ -88,7 +88,7 @@ function Contact() {
 
                 <button
                   type="submit"
-                  className="bg-primary hover:bg-primary-hover text-white px-8 py-3.5 rounded-[3px] text-base font-semibold transition-all duration-300 hover:shadow-lg"
+                  className="bg-[#066aab] hover:bg-[#055a94] text-white px-8 py-3.5 rounded-[3px] text-base font-semibold transition-all duration-300 hover:shadow-lg"
                   disabled={submitting}
                 >
                   {submitting ? (
