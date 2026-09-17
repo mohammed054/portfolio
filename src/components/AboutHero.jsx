@@ -57,10 +57,10 @@ function AboutHero() {
               Get to Know Us
             </span>
             <h1 className="text-[clamp(32px,2rem+1.5vw,48px)] font-bold leading-[1.1] mb-6 text-white">
-              We build the future.
+              Freelance Software Developer | Automation & Full-Stack Web
             </h1>
             <p className="text-white/80 leading-[1.7] mb-10 text-[16px]">
-              Saber is a digital agency consists of strategists, creative minds, technologists, designers, marketers, storytellers, and inventors. 🤘
+              Freelance Software Developer focused on practical automation, full-stack web systems, AI-assisted tools, browser extensions, and mobile applications. Specializing in turning complex requirements into working software across Python CLIs, Node/Express backends, MongoDB/Mongoose APIs, React/Next.js/Vite frontends, Chrome Manifest V3 extensions, and Android Kotlin apps.
             </p>
 
             <div className="space-y-8">

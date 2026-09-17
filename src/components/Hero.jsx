@@ -23,7 +23,7 @@ function Hero() {
                 className="text-[19px] max-md:text-[16px] leading-[30px] mb-8 max-w-[564px]"
                 style={{ color: '#6b6e71', fontFamily: "'europa', sans-serif", fontWeight: 300 }}
               >
-                Saber is a digital agency consists of strategists, creative minds, technologists, designers, marketers, storytellers, and inventors. 🤘
+                Freelance Software Developer | Automation & Full-Stack Web | AI Workflows | Browser Extensions | Mobile Apps
               </p>
             </motion.div>
 
