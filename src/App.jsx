@@ -4,7 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import PersistentLayout from './layout/PersistentLayout'
 import Home from './pages/Home'
 import About from './pages/About'
-import Portfolio from './pages/Portfolio'
+import Projects from './pages/Projects'
+import Skills from './pages/Skills'
 import Contact from './pages/Contact'
 
 function PageTransition() {
@@ -58,8 +59,8 @@ function App() {
           <Route element={<PersistentLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/about/" element={<About />} />
-            <Route path="/our-portfolio/" element={<Portfolio />} />
-            <Route path="/our-portfolio/:category/" element={<Portfolio />} />
+            <Route path="/projects/" element={<Projects />} />
+            <Route path="/skills/" element={<Skills />} />
             <Route path="/contact-us/" element={<Contact />} />
           </Route>
         </Routes>
