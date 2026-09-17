@@ -1,33 +1,10 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-
-const heroDecor = [
-  { type: 'dashed', className: 'absolute top-10 right-[20%] w-[140px] h-[130px] border border-dashed border-[#6b6e71]/20 z-[1]', strength: 20 },
-  { type: 'circle-secondary', className: 'absolute top-0 right-[10%] w-[230px] h-[230px] border-2 border-secondary/30 rounded-full z-[1]', strength: 30 },
-  { type: 'circle-primary', className: 'absolute -bottom-20 left-0 w-[250px] h-[250px] border-2 border-primary/30 rounded-full z-[1]', strength: 25 },
-]
-
-function ParallaxDecor({ decor, mouseX, mouseY }) {
-  const x = useSpring(useTransform(mouseX, [0, 1], [-decor.strength, decor.strength]), { stiffness: 50, damping: 20 })
-  const y = useSpring(useTransform(mouseY, [0, 1], [-decor.strength, decor.strength]), { stiffness: 50, damping: 20 })
-  return <div className={decor.className} style={{ x, y }} aria-hidden="true" />
-}
+import { motion } from 'framer-motion'
 
 function Hero() {
-  const heroRef = useRef(null)
-  const mouseX = useMotionValue(0.5)
-  const mouseY = useMotionValue(0.5)
-
-  const handleMouse = (e) => {
-    const rect = heroRef.current?.getBoundingClientRect()
-    if (!rect) return
-    mouseX.set((e.clientX - rect.left) / rect.width)
-    mouseY.set((e.clientY - rect.top) / rect.height)
-  }
-
   return (
-    <section ref={heroRef} onMouseMove={handleMouse} className="relative min-h-screen flex items-center overflow-hidden" style={{ backgroundColor: '#f9f9f9' }}>
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-light-bg">
       <div className="container-main w-full">
         <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] items-center gap-8 min-h-[calc(100vh-80px)]">
           <div className="relative z-10 py-20 max-lg:text-center max-lg:flex max-lg:flex-col max-lg:items-center">
@@ -65,7 +42,7 @@ function Hero() {
                 <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#1f242e] scale-x-100 group-hover:scale-x-0 transition-transform duration-300 origin-center" />
               </Link>
               <div className="watch-intro flex items-center gap-3 cursor-pointer group">
-                <div className="play-ring relative w-[50px] h-[50px] border-2 border-secondary rounded-full flex items-center justify-center group-hover:bg-secondary transition-all duration-300 text-secondary">
+                <div className="play-ring relative w-[50px] h-[50px] rounded-full flex items-center justify-center group-hover:bg-secondary transition-all duration-300 text-secondary">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="ml-0.5">
                     <polygon points="5,3 19,12 5,21" />
                   </svg>
@@ -77,37 +54,27 @@ function Hero() {
             </motion.div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative max-lg:hidden"
-          >
+          <div className="relative hidden max-lg:block">
             <img
-              src="/images/hero-saber.webp"
+              src="/images/about/home-drawing.png"
               alt="Saber Nasr — Professional portrait"
-              className="max-w-[850px] w-full ml-auto object-contain relative z-[2]"
+              className="max-w-[555px] w-full ml-auto object-contain relative z-[2]"
               width="555"
               height="1000"
             />
 
-            {heroDecor.map((d) => (
-              <ParallaxDecor key={d.type} decor={d} mouseX={mouseX} mouseY={mouseY} />
-            ))}
-            <div className="absolute top-[40%] left-[30%] z-[3]" aria-hidden="true">
-              <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <line x1="10" y1="10" x2="40" y2="40" stroke="white" strokeWidth="2" opacity="0.6"/>
-                <line x1="40" y1="10" x2="10" y2="40" stroke="white" strokeWidth="2" opacity="0.6"/>
-              </svg>
-            </div>
-            <div className="absolute bottom-[10%] right-[5%] z-[3]" aria-hidden="true">
-              <svg width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {[...Array(25)].map((_, i) => (
-                  <circle key={i} cx={15 + (i % 5) * 30} cy={15 + Math.floor(i / 5) * 30} r="2" fill="white" opacity="0.5"/>
-                ))}
-              </svg>
-            </div>
-          </motion.div>
+            <img
+              src="/images/hero/Saber-Designer.jpg"
+              alt="Saber Designer"
+              className="absolute top-0 right-0 w-full h-full object-cover z-[1]"
+            />
+
+            <img
+              src="/images/logos/main-logo.png"
+              alt="Saber Nasr Logo"
+              className="absolute top-0 left-0 w-full h-full object-contain z-[3]"
+            />
+          </div>
         </div>
       </div>
     </section>

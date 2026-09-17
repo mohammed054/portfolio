@@ -1,12 +1,5 @@
 import { useState } from 'react'
-import { MousePointer2, Share2, Target } from 'lucide-react'
 import Reveal from './shared/Reveal'
-
-const features = [
-  { icon: MousePointer2, title: 'Creative Design', description: 'Get the best animation and interactive services for your business.' },
-  { icon: Share2, title: 'Web Design and Development', description: "A brand's .com experience is its best opportunity to control its own message." },
-  { icon: Target, title: 'Video Production', description: 'Visual effects in videos enhance the probability of sales conversion by a huge margin.' },
-]
 
 function AboutHero() {
   const [hovered, setHovered] = useState(false)
@@ -22,8 +15,8 @@ function AboutHero() {
               onMouseLeave={() => setHovered(false)}
             >
               <img
-                src="/images/services/graphic-design.jpg"
-                alt="Home-office desk setup"
+                src="/images/about/home-drawing.png"
+                alt="Home office desk setup"
                 className="w-full h-[320px] object-cover"
               />
               <div className="absolute inset-0 bg-black/10 opacity-0 hover:opacity-100 transition-opacity duration-500" />
@@ -71,17 +64,41 @@ function AboutHero() {
             </p>
 
             <div className="space-y-8">
-              {features.map((feature, i) => (
-                <div key={i} className="flex gap-5">
-                  <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center text-white">
-                    <feature.icon size={40} strokeWidth={1.5} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-white mb-2">{feature.title}</h3>
-                    <p className="text-white/70 text-[0.833rem] leading-[1.7]">{feature.description}</p>
-                  </div>
+              <div key={1} className="flex gap-5">
+                <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center text-white">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="mx-auto">
+                    <polygon points="5,3 19,12 5,21" />
+                  </svg>
                 </div>
-              ))}
+                <div>
+                  <h3 className="font-bold text-white mb-2">Creative Design</h3>
+                  <p className="text-white/70 text-[0.833rem] leading-[1.7]">Get the best animation and interactive services for your business.</p>
+                </div>
+              </div>
+              <div key={2} className="flex gap-5">
+                <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center text-white">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="mx-auto">
+                    <rect x="2" y="6" width="20" height="6" rx="2" ry="2" />
+                    <rect x="6" y="14" width="12" height="6" rx="2" ry="2" />
+                    <rect x="14" y="14" width="6" height="6" rx="2" ry="2" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold text-white mb-2">Web Design and Development</h3>
+                  <p className="text-white/70 text-[0.833rem] leading-[1.7]">A brand's .com experience is its best opportunity to control its own message.</p>
+                </div>
+              </div>
+              <div key={3} className="flex gap-5">
+                <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center text-white">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="mx-auto">
+                    <polygon points="13,2 3,14 12,14 11,22 21,10 20,2 12,3 14,12 10,14 21,14 13,2" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold text-white mb-2">Video Production</h3>
+                  <p className="text-white/70 text-[0.833rem] leading-[1.7]">Visual effects in videos enhance the probability of sales conversion by a huge margin.</p>
+                </div>
+              </div>
             </div>
           </Reveal>
         </div>
