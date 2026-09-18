@@ -20,9 +20,9 @@ function Skills() {
           <div className="p-4 rounded-lg bg-white/10 backdrop-blur-sm">
             <h3 className="text-lg font-bold mb-4" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Languages</h3>
             <ul className="space-y-2 text-sm">
-              <li><span className="text-white/60">Python</span> — CLIs, automation, OCR pipelines, yt-dlp, youtube-transcript-api, AI workflows</li>
-              <li><span className="text-white/60">JavaScript</span> — React, Node, Chrome Extensions, Manifest V3, web scraping</li>
-              <li><span className="text-white/60">TypeScript</span> — Type-safe frontend/backend, route-app, SmartRoute, hassoun.ae</li>
+              <li><span className="text-white/60">Python</span> — CLIs, automation, OCR pipelines, yt-dlp, youtube-transcript-api</li>
+              <li><span className="text-white/60">JavaScript</span> — React, Node, Chrome Extensions, Manifest V3</li>
+              <li><span className="text-white/60">TypeScript</span> — Type-safe frontend/backend, route-app, SmartRoute</li>
               <li><span className="text-white/60">Kotlin</span> — Android SDK, native apps, WorkManager, Room DB</li>
               <li><span className="text-white/60">HTML</span> / <span className="text-white/60">CSS</span> — Semantic markup, responsive design, RTL/bilingual support</li>
             </ul>
@@ -42,7 +42,7 @@ function Skills() {
           <div className="p-4 rounded-lg bg-white/10 backdrop-blur-sm">
             <h3 className="text-lg font-bold mb-4" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Backend</h3>
             <ul className="space-y-2 text-sm">
-              <li><span className="text-white/60">Node.js</span> — Express, REST APIs, automation pipelines</li>
+              <li><span className="text-white/60">Node.js</span> — Express, automation pipelines</li>
               <li><span className="text-white/60">Express.js</span> — Middleware, routing, rate limiting</li>
               <li><span className="text-white/60">MongoDB/Mongoose</span> — Document modeling, queries, used in EduBridge</li>
               <li><span className="text-white/60">Socket.io</span> — Real-time notifications (EduBridge)</li>
@@ -72,18 +72,18 @@ function Skills() {
           </div>
 
           <div className="p-4 rounded-lg bg-white/10 backdrop-blur-sm">
-            <h3 className="text-lg font-bold mb-4" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Creative & AI Video</h3>
+            <h3 className="text-lg font-bold mb-4" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Browser & Extensions</h3>
             <ul className="space-y-2 text-sm">
-              <li><span className="text-white/60">LLM Workflows</span> — OpenRouter, Hugging Face, prompt engineering</li>
+              <li><span className="text-white/60">Chrome Manifest V3</span> — Content scripts, service workers, popups</li>
               <li><span className="text-white/60">Tesseract.js</span> — On-page/OCR extraction for video scripts and content</li>
-              <li><span className="text-white/60">AI Video Generation</span> — Automated content creation pipelines</li>
-              <li><span className="text-white/60">Structured JSON</span> — Data-to-visual pipeline</li>
-              <li><span className="text-white/60">Creative Coding</span> — Combining technical functionality with artistic design</li>
+              <li><span className="text-white/60">Puppeteer</span> — Browser automation, QR auth, session management</li>
+              <li><span className="text-white/60">MutationObserver</span> — DOM change detection, dynamic content handling</li>
+              <li><span className="text-white/60">JSZip</span> — Package/download generation from web content</li>
             </ul>
           </div>
 
           <div className="p-4 rounded-lg bg-white/10 backdrop-blur-sm">
-            <h3 className="text-lg font-bold mb-4" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>DevOps & Tools</h3>
+            <h3 className="text-lg font-bold mb-4" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif" }}>Testing & DevOps</h3>
             <ul className="space-y-2 text-sm">
               <li><span className="text-white/60">Git/GitHub</span> — Version control, 34+ repos, daily commits</li>
               <li><span className="text-white/60">Railway/Vercel</span> — Deployment, production hosting</li>
