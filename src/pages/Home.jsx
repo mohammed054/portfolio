@@ -17,13 +17,13 @@ function Hero() {
                 className="text-[80px] max-lg:text-[43px] max-md:text-[36px] font-medium leading-[75px] max-lg:leading-[50px] max-md:leading-[42px] mb-6"
                 style={{ fontFamily: "'sofia-pro', 'europa', sans-serif", color: '#1f242e', letterSpacing: '-2px' }}
               >
-                Freelance Software Developer | Automation & Full-Stack Web
+                Mohammed Hassoun
               </h1>
               <p
                 className="text-[19px] max-md:text-[16px] leading-[30px] mb-8 max-w-[564px]"
                 style={{ color: '#6b6e71', fontFamily: "'europa', sans-serif", fontWeight: 300 }}
               >
-                Specializing in turning complex workflows into working software for non-technical business owners — barbershops, clinics, gyms, and schools. I build practical automation, full-stack web systems, AI-assisted tools, browser extensions, and mobile applications that solve real operational problems.
+                Freelance Software Developer & AI Specialist. I build full-stack systems, automate workflows, and create AI-powered solutions for businesses. I combine creative coding with practical delivery — from route optimization engines to school management platforms.
               </p>
               <div className="flex items-center gap-8 max-lg:justify-center">
                 <Link
@@ -34,6 +34,14 @@ function Hero() {
                   View My Work →
                   <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#1f242e] scale-x-100 group-hover:scale-x-0 transition-transform duration-300 origin-center" />
                 </Link>
+                <Link
+                  to="/contact-us/"
+                  className="relative group"
+                  style={{ fontFamily: "'europa', sans-serif", color: '#1f242e', fontSize: '19px', fontWeight: 500, textDecoration: 'none', marginLeft: '20px' }}
+                >
+                  Contact →
+                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#1f242e] scale-x-100 group-hover:scale-x-0 transition-transform duration-300 origin-center" />
+                </Link>
               </div>
             </motion.div>
           </div>
@@ -41,7 +49,7 @@ function Hero() {
           <div className="relative hidden max-lg:block">
             <img
               src="/images/about/home-drawing.png"
-              alt="Saber Nasr — Professional portrait"
+              alt="Mohammed Hassoun — Professional portrait"
               className="max-w-[555px] w-full ml-auto object-contain relative z-[2]"
               width="555"
               height="1000"
@@ -49,13 +57,13 @@ function Hero() {
 
             <img
               src="/images/hero/Saber-Designer.jpg"
-              alt="Saber Designer"
+              alt="Software Development"
               className="absolute top-0 right-0 w-full h-full object-cover z-[1]"
             />
 
             <img
               src="/images/logos/main-logo.png"
-              alt="Mohammed Nasr Logo"
+              alt="Mohammed Hassoun Logo"
               className="absolute top-0 left-0 w-full h-full object-contain z-[3]"
             />
           </div>

@@ -4,115 +4,76 @@ import Reveal from '../components/shared/Reveal'
 const projects = [
   {
     id: '1',
-    title: 'Scrapling CLI - YouTube Channel Analyzer',
-    category: 'Automation & AI',
-    subtitle: 'Python CLI for transcript-aware YouTube channel analysis and incremental fetching',
-    github: 'https://github.com/mohammed054/scrapping-cli',
-    demo: 'YouTube channel analysis tool with transcript resolution through multiple backends (youtube-transcript-api, yt-dlp, OpenAI ASR fallback), retry/cooldown handling, scoring/reporting logic (views, likes, comments, engagement), and pytest coverage',
-    tags: ['Python', 'Scrapling', 'yt-dlp', 'youtube-transcript-api', 'OpenAI API', 'Rich', 'pytest', 'CSV', 'Markdown'],
-    image: '/images/projects/scrapling.png',
-    fullImage: '/images/projects/scrapling-full.png',
-    preview: 'YouTube channel report with scored videos, engagement metrics, and CSV/Markdown exports',
-    caption: '25 GitHub commits | Daily usage for channel monitoring',
+    title: 'SmartRoute - Route Optimization Engine',
+    category: 'Full-Stack Application',
+    subtitle: 'Web scraping + OCR + Route optimization + Price history management',
+    github: 'https://github.com/mohammed054/route-app',
+    demo: 'Literal full-scale app handling: web scraping for prices, Tesseract.js OCR for thousands of pages, route optimization algorithms, discount handling, price history tracking, store subset analysis, cost summaries (fuel, time, distance), and mobile-first screens. Built with React Native/Expo, TypeScript, and sophisticated backend pipelines.',
+    tags: ['React Native', 'Expo', 'TypeScript', 'Python', 'Web Scraping', 'Tesseract OCR', 'Route Algorithms', 'Node.js', 'Express', 'MongoDB'],
+    image: '/images/projects/smartroute.png',
+    fullImage: '/images/projects/smartroute-full.png',
+    preview: 'Route optimization dashboard with store pricing, calculated routes, and cost summaries',
+    caption: 'Highest-scale project | 12,769→28,989 products | Live on Railway | 41% matching rate on prod runs',
   },
   {
     id: '2',
-    title: 'WhatsApp Number Filter CLI',
-    category: 'Browser Automation',
-    subtitle: 'Node.js command-line tool for checking WhatsApp number availability and exporting validation results',
-    github: 'https://github.com/mohammed054/bashify.git',  # Using existing repo
-    demo: 'Uses whatsapp-web.js with Puppeteer and QR-based authentication. Supports persistent/temporary sessions, delay throttling, progress bars, CSV/output summary reports, phone number normalization, duplicate classification (valid, suspicious, blocked, invalid)',
-    tags: ['Node.js', 'commander', 'whatsapp-web.js', 'Puppeteer', 'qrcode-terminal', 'cli-progress', 'CSV'],
-    image: '/images/projects/whatsapp.png',
-    fullImage: '/images/projects/whatsapp-full.png',
-    preview: 'Number classification report with valid/suspicious/blocked/invalid categories',
-    caption: '34 GitHub commits | Session-based authentication',
-  },
-  {
-    id: '3',
-    title: 'Quiz Extractor Chrome Extension',
-    category: 'Browser Extensions',
-    subtitle: 'Chrome Manifest V3 extension for extracting online quiz content into downloadable archives',
-    github: 'https://github.com/mohammed054/leanGPT',
-    demo: 'Content script waits for quiz question cards, extracts passages, question text, options, images, correct-answer signals, and quiz IDs from the page. Uses Tesseract.js OCR for English/Arabic image text extraction, canvas-based image preprocessing, and JSZip packaging. Background service worker handles blob downloads through the Chrome downloads API',
-    tags: ['JavaScript', 'Chrome MV3', 'content scripts', 'service workers', 'Tesseract.js', 'JSZip', 'canvas', 'Chrome downloads API'],
-    image: '/images/projects/quiz.png',
-    fullImage: '/images/projects/quiz-full.png',
-    preview: 'Quiz content extraction with OCR for Arabic/English text',
-    caption: 'Extraction from live web pages with OCR fallback',
-  },
-  {
-    id: '4',
-    title: 'EduBridge - School Operations Platform',
-    category: 'Full-Stack Web',
-    subtitle: 'Large school-management platform with separate React frontend and Express/MongoDB backend',
+    title: 'EduBridge - School Operations SaaS',
+    category: 'Education Technology',
+    subtitle: 'Full school-management platform with admin/teacher/student portals',
     github: 'https://github.com/mohammed054/edu-bridge',
-    demo: 'Backend includes JWT authentication, refresh/session handling, RBAC permission matrix, intelligence services for student/class/school recomputation, scheduled jobs, risk scoring, survey assignment synchronization, engagement events, and AI-assisted feedback/analytics workflows. Frontend uses React Router, lazy route loading, JWT refresh handling, local session hydration, admin/teacher/student portals, bilingual/Arabic-friendly UI, survey tools, reports, imports, notifications, and analytics views',
-    tags: ['React', 'Vite', 'React Router', 'Express.js', 'MongoDB', 'Mongoose', 'JWT', 'RBAC', 'OpenRouter APIs', 'Tailwind CSS'],
+    demo: 'React/Vite frontend + Express/Mongoose backend. Admin/teacher/student portals for attendance, schedules, grades, feedback, surveys, broadcasts, notifications, calendars, report cards, campus filtering. Real-time Socket.io notifications, bilingual Arabic/English UI, RBAC permission matrix, intelligence services for student/class/school recomputation. Ready for controlled paid pilot.',
+    tags: ['React', 'Vite', 'Express.js', 'MongoDB', 'Mongoose', 'Socket.io', 'JWT', 'RBAC', 'Tailwind CSS', 'Arabic UI'],
     image: '/images/projects/edubridge.png',
     fullImage: '/images/projects/edubridge-full.png',
     preview: 'School dashboard with attendance, grades, reports, and student detail views',
-    caption: '67 commits (edu-bridge) + 55 commits (edu-bridge-backend) | Pilot-ready SaaS',
+    caption: '67 commits (frontend) + 55 commits (backend) | Pilot-ready SaaS',
+  },
+  {
+    id: '3',
+    title: 'Scrapling CLI - YouTube Channel Analyzer',
+    category: 'Automation & AI',
+    subtitle: 'Python CLI for transcript-aware YouTube analysis and incremental fetching',
+    github: 'https://github.com/mohammed054/scrapping-cli',
+    demo: 'Python CLI built around Scrapling, transcript resolution through multiple backends (youtube-transcript-api, yt-dlp, OpenAI ASR fallback), retry/cooldown handling, scoring/reporting logic (views, likes, comments, engagement), deterministic Markdown/CSV exports, pytest coverage. 25 GitHub commits | Daily usage for channel monitoring.',
+    tags: ['Python', 'Scrapling', 'yt-dlp', 'youtube-transcript-api', 'OpenAI API', 'Rich', 'pytest', 'CSV', 'Markdown'],
+    image: '/images/projects/scrapling.png',
+    fullImage: '/images/projects/scrapling-full.png',
+    preview: 'YouTube channel report with scored videos and engagement metrics',
+    caption: '25 GitHub commits | Daily automation runner',
+  },
+  {
+    id: '4',
+    title: 'AI Videos & Creative Workflows',
+    category: 'AI & Creative',
+    subtitle: 'AI-powered video generation and content automation pipelines',
+    github: 'https://github.com/mohammed054/ai-workflow',
+    demo: 'AI-powered video generation combining LLM APIs (OpenRouter, Hugging Face), Tesseract.js OCR for text extraction from images, structured JSON generation, and custom pipelines for automated content creation. Also handles AI-assisted grade import and feedback workflows. Creative focus: turning data into engaging visual content.',
+    tags: ['OpenRouter APIs', 'Hugging Face', 'Tesseract.js OCR', 'LLM workflows', 'Content automation', 'Grade import', 'Feedback systems'],
+    image: '/images/projects/ai-vids.png',
+    fullImage: '/images/projects/ai-vids-full.png',
+    preview: 'AI video generation pipeline with OCR and LLM integration',
+    caption: 'Creative AI work | Video generation pipelines | Content automation',
   },
   {
     id: '5',
-    title: 'SmartRoute - Shopping Route Optimizer',
-    category: 'Mobile & AI',
-    subtitle: 'React Native/Expo Android app prototype for optimizing shopping routes',
-    github: 'https://github.com/mohammed054/route-app',
-    demo: 'Parses typed shopping lists, normalizes and deduplicates items, matches known product aliases, generates demo product pricing when item is unknown, builds route candidates across store subsets, assigns each item to the cheapest store in the subset, calculates round-trip distance, fuel cost, time cost, item totals, and savings against a one-store baseline. Produces best-value, fastest, and balanced route options with item assignments, store order previews, cost summaries, route notes, and mobile-first screens',
-    tags: ['React Native', 'Expo', 'TypeScript', 'route scoring', 'local demo data', 'mobile UI state machines'],
-    image: '/images/projects/smartroute.png',
-    fullImage: '/images/projects/smartroute-full.png',
-    preview: 'Shopping route optimization with store pricing comparison',
-    caption: 'Live on Railway; 12,769→28,989 products; 41% matching rate on prod runs',
-  },
-  {
-    id: '6',
-    title: 'AEIS - Autonomous Economic Intelligence System',
-    category: 'Economic Intelligence',
-    subtitle: 'Persistent digital organism engineered to create long-term economic value in the real digital economy',
-    github: 'https://github.com/mohammed054/ai-workflow',
-    demo: 'Philosophy: "Capture demand, don\\'t create it." Proven: 90+ cold emails = 0 replies. Shift to local classifieds/Marketplace/Nextdoor. Receptivity scoring (0-100): website presence, employee count, owner-operated, review activity. Hard rule: Receptivity < 50 → discard. Current revenue: $0 (Session 28, Jul 16, 2026). Strateic focus: Business owners, NOT developers (they build it themselves)',
-    tags: ['Autonomous Economic Intelligence', 'Persistent memory', 'Economic patterns', 'Market intelligence', 'Failure analysis', 'Pricing strategies', 'Capture demand'],
-    image: '/images/projects/aeis.png',
-    fullImage: '/images/projects/aeis-full.png',
-    preview: 'AEIS economic intelligence system dashboard',
-    caption: '38 sessions documented | Strategy shifted from cold email to captured demand',
-  },
-  {
-    id: '7',
-    title: 'Barber Republic Dubai Landing Page',
-    category: 'Non-Technical Business',
-    subtitle: 'React + Three.js landing page for grooming lounge at Vida The Hills, Emirates Hills 2',
-    github: 'https://github.com/mohammed054/pro71-web',
-    demo: 'Precision cuts, beard lines, hot towels, and Fresha booking for Barber Republic at Vida The Hills, Dubai. Built with React, Vite, Three.js, and Tailwind CSS. Three.js scene includes custom window manager, desktop system simulation (boot, login, lock screen, taskbar, start menu), and polished interaction-heavy frontend work',
-    tags: ['React', 'Vite', 'Three.js', 'React Three Fiber', 'Drei', 'GSAP', 'ScrollTrigger', 'Lenis', 'Framer Motion', 'Tailwind CSS'],
-    image: '/images/projects/barber.png',
-    fullImage: '/images/projects/barber-full.png',
-    preview: 'Barber Republic Dubai grooming lounge landing page',
-    caption: 'Non-technical business target | React + Three.js integration',
-  },
-  {
-    id: '8',
-    title: 'L-Arginine Pill Reminder Android App',
-    category: 'Mobile Applications',
-    subtitle: 'Native Android medication/reminder app with WorkManager scheduling',
-    github: 'https://github.com/mohammed054/pill-app',
-    demo: 'Native Android medication/reminder app. Uses Room entities for pills, pill history, and custom notification phrases, with database seeding for default phrases. Repository and ViewModel layers expose Flow/LiveData data streams and handle add/update/delete/toggle actions. WorkManager schedules periodic reminders with custom intervals, initial delay calculation, boot rescheduling, and cancellation/rescheduling logic. Notifications include privacy-aware text, vibration/sound/channel handling, and action buttons for "taken" or "skip" that write history entries through a broadcast receiver',
-    tags: ['Kotlin', 'Android SDK', 'Room', 'WorkManager', 'LiveData', 'ViewModel', 'coroutines', 'Material components', 'RecyclerView'],
-    image: '/images/projects/pill-reminder.png',
-    fullImage: '/images/projects/pill-reminder-full.png',
-    preview: 'Android pill reminder app with notification scheduling',
-    caption: 'Native Android app with Room DB and WorkManager',
+    title: 'Hassoun.ae - Personal Brand Site',
+    category: 'Personal Brand & Web',
+    subtitle: 'Next.js 16 App Router personal brand website',
+    github: 'https://github.com/mohammed054/pro71-hassoun-ae',
+    demo: 'Next.js 16 App Router implementation of personal brand site. TypeScript, Tailwind CSS v4, Radix UI primitives, Framer Motion animations. Static export mode (generates output in out/). Core structure: src/app/ layout, src/components/ UI primitives, src/lib/content.ts typed content model, public/assets/ images and fonts. Machine-readable endpoints (llms.txt files).',
+    tags: ['Next.js 16', 'App Router', 'TypeScript', 'Tailwind CSS v4', 'Radix UI', 'Framer Motion', 'Static Export'],
+    image: '/images/projects/hassoun-ae.png',
+    fullImage: '/images/projects/hassoun-ae-full.png',
+    preview: 'Personal brand site with motion animations and clean layout',
+    caption: 'Named portfolio site | Next.js static export | Brand presence',
   },
 ]
 
 function Projects() {
   const [filter, setFilter] = useState('all')
 
-  const filteredProjects = filter === 'all' 
-    ? projects 
+  const filteredProjects = filter === 'all'
+    ? projects
     : projects.filter(p => p.category === filter)
 
   return (
@@ -121,10 +82,10 @@ function Projects() {
         <Reveal>
           <div className="text-center mb-16">
             <span className="inline-block text-[0.722rem] font-semibold tracking-[2px] uppercase mb-4" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA' }}>
-              My Projects
+              Featured Projects
             </span>
             <h2 className="text-[clamp(28px,1.5rem+1.2vw,42px)] font-bold leading-tight" style={{ fontFamily: "'sofia-pro', 'europa', sans-serif", color: '#222733' }}>
-              Real-World Work <span style={{ color: '#eab308' }}>•</span> Practical Solutions
+              Selected Work <span style={{ color: '#eab308' }}>•</span> Client Solutions
             </h2>
           </div>
         </Reveal>
@@ -154,7 +115,7 @@ function Projects() {
                     ))}
                   </div>
                   
-                  <p className="text-[14px] text-white/60 line-clamp-2" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA', overflow: 'hidden' }}>
+                  <p className="text-[14px] text-white/60 line-clamp-3" style={{ fontFamily: "'europa', sans-serif", color: '#A5A6AA', overflow: 'hidden' }}>
                     {project.demo}
                   </p>
                   
@@ -186,7 +147,7 @@ function Projects() {
             className="inline-flex items-center gap-2 px-6 py-3 text-[14px] font-medium text-white rounded bg-primary hover:bg-primary/90 transition-colors"
             style={{ fontFamily: "'europa', sans-serif" }}
           >
-            View All {filter === 'all' ? 'Less' : 'All'} Projects
+            View All Projects
           </button>
         </div>
       </div>

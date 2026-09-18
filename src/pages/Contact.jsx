@@ -80,7 +80,7 @@ function Contact() {
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Describe your project or business need...\n\nExamples:\n• Barber shop needs booking system integration\n• Clinic needs patient data organization\n• Gym wants membership tracking automation\n• School needs operations platform"
+                placeholder="Describe your project or business need...\n\nI specialize in:\n• Route optimization engines (SmartRoute)\n• School management systems (EduBridge)\n• AI-powered video generation\n• Web scraping & OCR pipelines\n• Full-stack custom software\n• Discount/price history management"
                 rows={5}
                 required
                 className="w-full bg-secondary/20 border border-white/10 rounded-pill p-3 focus:border-primary transition-colors focus:bg-white/5 focus:text-white resize-none"
@@ -99,7 +99,7 @@ function Contact() {
 
           <div className="mt-8 text-center">
             <p className="text-[14px] text-white/40">
-              Response within 48 hours. I reply to captured demand (people already asking for help), not cold outreach.
+              Response within 48 hours. I specialize in: route optimization engines, school management systems, AI video generation, web scraping & OCR pipelines, and full-custom software for non-technical businesses.
             </p>
           </div>
         </div>

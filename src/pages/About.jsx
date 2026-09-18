@@ -54,13 +54,13 @@ function About() {
 
           <Reveal variant="fadeRight">
             <span className="eyebrow text-white">
-              Get to Know Me
+              About Mohammed Hassoun
             </span>
             <h1 className="text-[clamp(32px,2rem+1.5vw,48px)] font-bold leading-[1.1] mb-6 text-white">
-              Freelance Software Developer
+              Freelance Software Developer & AI Specialist
             </h1>
             <p className="text-white/80 leading-[1.7] mb-10 text-[16px]">
-              Software developer focused on practical automation, full-stack web systems, AI-assisted tools, browser extensions, and mobile applications. This portfolio shows hands-on work across Python CLIs, Node/Express backends, MongoDB/Mongoose APIs, React/Next.js/Vite frontends, Chrome Manifest V3 extensions, and Android Kotlin apps.
+              Mohammed Hassoun — Freelance Software Developer & AI Specialist. I build full-stack systems, automate workflows, and create AI-powered solutions. My sweet spot is taking complex problems and turning them into working software that non-technical businesses can actually use.
             </p>
 
             <div className="space-y-8">
@@ -71,8 +71,8 @@ function About() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-bold text-white mb-2">Automation & AI</h3>
-                  <p className="text-white/70 text-[0.833rem] leading-[1.7]">YouTube channel analysis, OCR pipelines, LLM workflows, Chrome extensions, AI-assisted grade import and feedback systems</p>
+                  <h3 className="font-bold text-white mb-2">Route Optimization & SmartRoute</h3>
+                  <p className="text-white/70 text-[0.833rem] leading-[1.7]">Full-stack web application that scrapes web prices, OCRs thousands of pages, optimizes routes, and handles discounts and price history. Built with React Native/Expo, TypeScript, and sophisticated pricing algorithms.</p>
                 </div>
               </div>
               <div key={2} className="flex gap-5">
@@ -84,8 +84,8 @@ function About() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-bold text-white mb-2">Full-Stack Web</h3>
-                  <p className="text-white/70 text-[0.833rem] leading-[1.7]">React, Next.js, Vite, React Router, TypeScript, JavaScript, Tailwind CSS, REST APIs, Express.js, MongoDB/Mongoose, JWT auth, RBAC permissions</p>
+                  <h3 className="font-bold text-white mb-2">EduBridge - School Operations</h3>
+                  <p className="text-white/70 text-[0.833rem] leading-[1.7]">React + Vite + Express/Mongoose school management platform with admin/teacher/student portals, RBAC, Socket.io notifications, and bilingual Arabic/English UI. Ready for paid pilot.</p>
                 </div>
               </div>
               <div key={3} className="flex gap-5">
@@ -95,8 +95,19 @@ function About() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-bold text-white mb-2">Mobile & Browser</h3>
-                  <p className="text-white/70 text-[0.833rem] leading-[1.7]">Android Kotlin with Room/WorkManager, Chrome Manifest V3 extensions, Kotlin multiplatform, React Native/Expo prototypes, Tesseract.js OCR</p>
+                  <h3 className="font-bold text-white mb-2">AI Videos & Creative</h3>
+                  <p className="text-white/70 text-[0.833rem] leading-[1.7]">AI-powered video generation and creative content workflows. Combining LLM APIs, Tesseract.js OCR, and custom pipelines for automated content creation.</p>
+                </div>
+              </div>
+              <div key={4} className="flex gap-5">
+                <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center text-white">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="mx-auto">
+                    <polygon points="5,3 19,12 5,21" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold text-white mb-2">AI Workflows & AEIS</h3>
+                  <p className="text-white/70 text-[0.833rem] leading-[1.7]">Autonomous Economic Intelligence System — persistent digital organism for economic value creation. "Capture demand, don't create it" strategy. 38 sessions documented.</p>
                 </div>
               </div>
             </div>
