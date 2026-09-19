@@ -9,7 +9,7 @@ export default function ServicesStrip() {
     <section className="bg-primary px-6 pb-24 md:px-10">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-px overflow-hidden rounded-md bg-white/20 sm:grid-cols-3">
         {labels.map((label) => (
-          <div key={label} className="relative aspect-[4/3] bg-primary">
+          <div key={label} className="relative aspect-[4/3] bg-primary hover:bg-primary/90 transition-colors">
             <PlaceholderBox
               id={`ABOUT-SERVICES-STRIP-${label.replace(/\s+/g, '')}`}
               type="[IMAGE]"

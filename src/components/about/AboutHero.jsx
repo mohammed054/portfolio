@@ -12,12 +12,11 @@ export default function AboutHero() {
             label="Home-office desk setup, two monitors + laptop"
             className="aspect-[13/8] w-full border-white/40 bg-white/90 text-ink"
           />
-          <PlaceholderBox
-            id="ABOUT-HERO-BADGE"
-            type="[ANIMATION]"
-            label="Rotating 'ABOUT US' circular text badge"
-            className="absolute -right-6 -top-6 h-32 w-32 rounded-full border-white/60 bg-white/90 p-2 text-[9px] text-ink"
-          />
+          <div
+            className="absolute -right-6 -top-6 h-32 w-32 rounded-full border-white/60 bg-white/90 p-2 text-[9px] text-ink animate-badge"
+          >
+            Rotating 'ABOUT US' circular text badge
+          </div>
         </div>
 
         {/* text-white at full opacity — Round 1 QA item 11.5 (critical):
@@ -25,7 +24,7 @@ export default function AboutHero() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[2px] text-white/80">Creative Approach</p>
           <h2 className="mt-3 text-4xl font-extrabold leading-tight text-white md:text-5xl">
-            We develop &amp; create digital future.
+            We develop & create digital future.
           </h2>
           <p className="mt-6 max-w-md text-white/90">
             For those who love videos, animation and motion graphics, we have come up with a new cool project!

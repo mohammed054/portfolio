@@ -9,7 +9,7 @@ export default {
         // utilities (e.g. bg-slate-950) — that's how the About-hero background
         // and text-contrast bugs from Round 1 QA happened.
         primary: '#3646E4', // royal/indigo blue — About hero bg, ring accents, icon strokes
-        accent: '#F85D40', // coral — all CTA buttons, stars, eyebrow accents
+        accent: '#FF5B4A', // coral — all CTA buttons, stars, eyebrow accents — LIVE SITE VALUE
         ink: '#1B1F29', // near-black body/heading text on light backgrounds
         muted: '#6B7280', // gray body copy
         surface: '#F6F6F8', // light-gray alternating section background

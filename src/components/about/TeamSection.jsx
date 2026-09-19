@@ -4,6 +4,21 @@ import EyebrowLabel from '../shared/EyebrowLabel.jsx'
 import SectionHeading from '../shared/SectionHeading.jsx'
 import PlaceholderBox from '../shared/PlaceholderBox.jsx'
 
+const team = [
+  {
+    id: 'ABOUT-TEAM-PHOTO-1',
+    name: 'Saber Nasr',
+    role: 'Project Manager',
+    label: 'Saber Nasr — navy vest, outdoor garden setting',
+  },
+  {
+    id: 'ABOUT-TEAM-PHOTO-2',
+    name: 'Mohamd Maksoud',
+    role: 'Graphic Designer',
+    label: 'Mohamd Maksoud — graphic designer',
+  },
+]
+
 export default function TeamSection() {
   return (
     <section className="bg-white px-6 py-20 md:px-10">
@@ -13,26 +28,23 @@ export default function TeamSection() {
           <SectionHeading className="mt-3">Meet Our Team</SectionHeading>
           <div className="mt-8 flex flex-wrap items-center gap-6">
             <Button to="/about">About Us</Button>
-            <button className="flex items-center gap-2 text-sm font-semibold text-ink">
-              <PlayCircle size={20} /> Contact Us
-            </button>
+            <Button to="/contact">Contact Us</Button>
           </div>
         </div>
 
-        {/* ~300x250 each per spec 6.4 — Round 1 QA flagged these as too small */}
         <div className="grid grid-cols-2 gap-6">
-          <PlaceholderBox
-            id="ABOUT-TEAM-PHOTO-1"
-            type="[IMAGE]"
-            label="Team member — navy vest, outdoor garden setting"
-            className="aspect-[6/5] min-h-[200px]"
-          />
-          <PlaceholderBox
-            id="ABOUT-TEAM-PHOTO-2"
-            type="[IMAGE]"
-            label="Team member — navy blazer, glasses"
-            className="aspect-[6/5] min-h-[200px]"
-          />
+          {team.map((member) => (
+            <div key={member.id}>
+              <PlaceholderBox
+                id={member.id}
+                type="[IMAGE]"
+                label={member.label}
+                className="aspect-[6/5] min-h-[200px]"
+              />
+              <p className="mt-3 font-bold text-ink">{member.name}</p>
+              <p className="text-sm text-muted">{member.role}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

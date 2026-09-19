@@ -15,10 +15,10 @@ export default function Hero() {
             marketers, storytellers, and inventors. 🤘
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-8">
-            <Button variant="text" href="#about-preview">
+            <Button variant="text" href="#about-preview" className="hover:text-accent">
               Discover More
             </Button>
-            <button className="flex items-center gap-3 text-sm font-semibold tracking-widest text-ink">
+            <button className="flex items-center gap-3 text-sm font-semibold tracking-widest text-ink hover:scale-105">
               <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary text-primary">
                 <Play size={16} />
               </span>

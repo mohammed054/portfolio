@@ -2,10 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes rotate-badge {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
   @apply font-sans text-ink;
+}
+
+/* Apply badge rotation animation */
+.animate-badge {
+  animation: rotate-badge 20s linear infinite;
 }
