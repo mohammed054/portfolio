@@ -1,7 +1,11 @@
 import { ChevronLeft, ChevronRight, Quote, Star } from 'lucide-react'
+import Swiper from 'swiper/bundle'
+import { Swiper as SwiperComponent, SwiperSlide } from 'swiper/react'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
 import EyebrowLabel from '../shared/EyebrowLabel.jsx'
 import SectionHeading from '../shared/SectionHeading.jsx'
-import PlaceholderBox from '../shared/PlaceholderBox.jsx'
 
 // 3 platform logos from the spec's Home AboutPreview strip
 const platforms = ['Fiverr', 'Upwork', 'Freelancer']
@@ -81,52 +85,41 @@ export default function PlatformsAndTestimonials() {
           </div>
         </div>
 
-        {/* TODO(spec 6.3): this is a carousel with prev/next controls and
-            a partially-visible next slide — currently showing first slide.
-            Wire Swiper/Embla here (see spec Section 2.4). */}
-        <div className="mt-16 grid gap-8 rounded-md bg-surface p-8 lg:grid-cols-[1fr_2fr]">
-          <div>
-            <EyebrowLabel>Testimonials</EyebrowLabel>
-            <SectionHeading className="mt-3 text-3xl md:text-4xl">Suggestions & Feedback</SectionHeading>
-            <div className="mt-8 flex gap-3">
-              <button
-                aria-label="Previous testimonial"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 hover:border-accent hover:text-accent"
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <button
-                aria-label="Next testimonial"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 hover:border-accent hover:text-accent"
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          </div>
-
-          <div className="rounded-md bg-white p-8 shadow-sm">
-            <Quote className="text-primary" />
-            <p className="mt-4 text-muted">
-              {testimonials[0].quote}
-            </p>
-            <div className="mt-6 flex items-center gap-3">
-              <PlaceholderBox
-                id={testimonials[0].avatar}
-                type="[IMAGE]"
-                className="h-12 w-12 shrink-0 rounded-full p-0 text-[7px]"
-              />
+        <Swiper
+          modules={[Navigation, Pagination]}
+          spaceBetween={20}
+          slidesPerView={1}
+          pagination={{ clickable: true }}
+          navigation={Navigation}
+          loop={true}
+        >
+          {testimonials.map((t) => (
+            <SwiperSlide key={t.author} className="p-8">
               <div>
-                <p className="font-bold text-ink">{testimonials[0].author}</p>
-                <p className="text-sm text-muted">{testimonials[0].role}</p>
+                <Quote className="text-primary" />
+                <p className="mt-4 text-muted">
+                  {t.quote}
+                </p>
+                <div className="mt-6 flex items-center gap-3">
+                  <PlaceholderBox
+                    id={t.avatar}
+                    type="[IMAGE]"
+                    className="h-12 w-12 shrink-0 rounded-full p-0 text-[7px]"
+                  />
+                  <div>
+                    <p className="font-bold text-ink">{t.author}</p>
+                    <p className="text-sm text-muted">{t.role}</p>
+                  </div>
+                </div>
+                <div className="mt-3 flex gap-1 text-accent">
+                  {Array.from({ length: t.stars }).map((_, i) => (
+                    <Star key={i} size={14} fill="currentColor" />
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="mt-3 flex gap-1 text-accent">
-              {Array.from({ length: testimonials[0].stars }).map((_, i) => (
-                <Star key={i} size={14} fill="currentColor" />
-              ))}
-            </div>
-          </div>
-        </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </section>
   )

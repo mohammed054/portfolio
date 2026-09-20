@@ -28,7 +28,9 @@ export default function TeamSection() {
           <SectionHeading className="mt-3">Meet Our Team</SectionHeading>
           <div className="mt-8 flex flex-wrap items-center gap-6">
             <Button to="/about">About Us</Button>
-            <Button to="/contact">Contact Us</Button>
+            <Button to="/contact" variant="outline">
+              Contact Us <PlayCircle size={16} />
+            </Button>
           </div>
         </div>
 

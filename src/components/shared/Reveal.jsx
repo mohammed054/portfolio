@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 /**
  * Reveal — generic section reveal wrapper per Phase 4 spec row:
@@ -18,8 +18,8 @@ export default function Reveal({ children, customClassName = '' }) {
   return (
     <motion.div
       variants={revealVariants}
-      initial="hidden"
-      animate="visible"
+      whileInView="visible"
+      once
       className={customClassName}
     >
       {children}

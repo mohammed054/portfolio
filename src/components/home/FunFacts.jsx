@@ -18,7 +18,7 @@ export default function FunFacts() {
   if (!intersect) return null
 
   return (
-    <section className="bg-white px-6 py-20 text-center md:px-10">
+    <section className="bg-white px-6 py-20 text-center md:px-10" ref={ref}>
       <EyebrowLabel>Fun Facts</EyebrowLabel>
       <SectionHeading className="mt-3">An original team of creators, designers & dreamers.</SectionHeading>
 

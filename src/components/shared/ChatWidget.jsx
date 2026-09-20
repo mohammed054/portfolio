@@ -5,17 +5,12 @@ import { MessageCircle } from 'lucide-react'
 // provider is identified live (Tawk.to / Crisp / WhatsApp widget / etc.)
 // — do not ship this stub click handler to production.
 export default function ChatWidget() {
-  const [open, setOpen] = useState(false)
-
   return (
     <div className="fixed bottom-6 left-6 z-40 flex items-center gap-3">
-      {open && (
-        <span className="rounded-full bg-white px-4 py-2 text-sm font-medium text-ink shadow-md">
-          Contact us
-        </span>
-      )}
+      <span className="rounded-full bg-white px-4 py-2 text-sm font-medium text-ink shadow-md">
+        Contact us
+      </span>
       <button
-        onClick={() => setOpen((o) => !o)}
         className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-500 text-white shadow-lg transition-transform hover:scale-105"
         aria-label="Open chat"
       >

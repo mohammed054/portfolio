@@ -16,7 +16,7 @@ export default function WhyChooseUs() {
 
       <div className="mx-auto mt-14 grid max-w-5xl gap-6 sm:grid-cols-3">
         {cards.map(({ Icon, label }) => (
-          <div key={label} className="flex flex-col items-center gap-4 border border-gray-200 px-6 py-12 hover:border-primary hover:shadow-primary">
+          <div key={label} className="flex flex-col items-center gap-4 border border-gray-200 px-6 py-12 hover:border-primary hover:shadow-md">
             <Icon size={40} strokeWidth={1.5} className="text-primary" />
             <p className="text-lg font-bold text-ink">{label}</p>
           </div>

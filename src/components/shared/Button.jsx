@@ -5,6 +5,8 @@ export default function Button({ to, href, children, className = '', variant = '
   const styles =
     variant === 'solid'
       ? `${base} bg-accent text-white hover:opacity-90`
+      : variant === 'outline'
+      ? `${base} border-accent text-accent hover:bg-accent/10`
       : `${base} px-0 text-accent underline underline-offset-4`
 
   if (to) {
