@@ -17,9 +17,9 @@ export default function FunFacts() {
   const ref3 = useRef(null)
   const refs = [ref1, ref2, ref3]
 
-  const [, vis1] = useInView({ ref: ref1, once: true })
-  const [, vis2] = useInView({ ref: ref2, once: true })
-  const [, vis3] = useInView({ ref: ref3, once: true })
+  const vis1 = useInView(ref1, { once: true })
+  const vis2 = useInView(ref2, { once: true })
+  const vis3 = useInView(ref3, { once: true })
   const visible = [vis1, vis2, vis3]
 
   return (
@@ -39,6 +39,8 @@ export default function FunFacts() {
               end={value}
               duration={2.5}
               separator=","
+              suffix="+"
+              enableScrollSpy={false}
               className="text-4xl font-extrabold text-ink"
             />
             <span className="text-muted">{label}</span>

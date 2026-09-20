@@ -1,8 +1,8 @@
+import { useRef } from 'react'
 import { ChevronLeft, ChevronRight, Quote, Star } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Pagination } from 'swiper/modules'
+import { Pagination } from 'swiper/modules'
 import 'swiper/css'
-import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import EyebrowLabel from '../shared/EyebrowLabel.jsx'
 import SectionHeading from '../shared/SectionHeading.jsx'
@@ -28,6 +28,7 @@ const testimonials = [
 ]
 
 export default function PlatformsAndTestimonials() {
+  const swiperRef = useRef(null)
   return (
     <section className="bg-white px-6 py-20 md:px-10">
       <div className="mx-auto max-w-6xl">
@@ -56,13 +57,15 @@ export default function PlatformsAndTestimonials() {
             <div className="mt-8 flex gap-3">
               <button
                 aria-label="Previous testimonial"
-                className="swiper-prev flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 hover:border-accent hover:text-accent"
+                onClick={() => swiperRef.current?.slidePrev()}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 hover:border-accent hover:text-accent"
               >
                 <ChevronLeft size={16} />
               </button>
               <button
                 aria-label="Next testimonial"
-                className="swiper-next flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 hover:border-accent hover:text-accent"
+                onClick={() => swiperRef.current?.slideNext()}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 hover:border-accent hover:text-accent"
               >
                 <ChevronRight size={16} />
               </button>
@@ -71,17 +74,16 @@ export default function PlatformsAndTestimonials() {
 
           <div>
             <Swiper
-              modules={[Navigation, Pagination]}
+              modules={[Pagination]}
               spaceBetween={20}
-              slidesPerView="auto"
+              slidesPerView={1}
               pagination={{ clickable: true }}
-              navigation={{
-                prevEl: '.swiper-prev',
-                nextEl: '.swiper-next',
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper
               }}
             >
               {testimonials.map((t) => (
-                <SwiperSlide key={t.author} className="!w-auto">
+                <SwiperSlide key={t.author}>
                   <div className="rounded-md bg-white p-8 shadow-sm">
                     <Quote className="text-primary" />
                     <p className="mt-4 max-w-xl text-muted">
