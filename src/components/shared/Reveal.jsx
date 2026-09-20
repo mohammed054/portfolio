@@ -19,7 +19,6 @@ export default function Reveal({ children, customClassName = '' }) {
     <motion.div
       variants={revealVariants}
       whileInView="visible"
-      once
       className={customClassName}
     >
       {children}
