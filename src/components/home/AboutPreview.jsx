@@ -16,9 +16,12 @@ export default function AboutPreview() {
             We appreciate your trust greatly. Our clients choose us and our products because they know we are
             the best.
           </p>
-          <Button to="/about" className="mt-8">
-            About Us
-          </Button>
+          <div className="mt-8 inline-block">
+            <Button to="/about">
+              About Us
+            </Button>
+            <span className="ml-2 inline-block h-2 w-2 rounded-full bg-teal-500" />
+          </div>
 
           <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {logos.map((name) => (

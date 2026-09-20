@@ -38,10 +38,6 @@ export default function PortfolioGrid() {
               label={project.label}
               className="h-full w-full"
             />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-              <p className="font-bold text-white">{project.name}</p>
-              <p className="text-sm text-white/70">{project.category}</p>
-            </div>
           </div>
         ))}
       </div>

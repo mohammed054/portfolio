@@ -1,7 +1,10 @@
-export default function EyebrowLabel({ children, className = '' }) {
+export default function EyebrowLabel({ children, className = '', withDash = false }) {
   return (
-    <p className={`text-xs font-semibold uppercase tracking-[2px] text-muted ${className}`}>
-      {children}
-    </p>
+    <div className={`flex items-center gap-3 ${className}`}>
+      {withDash && <span className="h-[2px] w-8 bg-accent" />}
+      <p className="text-xs font-semibold uppercase tracking-[2px] text-muted">
+        {children}
+      </p>
+    </div>
   )
 }

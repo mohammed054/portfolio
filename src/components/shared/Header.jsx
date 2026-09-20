@@ -26,7 +26,7 @@ export default function Header() {
             to={link.to}
             className={({ isActive }) =>
               `border-b-2 pb-1 transition-colors ${
-                isActive ? 'border-accent text-accent' : 'border-transparent text-ink hover:text-accent'
+                isActive ? 'border-ink text-ink' : 'border-transparent text-ink hover:text-accent'
               }`
             }
           >

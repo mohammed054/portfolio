@@ -1,8 +1,7 @@
 import Button from '../shared/Button.jsx'
+import PlaceholderBox from '../shared/PlaceholderBox.jsx'
 import { useCountdown } from '../../hooks/useCountdown.js'
 
-// PLACEHOLDER target date — real offer end-date unconfirmed (spec Section 9 item 13).
-// Defaults to "7 days from page load" purely so the timer visibly ticks.
 const TARGET_DATE = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
 
 export default function CTACountdown() {
@@ -16,28 +15,32 @@ export default function CTACountdown() {
   ]
 
   return (
-    <section className="bg-dark relative px-6 py-24 text-center text-white md:px-10">
-      <div className="relative mx-auto max-w-3xl">
-        <div className="absolute left-0 top-0 bottom-0 w-64 bg-[linear-gradient( rgba(18,19,28,0.8), rgba(18,19,28,0.6) )] opacity-90"></div>
-        <div className="relative z-10">
-          <p className="text-xs font-semibold uppercase tracking-[2px] text-white/60">Get the Offer</p>
-          <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">Ask Us About Limited Discount</h2>
+    <section className="relative overflow-hidden py-24 text-center text-white">
+      <PlaceholderBox
+        id="ABOUT-CTA-BGPHOTO"
+        type="[BACKGROUND_IMAGE]"
+        label="Hands using tablet with fashion app, dark overlay"
+        className="absolute inset-0 h-full w-full rounded-none border-0 bg-dark text-transparent"
+      />
+      <div className="absolute inset-0 bg-black/60" />
+      <div className="relative z-10 mx-auto max-w-3xl px-6 md:px-10">
+        <p className="text-xs font-semibold uppercase tracking-[2px] text-white/60">Get the Offer</p>
+        <h2 className="mt-3 text-4xl font-extrabold md:text-5xl">Ask Us About Limited Discount</h2>
 
-          <div className="mt-10 flex justify-center gap-8">
-            {blocks.map(([label, value]) => (
-              <div key={label} className="w-16">
-                <p className="text-4xl font-extrabold">{pad(value)}</p>
-                <p className="mt-2 border-t border-white/30 pt-2 text-xs uppercase tracking-widest text-white/60">
-                  {label}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <Button to="/contact" className="mt-10">
-            Contact Us
-          </Button>
+        <div className="mt-10 flex justify-center gap-8">
+          {blocks.map(([label, value]) => (
+            <div key={label} className="w-16">
+              <p className="text-4xl font-extrabold">{pad(value)}</p>
+              <p className="mt-2 border-t border-white/30 pt-2 text-xs uppercase tracking-widest text-white/60">
+                {label}
+              </p>
+            </div>
+          ))}
         </div>
+
+        <Button to="/contact" className="mt-10">
+          Contact Us
+        </Button>
       </div>
     </section>
   )

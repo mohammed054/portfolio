@@ -7,15 +7,11 @@ import PlaceholderBox from '../shared/PlaceholderBox.jsx'
 const team = [
   {
     id: 'ABOUT-TEAM-PHOTO-1',
-    name: 'Saber Nasr',
-    role: 'Project Manager',
     label: 'Saber Nasr — navy vest, outdoor garden setting',
   },
   {
     id: 'ABOUT-TEAM-PHOTO-2',
-    name: 'Mohamd Maksoud',
-    role: 'Graphic Designer',
-    label: 'Mohamd Maksoud — graphic designer',
+    label: 'Second team member — navy blazer, glasses, garden setting',
   },
 ]
 
@@ -24,28 +20,28 @@ export default function TeamSection() {
     <section className="bg-white px-6 py-20 md:px-10">
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
         <div>
-          <EyebrowLabel>Our Team</EyebrowLabel>
+          <EyebrowLabel withDash>Our Team</EyebrowLabel>
           <SectionHeading className="mt-3">Meet Our Team</SectionHeading>
           <div className="mt-8 flex flex-wrap items-center gap-6">
             <Button to="/about">About Us</Button>
-            <Button to="/contact" variant="outline">
-              Contact Us <PlayCircle size={16} />
-            </Button>
+            <a href="#/contact" className="flex items-center gap-2 text-sm font-semibold text-ink hover:text-accent transition-colors">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-ink">
+                <PlayCircle size={16} />
+              </span>
+              Contact Us
+            </a>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-6">
           {team.map((member) => (
-            <div key={member.id}>
-              <PlaceholderBox
-                id={member.id}
-                type="[IMAGE]"
-                label={member.label}
-                className="aspect-[6/5] min-h-[200px]"
-              />
-              <p className="mt-3 font-bold text-ink">{member.name}</p>
-              <p className="text-sm text-muted">{member.role}</p>
-            </div>
+            <PlaceholderBox
+              key={member.id}
+              id={member.id}
+              type="[IMAGE]"
+              label={member.label}
+              className="aspect-[6/5] min-h-[200px]"
+            />
           ))}
         </div>
       </div>

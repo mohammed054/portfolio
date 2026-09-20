@@ -23,9 +23,9 @@ export default function Footer() {
             <span
               key={label}
               aria-label={label}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-600 text-xs"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-600 text-xs transition-colors hover:border-white"
             >
-              <Icon size={18} className="text-primary" />
+              <Icon size={18} />
             </span>
           ))}
         </div>
